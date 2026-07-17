@@ -1,0 +1,67 @@
+{
+  "v": 6,
+  "name": "GNU Headless CMS API",
+  "folders": [
+    {
+      "v": 6,
+      "name": "1. Autenticación",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "Login",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/auth/login",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "// Guarda el token en la variable de entorno ACCESS_TOKEN\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.access_token) {\n  pw.env.set(\"ACCESS_TOKEN\", res.data.access_token);\n}",
+          "auth": { "authType": "none", "authActive": true },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Me",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/auth/me",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "body": { "contentType": null, "body": null },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Logout",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/auth/logout",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "// Limpia el token tras cerrar sesión\npw.env.set(\"ACCESS_TOKEN\", \"\");",
+          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "body": { "contentType": null, "body": null },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": { "authType": "inherit", "authActive": true },
+      "headers": [
+        { "key": "Accept", "value": "application/json", "active": true }
+      ]
+    }
+  ],
+  "requests": [],
+  "auth": { "authType": "none", "authActive": true },
+  "headers": [
+    { "key": "Accept", "value": "application/json", "active": true }
+  ]
+}

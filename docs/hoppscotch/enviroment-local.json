@@ -1,0 +1,17 @@
+{
+  "v": 1,
+  "id": "gnu-cms-local",
+  "name": "GNU CMS - Local",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "http://gnu-headless-cms.test",
+      "secret": false
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "",
+      "secret": false
+    }
+  ]
+}

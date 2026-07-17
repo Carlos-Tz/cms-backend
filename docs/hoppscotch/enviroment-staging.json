@@ -1,0 +1,17 @@
+{
+  "v": 1,
+  "id": "gnu-cms-staging",
+  "name": "GNU CMS - Staging",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://test-api.165.227.59.215.sslip.io",
+      "secret": false
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "",
+      "secret": false
+    }
+  ]
+}
