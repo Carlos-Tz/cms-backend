@@ -1,0 +1,30 @@
+<?php
+
+use App\Http\Controllers\Public\BlogController;
+use App\Http\Controllers\Public\LeadController;
+use App\Http\Controllers\Public\MenuController;
+use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\StationController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Public API routes (prefix: /api/public)
+|--------------------------------------------------------------------------
+|
+| Read-only API consumed by the 4 public websites. The site is resolved
+| by its slug in the route ({site}) — simplest option; an X-Site-Key
+| header check can be layered on later if needed.
+|
+| The only allowed write is lead capture (POST {site}/leads).
+|
+*/
+
+Route::prefix('{site}')->group(function (): void {
+    Route::get('menu', [MenuController::class, 'show']);
+    Route::get('pages/{pageSlug}', [PageController::class, 'show']);
+    Route::get('blog', [BlogController::class, 'index']);
+    Route::get('blog/{postSlug}', [BlogController::class, 'show']);
+    Route::get('stations', [StationController::class, 'index']);
+    Route::post('leads', [LeadController::class, 'store']);
+});

@@ -1,0 +1,42 @@
+<?php
+
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BlogCategoryController;
+use App\Http\Controllers\Admin\BlogPostController;
+use App\Http\Controllers\Admin\LeadController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\SiteController;
+use App\Http\Controllers\Admin\StationController;
+use App\Http\Controllers\Admin\UserController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Admin API routes (prefix: /api/admin)
+|--------------------------------------------------------------------------
+|
+| Private API consumed by the admin panel. Everything except login is
+| protected by the JWT `api` guard.
+|
+*/
+
+Route::post('auth/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:api')->group(function (): void {
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+    Route::get('auth/me', [AuthController::class, 'me']);
+
+    Route::apiResource('sites', SiteController::class);
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('menus', MenuController::class);
+    Route::apiResource('pages', PageController::class);
+    Route::apiResource('sections', SectionController::class);
+    Route::apiResource('blog-posts', BlogPostController::class);
+    Route::apiResource('blog-categories', BlogCategoryController::class);
+    Route::apiResource('leads', LeadController::class);
+    Route::apiResource('stations', StationController::class);
+    Route::apiResource('media', MediaController::class);
+});
