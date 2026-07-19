@@ -15,9 +15,11 @@ it('logs in with valid credentials and returns a token', function () {
 
     $response->assertOk()
         ->assertJsonStructure([
+            'status',
             'data' => ['access_token', 'token_type', 'expires_in'],
             'meta',
         ])
+        ->assertJsonPath('status', 'success')
         ->assertJsonPath('data.token_type', 'bearer');
 });
 
@@ -28,6 +30,7 @@ it('rejects login with wrong password', function () {
         'email' => $user->email,
         'password' => 'wrong-password',
     ])->assertUnauthorized()
+        ->assertJsonPath('status', 'error')
         ->assertJsonPath('data', null);
 });
 

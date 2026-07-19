@@ -22,18 +22,20 @@ class AuthController extends Controller
 
         if (! $token) {
             return response()->json([
+                'status' => 'error',
                 'data' => null,
-                'meta' => ['message' => 'Invalid credentials'],
+                'meta' => ['message' => 'Credenciales inválidas'],
             ], 401);
         }
 
         return response()->json([
+            'status' => 'success',
             'data' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth('api')->factory()->getTTL() * 60,
             ],
-            'meta' => [],
+            'meta' => ['message' => 'Sesión iniciada correctamente'],
         ]);
     }
 
@@ -43,6 +45,7 @@ class AuthController extends Controller
     public function me(): JsonResponse
     {
         return response()->json([
+            'status' => 'success',
             'data' => auth('api')->user(),
             'meta' => [],
         ]);
@@ -56,8 +59,9 @@ class AuthController extends Controller
         auth('api')->logout();
 
         return response()->json([
+            'status' => 'success',
             'data' => null,
-            'meta' => ['message' => 'Successfully logged out'],
+            'meta' => ['message' => 'Sesión cerrada correctamente'],
         ]);
     }
 }
