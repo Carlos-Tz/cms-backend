@@ -33,7 +33,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::apiResource('users', UserController::class);
     Route::apiResource('menus', MenuController::class);
     Route::apiResource('pages', PageController::class);
-    Route::apiResource('sections', SectionController::class);
+    // Sections are structure: the admin edits content only, never creates or deletes them.
+    Route::apiResource('sections', SectionController::class)->only(['index', 'show', 'update']);
     Route::apiResource('blog-posts', BlogPostController::class);
     Route::apiResource('blog-categories', BlogCategoryController::class);
     Route::apiResource('leads', LeadController::class);

@@ -4,6 +4,7 @@ use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\LeadController;
 use App\Http\Controllers\Public\MenuController;
 use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\SavingsSimulatorController;
 use App\Http\Controllers\Public\StationController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,9 +21,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('{site}')->group(function (): void {
+Route::prefix('{site:slug}')->group(function (): void {
     Route::get('menu', [MenuController::class, 'show']);
+    Route::get('globals', [PageController::class, 'globals']);
     Route::get('pages/{pageSlug}', [PageController::class, 'show']);
+    Route::get('savings-simulator', SavingsSimulatorController::class);
     Route::get('blog', [BlogController::class, 'index']);
     Route::get('blog/{postSlug}', [BlogController::class, 'show']);
     Route::get('stations', [StationController::class, 'index']);

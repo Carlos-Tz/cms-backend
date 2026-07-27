@@ -78,7 +78,8 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    // Spanish by default: every API message the client sees must be in Spanish.
+    'locale' => env('APP_LOCALE', 'es'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
