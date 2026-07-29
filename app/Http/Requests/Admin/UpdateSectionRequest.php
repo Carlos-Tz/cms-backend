@@ -21,6 +21,11 @@ class UpdateSectionRequest extends FormRequest
      * @var array<string, array<string, array<int, string>>>
      */
     private const SCHEMAS = [
+        'page_hero' => [
+            'title' => ['required', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:1000'],
+            'image' => ['nullable', 'string', 'max:2048'],
+        ],
         'banner_carousel' => [
             'slides' => ['present', 'array'],
             'slides.*.image' => ['required', 'string', 'max:2048'],

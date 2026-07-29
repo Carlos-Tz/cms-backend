@@ -26,6 +26,14 @@ class Site extends Model
     }
 
     /**
+     * @return HasMany<BlogPost, $this>
+     */
+    public function blogPosts(): HasMany
+    {
+        return $this->hasMany(BlogPost::class);
+    }
+
+    /**
      * Site-wide sections (contact info, social icons, whatsapp button).
      *
      * @return HasMany<Section, $this>

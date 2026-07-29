@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\MediaController;
@@ -35,8 +34,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::apiResource('pages', PageController::class);
     // Sections are structure: the admin edits content only, never creates or deletes them.
     Route::apiResource('sections', SectionController::class)->only(['index', 'show', 'update']);
+    // No blog categories: the blueprint does not define any. Add them when asked for.
     Route::apiResource('blog-posts', BlogPostController::class);
-    Route::apiResource('blog-categories', BlogCategoryController::class);
     Route::apiResource('leads', LeadController::class);
     Route::apiResource('stations', StationController::class);
     Route::apiResource('media', MediaController::class);

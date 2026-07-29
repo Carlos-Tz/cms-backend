@@ -5,9 +5,10 @@ namespace Database\Seeders;
 use App\Models\Page;
 use App\Models\Site;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 /**
- * Seeds the structure of the GNU home page plus the site-wide sections.
+ * Seeds the structure of the GNU home page and blog page, plus the site-wide sections.
  *
  * Structure (pages, section types and their order) comes from the blueprint in
  * `.claude/skills/sitios-web-gnu`; the values below are placeholders the admin
@@ -92,6 +93,21 @@ class GnuBlueprintSeeder extends Seeder
             'fields' => ['name', 'email', 'phone', 'message'],
         ]);
 
+        // The blog listing itself is served by GET /api/public/gnu/blog, so the
+        // page only carries its hero. Articles are `blog_posts` rows, not pages.
+        $blog = Page::updateOrCreate(
+            ['site_id' => $site->id, 'slug' => 'blog'],
+            ['path' => '/blog', 'title' => 'Blog', 'position' => 6, 'is_published' => true],
+        );
+
+        $this->section($site, $blog, 'page_hero', 1, [
+            'title' => 'Blog',
+            'subtitle' => 'Noticias y artículos sobre el gas natural.',
+            'image' => null,
+        ]);
+
+        $this->posts($site);
+
         $this->section($site, null, 'contact_info', 1, [
             'address' => 'Av. Ejemplo 123, Monterrey, Nuevo León',
             'phone' => '+52 81 0000 0000',
@@ -112,6 +128,33 @@ class GnuBlueprintSeeder extends Seeder
             'phone' => '+528100000000',
             'prefilled_message' => 'Hola, quiero información sobre gas natural.',
         ]);
+    }
+
+    /**
+     * The four seed articles listed in the blueprint, oldest first.
+     * Values are placeholders the admin replaces through the admin API.
+     */
+    private function posts(Site $site): void
+    {
+        $titles = [
+            '¿Por qué elegir gas natural?',
+            'Beneficios del gas natural',
+            'Impacto del gas natural en el medio ambiente',
+            'Gas natural vs otros combustibles',
+        ];
+
+        foreach ($titles as $index => $title) {
+            $site->blogPosts()->updateOrCreate(
+                ['slug' => Str::slug($title)],
+                [
+                    'title' => $title,
+                    'excerpt' => 'Resumen pendiente de redactar.',
+                    'body' => "<p>Contenido pendiente de redactar para «{$title}».</p>",
+                    'cover_image' => null,
+                    'published_at' => now()->subDays(count($titles) - $index),
+                ],
+            );
+        }
     }
 
     /**
