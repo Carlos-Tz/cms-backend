@@ -4,6 +4,7 @@ use App\Models\BlogPost;
 use App\Models\Site;
 use App\Models\User;
 use Database\Seeders\GnuBlueprintSeeder;
+use Database\Seeders\GnuVehicularBlueprintSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -102,7 +103,7 @@ it('rejects a duplicated slug in the same site but allows it in another', functi
             'slug' => 'Ya existe un artículo con ese slug en este sitio.',
         ]);
 
-    $other = Site::create(['slug' => 'gnu-vehicular', 'name' => 'GNU Vehicular']);
+    $other = Site::create(['slug' => 'traninn-logistic', 'name' => 'Traninn Logistic']);
 
     $this->withToken($this->token)
         ->postJson('/api/admin/blog-posts', [...$payload, 'site_id' => $other->id])
@@ -156,6 +157,37 @@ it('refuses to move an article to another site', function () {
         ])
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['site_id' => 'Un artículo no puede cambiar de sitio.']);
+});
+
+it('serves the gnu-vehicular blog once its site is seeded', function () {
+    // 404 before seeding: the {site:slug} binding fails, there is no site row.
+    $this->getJson('/api/public/gnu-vehicular/blog')->assertNotFound();
+
+    $this->seed(GnuVehicularBlueprintSeeder::class);
+
+    $this->getJson('/api/public/gnu-vehicular/blog')
+        ->assertOk()
+        ->assertJsonCount(4, 'data')
+        ->assertJsonPath('meta.site', 'gnu-vehicular')
+        ->assertJsonPath('data.0.title', 'Gas natural vs otros combustibles');
+
+    $this->getJson('/api/public/gnu-vehicular/blog/seguridad-del-gnv')
+        ->assertOk()
+        ->assertJsonPath('data.title', 'Seguridad del GNV');
+
+    // The two blogs stay separate.
+    $this->getJson('/api/public/gnu/blog')->assertOk()->assertJsonCount(4, 'data');
+    $this->getJson('/api/public/gnu/blog/seguridad-del-gnv')->assertNotFound();
+});
+
+it('serves the gnu-vehicular blog page with its hero only', function () {
+    $this->seed(GnuVehicularBlueprintSeeder::class);
+
+    $this->getJson('/api/public/gnu-vehicular/pages/blog')
+        ->assertOk()
+        ->assertJsonCount(1, 'data.sections')
+        ->assertJsonPath('data.sections.0.type', 'page_hero')
+        ->assertJsonPath('data.sections.0.content.subtitle', 'Noticias y guías sobre gas natural vehicular.');
 });
 
 it('does not expose blog categories', function () {
