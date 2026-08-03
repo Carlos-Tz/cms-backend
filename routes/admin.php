@@ -36,7 +36,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::apiResource('sections', SectionController::class)->only(['index', 'show', 'update']);
     // No blog categories: the blueprint does not define any. Add them when asked for.
     Route::apiResource('blog-posts', BlogPostController::class);
-    Route::apiResource('leads', LeadController::class);
+    // Leads only come from the public forms: the panel reads and deletes them.
+    Route::apiResource('leads', LeadController::class)->only(['index', 'show', 'destroy']);
     Route::apiResource('stations', StationController::class);
     Route::apiResource('media', MediaController::class);
 });

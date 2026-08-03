@@ -34,6 +34,14 @@ class Site extends Model
     }
 
     /**
+     * @return HasMany<Lead, $this>
+     */
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    /**
      * Site-wide sections (contact info, social icons, whatsapp button).
      *
      * @return HasMany<Section, $this>

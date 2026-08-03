@@ -3,36 +3,61 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lead;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Placeholder controller — real implementation comes in a later phase.
+ * Read-only inbox for the admin panel: leads are only born on the public site,
+ * so there is no store or update here.
  */
 class LeadController extends Controller
 {
-    public function index(): JsonResponse
+    /**
+     * List captured leads, newest first, optionally filtered by site slug.
+     */
+    public function index(Request $request): JsonResponse
     {
-        return response()->json(['data' => [], 'meta' => ['resource' => 'leads']]);
+        $leads = Lead::query()
+            ->when($request->string('site')->isNotEmpty(), fn ($query) => $query->whereHas(
+                'site',
+                fn ($site) => $site->where('slug', $request->string('site'))
+            ))
+            ->latest()
+            ->paginate(20);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $leads->items(),
+            'meta' => [
+                'page' => $leads->currentPage(),
+                'per_page' => $leads->perPage(),
+                'total' => $leads->total(),
+                'last_page' => $leads->lastPage(),
+            ],
+        ]);
     }
 
-    public function store(Request $request): JsonResponse
+    /**
+     * The site is loaded so the panel can show where the lead came from.
+     */
+    public function show(Lead $lead): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'leads']], 201);
+        return response()->json([
+            'status' => 'success',
+            'data' => $lead->load('site'),
+            'meta' => [],
+        ]);
     }
 
-    public function show(string $id): JsonResponse
+    public function destroy(Lead $lead): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'leads', 'id' => $id]]);
-    }
+        $lead->delete();
 
-    public function update(Request $request, string $id): JsonResponse
-    {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'leads', 'id' => $id]]);
-    }
-
-    public function destroy(string $id): JsonResponse
-    {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'leads', 'id' => $id]]);
+        return response()->json([
+            'status' => 'success',
+            'data' => null,
+            'meta' => ['message' => 'Lead eliminado correctamente'],
+        ]);
     }
 }

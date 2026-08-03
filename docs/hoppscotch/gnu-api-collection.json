@@ -57,6 +57,79 @@
       "headers": [
         { "key": "Accept", "value": "application/json", "active": true }
       ]
+    },
+    {
+      "v": 6,
+      "name": "2. Leads",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "Captar lead (público)",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/leads",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status 201\", () => {\n  pw.expect(pw.response.status).toBe(201);\n});",
+          "auth": { "authType": "none", "authActive": true },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"phone\": \"8181234567\",\n  \"message\": \"Quiero cotizar GNV para mi flotilla.\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Listar leads (admin)",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/leads",
+          "params": [
+            { "key": "site", "value": "<<SITE>>", "active": true },
+            { "key": "page", "value": "1", "active": false }
+          ],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "// Guarda el id del lead más reciente en LEAD_ID\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"LEAD_ID\", String(res.data[0].id));\n}",
+          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "body": { "contentType": null, "body": null },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver lead (admin)",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/leads/<<LEAD_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "body": { "contentType": null, "body": null },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Eliminar lead (admin)",
+          "method": "DELETE",
+          "endpoint": "<<BASE_URL>>/api/admin/leads/<<LEAD_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "body": { "contentType": null, "body": null },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": { "authType": "inherit", "authActive": true },
+      "headers": [
+        { "key": "Accept", "value": "application/json", "active": true }
+      ]
     }
   ],
   "requests": [],

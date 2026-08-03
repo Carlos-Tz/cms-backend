@@ -29,5 +29,6 @@ Route::prefix('{site:slug}')->group(function (): void {
     Route::get('blog', [BlogController::class, 'index']);
     Route::get('blog/{postSlug}', [BlogController::class, 'show']);
     Route::get('stations', [StationController::class, 'index']);
-    Route::post('leads', [LeadController::class, 'store']);
+    // Throttled: the only public write, otherwise an open mailbox for spam.
+    Route::post('leads', [LeadController::class, 'store'])->middleware('throttle:10,1');
 });

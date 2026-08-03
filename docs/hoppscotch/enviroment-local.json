@@ -12,6 +12,16 @@
       "key": "ACCESS_TOKEN",
       "value": "",
       "secret": false
+    },
+    {
+      "key": "SITE",
+      "value": "gnu",
+      "secret": false
+    },
+    {
+      "key": "LEAD_ID",
+      "value": "",
+      "secret": false
     }
   ]
 }
