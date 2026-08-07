@@ -26,6 +26,18 @@ class UpdateSectionRequest extends FormRequest
             'subtitle' => ['nullable', 'string', 'max:1000'],
             'image' => ['nullable', 'string', 'max:2048'],
         ],
+        'rich_text' => [
+            'title' => ['nullable', 'string', 'max:255'],
+            'body' => ['required', 'string'],
+            'video_url' => ['nullable', 'url', 'max:2048'],
+        ],
+        'feature_grid' => [
+            'title' => ['nullable', 'string', 'max:255'],
+            'items' => ['present', 'array'],
+            'items.*.icon' => ['nullable', 'string', 'max:2048'],
+            'items.*.title' => ['required', 'string', 'max:255'],
+            'items.*.text' => ['required', 'string', 'max:2000'],
+        ],
         'banner_carousel' => [
             'slides' => ['present', 'array'],
             'slides.*.image' => ['required', 'string', 'max:2048'],

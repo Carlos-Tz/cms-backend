@@ -26,10 +26,7 @@ class GnuBlueprintSeeder extends Seeder
             ['name' => 'GNU Gas Natural'],
         );
 
-        $home = Page::updateOrCreate(
-            ['site_id' => $site->id, 'slug' => 'inicio'],
-            ['path' => '/', 'title' => 'Inicio', 'position' => 1, 'is_published' => true],
-        );
+        $home = $this->page($site, 'inicio', '/', 'Inicio', 1);
 
         // The home page carries no page_hero: the banner carousel is its hero.
         $this->section($site, $home, 'banner_carousel', 1, [
@@ -93,12 +90,11 @@ class GnuBlueprintSeeder extends Seeder
             'fields' => ['name', 'email', 'phone', 'message'],
         ]);
 
+        $this->aboutUs($site);
+
         // The blog listing itself is served by GET /api/public/gnu/blog, so the
         // page only carries its hero. Articles are `blog_posts` rows, not pages.
-        $blog = Page::updateOrCreate(
-            ['site_id' => $site->id, 'slug' => 'blog'],
-            ['path' => '/blog', 'title' => 'Blog', 'position' => 6, 'is_published' => true],
-        );
+        $blog = $this->page($site, 'blog', '/blog', 'Blog', 6);
 
         $this->section($site, $blog, 'page_hero', 1, [
             'title' => 'Blog',
@@ -131,6 +127,123 @@ class GnuBlueprintSeeder extends Seeder
     }
 
     /**
+     * The «Sobre nosotros» column: the parent page and its four children.
+     *
+     * `proposito-empresarial` carries a feature_grid on top of its rich_text so
+     * Misión / Visión / Propósito are structured cards instead of headings buried
+     * in the HTML body — the admin reorders them without touching markup.
+     */
+    private function aboutUs(Site $site): void
+    {
+        $about = $this->page($site, 'sobre-nosotros', '/sobre-nosotros', 'Sobre nosotros', 3);
+
+        $this->section($site, $about, 'page_hero', 1, [
+            'title' => 'Sobre nosotros',
+            'subtitle' => 'Quiénes somos y qué nos mueve.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $about, 'rich_text', 2, [
+            'title' => null,
+            'body' => '<p>Somos un grupo mexicano dedicado a la comercialización y distribución de gas natural.</p>',
+            'video_url' => null,
+        ]);
+
+        $purpose = $this->page(
+            $site,
+            'proposito-empresarial',
+            '/sobre-nosotros/proposito-empresarial',
+            'Propósito empresarial',
+            1,
+            $about,
+        );
+
+        $this->section($site, $purpose, 'page_hero', 1, [
+            'title' => 'Propósito empresarial',
+            'subtitle' => 'La razón por la que existimos.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $purpose, 'rich_text', 2, [
+            'title' => null,
+            'body' => '<p>Contenido pendiente de redactar.</p>',
+            'video_url' => null,
+        ]);
+
+        $this->section($site, $purpose, 'feature_grid', 3, [
+            'title' => null,
+            'items' => [
+                ['icon' => null, 'title' => 'Misión', 'text' => 'Pendiente de redactar.'],
+                ['icon' => null, 'title' => 'Visión', 'text' => 'Pendiente de redactar.'],
+                ['icon' => null, 'title' => 'Propósito', 'text' => 'Pendiente de redactar.'],
+            ],
+        ]);
+
+        $values = $this->page($site, 'valores', '/sobre-nosotros/valores', 'Valores', 2, $about);
+
+        $this->section($site, $values, 'page_hero', 1, [
+            'title' => 'Valores',
+            'subtitle' => 'Los principios que guían nuestras decisiones.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $values, 'feature_grid', 2, [
+            'title' => null,
+            'items' => [
+                ['icon' => null, 'title' => 'Integridad', 'text' => 'Pendiente de redactar.'],
+                ['icon' => null, 'title' => 'Seguridad', 'text' => 'Pendiente de redactar.'],
+                ['icon' => null, 'title' => 'Compromiso', 'text' => 'Pendiente de redactar.'],
+                ['icon' => null, 'title' => 'Sostenibilidad', 'text' => 'Pendiente de redactar.'],
+            ],
+        ]);
+
+        $certifications = $this->page(
+            $site,
+            'certificaciones',
+            '/sobre-nosotros/certificaciones',
+            'Certificaciones',
+            3,
+            $about,
+        );
+
+        $this->section($site, $certifications, 'page_hero', 1, [
+            'title' => 'Certificaciones',
+            'subtitle' => 'Los estándares que respaldan nuestra operación.',
+            'image' => null,
+        ]);
+
+        // `icon` holds the certifier logo; there is no link field by design.
+        $this->section($site, $certifications, 'feature_grid', 2, [
+            'title' => null,
+            'items' => [
+                ['icon' => null, 'title' => 'Certificación de ejemplo', 'text' => 'Pendiente de redactar.'],
+                ['icon' => null, 'title' => 'Certificación de ejemplo', 'text' => 'Pendiente de redactar.'],
+            ],
+        ]);
+
+        $history = $this->page(
+            $site,
+            'nuestra-historia',
+            '/sobre-nosotros/nuestra-historia',
+            'Nuestra historia',
+            4,
+            $about,
+        );
+
+        $this->section($site, $history, 'page_hero', 1, [
+            'title' => 'Nuestra historia',
+            'subtitle' => 'De dónde venimos.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $history, 'rich_text', 2, [
+            'title' => null,
+            'body' => '<p>Contenido pendiente de redactar.</p>',
+            'video_url' => null,
+        ]);
+    }
+
+    /**
      * The four seed articles listed in the blueprint, oldest first.
      * Values are placeholders the admin replaces through the admin API.
      */
@@ -155,6 +268,30 @@ class GnuBlueprintSeeder extends Seeder
                 ],
             );
         }
+    }
+
+    /**
+     * Upsert a page by (site, slug). `position` orders the nav column for a root
+     * page, and the child within its column for a nested one.
+     */
+    private function page(
+        Site $site,
+        string $slug,
+        string $path,
+        string $title,
+        int $position,
+        ?Page $parent = null,
+    ): Page {
+        return Page::updateOrCreate(
+            ['site_id' => $site->id, 'slug' => $slug],
+            [
+                'parent_id' => $parent?->id,
+                'path' => $path,
+                'title' => $title,
+                'position' => $position,
+                'is_published' => true,
+            ],
+        );
     }
 
     /**
