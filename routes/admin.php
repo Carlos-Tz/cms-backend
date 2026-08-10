@@ -31,7 +31,8 @@ Route::middleware('auth:api')->group(function (): void {
     Route::apiResource('sites', SiteController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('menus', MenuController::class);
-    Route::apiResource('pages', PageController::class);
+    // Pages are structure too: the admin only publishes and unpublishes them.
+    Route::apiResource('pages', PageController::class)->only(['index', 'show', 'update']);
     // Sections are structure: the admin edits content only, never creates or deletes them.
     Route::apiResource('sections', SectionController::class)->only(['index', 'show', 'update']);
     // No blog categories: the blueprint does not define any. Add them when asked for.
