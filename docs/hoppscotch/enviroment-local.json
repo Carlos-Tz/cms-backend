@@ -3,25 +3,19 @@
   "id": "gnu-cms-local",
   "name": "GNU CMS - Local",
   "variables": [
-    {
-      "key": "BASE_URL",
-      "value": "http://gnu-headless-cms.test",
-      "secret": false
-    },
-    {
-      "key": "ACCESS_TOKEN",
-      "value": "",
-      "secret": false
-    },
-    {
-      "key": "SITE",
-      "value": "gnu",
-      "secret": false
-    },
-    {
-      "key": "LEAD_ID",
-      "value": "",
-      "secret": false
-    }
+    { "key": "BASE_URL", "value": "http://gnu-headless-cms.test", "secret": false },
+    { "key": "ACCESS_TOKEN", "value": "", "secret": false },
+    { "key": "SITE", "value": "gnu", "secret": false },
+    { "key": "SITE_ID", "value": "1", "secret": false },
+    { "key": "PAGE_ID", "value": "1", "secret": false },
+    { "key": "PAGE_SLUG", "value": "inicio", "secret": false },
+    { "key": "SECTION_ID", "value": "1", "secret": false },
+    { "key": "BLOG_POST_ID", "value": "1", "secret": false },
+    { "key": "BLOG_SLUG", "value": "", "secret": false },
+    { "key": "STATION_ID", "value": "1", "secret": false },
+    { "key": "LEAD_ID", "value": "", "secret": false },
+    { "key": "USER_ID", "value": "1", "secret": false },
+    { "key": "MENU_ID", "value": "1", "secret": false },
+    { "key": "MEDIA_ID", "value": "1", "secret": false }
   ]
 }
