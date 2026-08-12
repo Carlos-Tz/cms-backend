@@ -25,13 +25,22 @@ class SavingsSimulatorController extends Controller
         $input = $request->validate([
             'fuel' => ['required', 'string'],
             'quantity' => ['required', 'numeric', 'gt:0'],
-        ], [], ['fuel' => 'combustible', 'quantity' => 'cantidad']);
+            'page' => ['nullable', 'string'],
+        ], [], ['fuel' => 'combustible', 'quantity' => 'cantidad', 'page' => 'página']);
 
-        // ponytail: prices come from the site's first savings_simulator section.
-        // GNU has two (home and /nuestros-servicios/gnc); if they ever need to
-        // differ, add a `page` query parameter here.
+        // A site can carry several savings_simulator sections (GNU has one on the
+        // home page and one on /nuestros-servicios/gnc) and each keeps its own
+        // reference prices. `page` picks which one; without it the caller gets
+        // the site's first, which is the home page.
         $section = $site->sections()
             ->where('type', 'savings_simulator')
+            ->when(
+                $request->string('page')->isNotEmpty(),
+                fn ($query) => $query->whereHas(
+                    'page',
+                    fn ($page) => $page->where('slug', $request->string('page'))
+                ),
+            )
             ->orderBy('page_id')
             ->firstOrFail();
 

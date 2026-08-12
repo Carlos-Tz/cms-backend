@@ -68,6 +68,11 @@ class UpdateSectionRequest extends FormRequest
             'intro' => ['nullable', 'string', 'max:1000'],
             'submit_label' => ['required', 'string', 'max:60'],
         ],
+        // `center` and `zoom` are locked: map layout, not marketing content.
+        // The pins are not fields here — they come from the `stations` table.
+        'stations_map' => [
+            'title' => ['nullable', 'string', 'max:255'],
+        ],
         'contact_info' => [
             'address' => ['required', 'string', 'max:500'],
             'phone' => ['required', 'string', 'max:40'],

@@ -3,36 +3,81 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StationRequest;
+use App\Models\Station;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Placeholder controller — real implementation comes in a later phase.
+ * Stations are data, not blueprint structure: full CRUD, like blog posts.
+ * Inactive stations are listed here but never in the public API.
  */
 class StationController extends Controller
 {
-    public function index(): JsonResponse
+    /**
+     * List stations, optionally filtered by site slug. Inactive included.
+     */
+    public function index(Request $request): JsonResponse
     {
-        return response()->json(['data' => [], 'meta' => ['resource' => 'stations']]);
+        $stations = Station::query()
+            ->when($request->string('site')->isNotEmpty(), fn ($query) => $query->whereHas(
+                'site',
+                fn ($site) => $site->where('slug', $request->string('site'))
+            ))
+            ->orderBy('name')
+            ->paginate(20);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $stations->items(),
+            'meta' => [
+                'page' => $stations->currentPage(),
+                'per_page' => $stations->perPage(),
+                'total' => $stations->total(),
+                'last_page' => $stations->lastPage(),
+            ],
+        ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StationRequest $request): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'stations']], 201);
+        $station = Station::create($request->validated());
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $station,
+            'meta' => ['message' => 'Estación creada correctamente'],
+        ], 201);
     }
 
-    public function show(string $id): JsonResponse
+    public function show(Station $station): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'stations', 'id' => $id]]);
+        return response()->json([
+            'status' => 'success',
+            'data' => $station,
+            'meta' => [],
+        ]);
     }
 
-    public function update(Request $request, string $id): JsonResponse
+    public function update(StationRequest $request, Station $station): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'stations', 'id' => $id]]);
+        $station->update($request->validated());
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $station->fresh(),
+            'meta' => ['message' => 'Estación actualizada correctamente'],
+        ]);
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(Station $station): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'stations', 'id' => $id]]);
+        $station->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => null,
+            'meta' => ['message' => 'Estación eliminada correctamente'],
+        ]);
     }
 }

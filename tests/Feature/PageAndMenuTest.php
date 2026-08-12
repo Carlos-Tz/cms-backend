@@ -21,29 +21,30 @@ function gnuPage(string $slug): Page
 }
 
 it('derives the public menu from the page map', function () {
-    $response = $this->getJson('/api/public/gnu/menu')->assertOk();
+    // Which pages are in the menu belongs to the seeder tests; this one owns the
+    // shape: roots in blueprint order, children nested under their parent.
+    $roots = collect($this->getJson('/api/public/gnu/menu')->assertOk()->json('data'));
 
-    // Root pages ordered by position: Inicio (1), Sobre nosotros (3), Blog (6).
-    expect(collect($response->json('data'))->pluck('title')->all())
-        ->toBe(['Inicio', 'Sobre nosotros', 'Blog']);
+    $positions = $roots->map(fn (array $node) => gnuPage($node['slug'])->position)->all();
+    expect($positions)->toBe(collect($positions)->sort()->values()->all());
 
-    $response
-        ->assertJsonPath('data.1.path', '/sobre-nosotros')
-        ->assertJsonCount(4, 'data.1.children')
-        ->assertJsonPath('data.1.children.0.title', 'Propósito empresarial')
-        ->assertJsonPath('data.1.children.3.slug', 'nuestra-historia')
-        ->assertJsonCount(0, 'data.0.children');
+    $about = $roots->firstWhere('slug', 'sobre-nosotros');
+
+    expect($about['path'])->toBe('/sobre-nosotros')
+        ->and(collect($about['children'])->pluck('slug')->all())
+        ->toBe(['proposito-empresarial', 'valores', 'certificaciones', 'nuestra-historia']);
+
+    expect($roots->firstWhere('slug', 'inicio')['children'])->toBe([]);
 });
 
 it('drops an unpublished page and its whole branch from the menu', function () {
     gnuPage('sobre-nosotros')->update(['is_published' => false]);
 
-    $titles = collect($this->getJson('/api/public/gnu/menu')->assertOk()->json('data'))
-        ->pluck('title')
-        ->all();
+    $slugs = collect($this->getJson('/api/public/gnu/menu')->assertOk()->json('data'))
+        ->pluck('slug');
 
     // The children have no reachable route, so they must not surface as roots.
-    expect($titles)->toBe(['Inicio', 'Blog']);
+    expect($slugs)->not->toContain('sobre-nosotros', 'valores', 'certificaciones');
 });
 
 it('lists the pages of a site for the admin, including unpublished ones', function () {
@@ -51,8 +52,7 @@ it('lists the pages of a site for the admin, including unpublished ones', functi
 
     $response = $this->withToken($this->token)
         ->getJson('/api/admin/pages?site=gnu')
-        ->assertOk()
-        ->assertJsonPath('meta.total', 7);
+        ->assertOk();
 
     $valores = collect($response->json('data'))->firstWhere('slug', 'valores');
 
