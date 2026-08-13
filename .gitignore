@@ -26,6 +26,17 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 prompt.md
-.claude/
-CLAUDE.md
-.github/
+
+# The project spec lives in .claude/skills and is versioned. Machine-local
+# settings are not, and neither are the generic skills, which are reinstallable.
+# `.claude/*` instead of `.claude/`: Git does not descend into an ignored
+# directory, so a negation below it would never apply.
+.claude/*
+!.claude/skills/
+.claude/skills/laravel-best-practices/
+.claude/skills/pest-testing/
+.claude/skills/tailwindcss-development/
+
+# The two instruction files at the root of .github are versioned; the mirror of
+# generic skills next to them is not.
+.github/skills/
