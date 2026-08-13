@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
- * Seeds the structure of the GNU home page and blog page, plus the site-wide sections.
+ * Seeds the structure of the 17 GNU pages, plus the site-wide sections.
  *
  * Structure (pages, section types and their order) comes from the blueprint in
  * `.claude/skills/sitios-web-gnu`; the values below are placeholders the admin
@@ -46,7 +46,16 @@ class GnuBlueprintSeeder extends Seeder
             'Calcula cuánto ahorras al cambiar tu combustible actual por gas natural.',
         ));
 
-        $this->section($site, $home, 'clients_showcase', 3, [
+        // Carries the home page video: `video_url` is where the blueprint's
+        // site-wide «soporte para videos» requirement lands, and `rich_text` is
+        // the only type that has it.
+        $this->section($site, $home, 'rich_text', 3, [
+            'title' => null,
+            'body' => '<p>Contenido pendiente de redactar.</p>',
+            'video_url' => null,
+        ]);
+
+        $this->section($site, $home, 'clients_showcase', 4, [
             'title' => 'Nuestros clientes',
             'logos' => [
                 [
@@ -57,7 +66,7 @@ class GnuBlueprintSeeder extends Seeder
             ],
         ]);
 
-        $this->section($site, $home, 'lead_capture_form', 4, [
+        $this->section($site, $home, 'lead_capture_form', 5, [
             'title' => 'Contáctanos',
             'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
             'submit_label' => 'Enviar',
@@ -102,6 +111,20 @@ class GnuBlueprintSeeder extends Seeder
         $this->section($site, null, 'whatsapp_button', 3, [
             'phone' => '+528100000000',
             'prefilled_message' => 'Hola, quiero información sobre gas natural.',
+        ]);
+
+        // Site-wide in this blueprint: the original tree lists testimonials
+        // outside the navigation columns, not as a section of a single page.
+        $this->section($site, null, 'testimonials', 4, [
+            'title' => 'Lo que dicen nuestros clientes',
+            'items' => [
+                [
+                    'quote' => 'Pendiente de redactar.',
+                    'author' => 'Cliente de ejemplo',
+                    'role' => null,
+                    'photo' => null,
+                ],
+            ],
         ]);
     }
 

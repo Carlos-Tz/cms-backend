@@ -63,6 +63,14 @@ class UpdateSectionRequest extends FormRequest
             'logos.*.name' => ['required', 'string', 'max:255'],
             'logos.*.url' => ['nullable', 'url', 'max:2048'],
         ],
+        'testimonials' => [
+            'title' => ['nullable', 'string', 'max:255'],
+            'items' => ['present', 'array'],
+            'items.*.quote' => ['required', 'string', 'max:2000'],
+            'items.*.author' => ['required', 'string', 'max:255'],
+            'items.*.role' => ['nullable', 'string', 'max:255'],
+            'items.*.photo' => ['nullable', 'string', 'max:2048'],
+        ],
         'lead_capture_form' => [
             'title' => ['required', 'string', 'max:255'],
             'intro' => ['nullable', 'string', 'max:1000'],

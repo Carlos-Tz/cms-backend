@@ -40,5 +40,7 @@ Route::middleware('auth:api')->group(function (): void {
     // Leads only come from the public forms: the panel reads and deletes them.
     Route::apiResource('leads', LeadController::class)->only(['index', 'show', 'destroy']);
     Route::apiResource('stations', StationController::class);
-    Route::apiResource('media', MediaController::class);
+    // Media is a flat image library on disk: upload, list and delete. A file has
+    // nothing to show in detail and nothing to update.
+    Route::apiResource('media', MediaController::class)->only(['index', 'store', 'destroy']);
 });

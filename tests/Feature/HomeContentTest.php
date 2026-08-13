@@ -18,20 +18,32 @@ beforeEach(function () {
     $this->token = JWTAuth::fromUser(User::factory()->create());
 });
 
-function sectionOfType(string $type): Section
+/**
+ * `$pageSlug` is only needed for types the site repeats — `rich_text` has 12
+ * instances, so looking it up by type alone would hit an arbitrary one.
+ */
+function sectionOfType(string $type, ?string $pageSlug = null): Section
 {
     return Site::where('slug', 'gnu')->firstOrFail()
-        ->sections()->where('type', $type)->firstOrFail();
+        ->sections()
+        ->where('type', $type)
+        ->when(
+            $pageSlug !== null,
+            fn ($query) => $query->whereHas('page', fn ($page) => $page->where('slug', $pageSlug)),
+        )
+        ->firstOrFail();
 }
 
 it('returns the home page with its sections in blueprint order', function () {
     $this->getJson('/api/public/gnu/pages/inicio')
         ->assertOk()
         ->assertJsonPath('data.title', 'Inicio')
+        ->assertJsonCount(5, 'data.sections')
         ->assertJsonPath('data.sections.0.type', 'banner_carousel')
         ->assertJsonPath('data.sections.1.type', 'savings_simulator')
-        ->assertJsonPath('data.sections.2.type', 'clients_showcase')
-        ->assertJsonPath('data.sections.3.type', 'lead_capture_form');
+        ->assertJsonPath('data.sections.2.type', 'rich_text')
+        ->assertJsonPath('data.sections.3.type', 'clients_showcase')
+        ->assertJsonPath('data.sections.4.type', 'lead_capture_form');
 });
 
 it('returns the site-wide sections keyed by type', function () {
@@ -39,7 +51,53 @@ it('returns the site-wide sections keyed by type', function () {
         ->assertOk()
         ->assertJsonPath('data.contact_info.email', 'contacto@gnu.mx')
         ->assertJsonPath('data.social_icons.networks.0.network', 'facebook')
-        ->assertJsonPath('data.whatsapp_button.phone', '+528100000000');
+        ->assertJsonPath('data.whatsapp_button.phone', '+528100000000')
+        ->assertJsonPath('data.testimonials.items.0.author', 'Cliente de ejemplo');
+});
+
+it('stores a video url on the home page rich text', function () {
+    $section = sectionOfType('rich_text', 'inicio');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'body' => '<p>Conoce nuestra operación.</p>',
+                'video_url' => 'https://www.youtube.com/watch?v=abc123',
+            ],
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.content.video_url', 'https://www.youtube.com/watch?v=abc123');
+});
+
+it('replaces the testimonials through the admin API', function () {
+    $section = sectionOfType('testimonials');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'title' => 'Testimonios',
+                'items' => [
+                    ['quote' => 'Bajamos el costo de combustible.', 'author' => 'Ana Ruiz', 'role' => 'Directora'],
+                    ['quote' => 'Excelente servicio.', 'author' => 'Luis Mora'],
+                ],
+            ],
+        ])
+        ->assertOk()
+        ->assertJsonCount(2, 'data.content.items')
+        ->assertJsonPath('data.content.items.0.role', 'Directora');
+
+    expect(sectionOfType('testimonials')->content['items'])->toHaveCount(2);
+});
+
+it('rejects a testimonial without an author', function () {
+    $section = sectionOfType('testimonials');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => ['items' => [['quote' => 'Sin autor']]],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['content.items.0.author']);
 });
 
 it('404s on an unknown site or page, in Spanish', function () {
@@ -169,4 +227,63 @@ it('uploads an image and returns its url', function () {
         ->assertCreated();
 
     Storage::disk('public')->assertExists($response->json('data.path'));
+});
+
+it('lists the uploaded images and deletes one', function () {
+    Storage::fake('public');
+
+    $path = $this->withToken($this->token)
+        ->postJson('/api/admin/media', ['file' => UploadedFile::fake()->image('banner.jpg')])
+        ->assertCreated()
+        ->json('data.path');
+
+    $name = basename($path);
+
+    $this->withToken($this->token)
+        ->getJson('/api/admin/media')
+        ->assertOk()
+        ->assertJsonPath('meta.total', 1)
+        ->assertJsonPath('data.0.name', $name);
+
+    $this->withToken($this->token)
+        ->deleteJson("/api/admin/media/{$name}")
+        ->assertOk()
+        ->assertJsonPath('meta.message', 'Archivo eliminado correctamente');
+
+    Storage::disk('public')->assertMissing($path);
+});
+
+it('404s when deleting an image that does not exist', function () {
+    Storage::fake('public');
+
+    $this->withToken($this->token)
+        ->deleteJson('/api/admin/media/no-existe.jpg')
+        ->assertNotFound()
+        ->assertJsonPath('meta.message', 'Recurso no encontrado');
+});
+
+it('cannot reach the media delete with a path outside the media folder', function () {
+    Storage::fake('public');
+
+    Storage::disk('public')->put('secreto.txt', 'no borrar');
+
+    // The route param matches a single segment, so a traversal is rejected by the
+    // router and never reaches the controller. Verified: the request 404s without
+    // running the action. `basename()` there is the second line of defence, for
+    // the day the route constraint changes.
+    $this->withToken($this->token)
+        ->deleteJson('/api/admin/media/..%2Fsecreto.txt')
+        ->assertNotFound();
+
+    Storage::disk('public')->assertExists('secreto.txt');
+});
+
+it('does not expose routes to show or update a media file', function () {
+    $this->withToken($this->token)->getJson('/api/admin/media/banner.jpg')->assertMethodNotAllowed();
+    $this->withToken($this->token)->putJson('/api/admin/media/banner.jpg')->assertMethodNotAllowed();
+});
+
+it('blocks the media api without a token', function () {
+    $this->getJson('/api/admin/media')->assertUnauthorized();
+    $this->deleteJson('/api/admin/media/banner.jpg')->assertUnauthorized();
 });

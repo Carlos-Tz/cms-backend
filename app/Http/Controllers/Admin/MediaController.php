@@ -8,21 +8,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Only `store` is implemented — the rest stays a placeholder until there is a
- * media library to list.
+ * Image library for the admin panel, backed by the `media` folder of the public
+ * disk. There is no `media` table: the only metadata needed today is the name
+ * and the URL, and both come from the disk. A table is worth it once alt text
+ * or upload traceability is asked for.
+ *
+ * No `show` or `update`: a file has nothing to detail and nothing to patch.
  */
 class MediaController extends Controller
 {
+    /**
+     * List the uploaded images, newest first.
+     */
     public function index(): JsonResponse
     {
-        return response()->json(['data' => [], 'meta' => ['resource' => 'media']]);
+        $disk = Storage::disk('public');
+
+        $files = collect($disk->files('media'))
+            ->sortByDesc(fn (string $path) => $disk->lastModified($path))
+            ->map(fn (string $path) => [
+                'path' => $path,
+                'name' => basename($path),
+                'url' => $disk->url($path),
+            ])
+            ->values();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $files,
+            'meta' => ['total' => $files->count()],
+        ]);
     }
 
     /**
      * Upload an image and return its public URL.
      *
-     * The URL is what gets stored inside a section's JSON content — there is no
-     * media table yet, so uploads are not listable or deletable through the API.
+     * The path is what gets stored inside a section's JSON content.
      */
     public function store(Request $request): JsonResponse
     {
@@ -42,18 +63,25 @@ class MediaController extends Controller
         ], 201);
     }
 
-    public function show(string $id): JsonResponse
+    /**
+     * Delete an uploaded image by file name.
+     *
+     * The router is what actually stops a traversal: `{medium}` matches a single
+     * path segment, so `../.env` 404s before this action runs. `basename()` is the
+     * second line of defence, for the day that route constraint changes.
+     */
+    public function destroy(string $medium): JsonResponse
     {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'media', 'id' => $id]]);
-    }
+        $path = 'media/'.basename($medium);
 
-    public function update(Request $request, string $id): JsonResponse
-    {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'media', 'id' => $id]]);
-    }
+        abort_unless(Storage::disk('public')->exists($path), 404);
 
-    public function destroy(string $id): JsonResponse
-    {
-        return response()->json(['data' => null, 'meta' => ['resource' => 'media', 'id' => $id]]);
+        Storage::disk('public')->delete($path);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => null,
+            'meta' => ['message' => 'Archivo eliminado correctamente'],
+        ]);
     }
 }
