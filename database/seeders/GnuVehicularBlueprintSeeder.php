@@ -8,13 +8,14 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
- * Seeds the GNU Vehicular site: its home page with the six sections of the
- * blueprint, the site-wide sections, the `/blog` page with its four articles,
- * and two sample stations for the map.
+ * Seeds the GNU Vehicular site: its home and contact pages, the site-wide
+ * sections, the `/blog` page with its four articles, and two sample stations
+ * for the map.
  *
- * Still partial. The «Nuestros servicios», «Ubicaciones» and «Contacto» columns
- * of `references/gnu-vehicular.md` are not migrated yet — they carry the four
- * unaudited section candidates and the only three-level tree of the project.
+ * Still partial. The «Nuestros servicios» and «Ubicaciones» columns of
+ * `references/gnu-vehicular.md` are not migrated yet — they carry the three
+ * remaining unaudited section candidates and the only three-level tree of the
+ * project.
  *
  * Idempotent: safe to re-run.
  */
@@ -33,6 +34,7 @@ class GnuVehicularBlueprintSeeder extends Seeder
         // Nav columns: Inicio (1), Nuestros servicios (2), Ubicaciones (3),
         // Contacto (4), Blog (5) — one column fewer than the institutional site.
         $this->home($site);
+        $this->contact($site);
 
         $blog = $this->page($site, 'blog', '/blog', 'Blog', 5);
 
@@ -134,21 +136,45 @@ class GnuVehicularBlueprintSeeder extends Seeder
             ],
         ]);
 
-        // `center` and `zoom` are locked layout values; the pins come from the
-        // `stations` table, not from this section.
-        $this->section($site, $home, 'stations_map', 5, [
-            'title' => 'Mapa de estaciones',
-            'center' => '19.7028,-101.1920',
-            'zoom' => '11',
+        $this->section($site, $home, 'stations_map', 5, $this->map('Mapa de estaciones'));
+
+        $this->section($site, $home, 'lead_capture_form', 6, $this->leadForm(
+            'Contacto',
+            'Déjanos tus datos y un asesor se comunicará contigo.',
+        ));
+    }
+
+    /**
+     * The «Contacto» column. Its three nodes — captación de leads, facturación
+     * and mapa de estaciones — are sections of this page, not subpages: under
+     * *Inicio* and *Contacto* the client listed page content, not children.
+     */
+    private function contact(Site $site): void
+    {
+        $contact = $this->page($site, 'contacto', '/contacto', 'Contacto', 4);
+
+        $this->section($site, $contact, 'page_hero', 1, [
+            'title' => 'Contacto',
+            'subtitle' => 'Estamos para ayudarte.',
+            'image' => null,
         ]);
 
-        $this->section($site, $home, 'lead_capture_form', 6, [
-            'title' => 'Contacto',
-            'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
-            'submit_label' => 'Enviar',
-            // Locked: each entry maps to a column of the `leads` table.
-            'fields' => ['name', 'email', 'phone', 'message'],
+        $this->section($site, $contact, 'lead_capture_form', 2, $this->leadForm(
+            'Captación de leads',
+            'Cuéntanos qué necesitas y un asesor se comunicará contigo.',
+        ));
+
+        // «Facturación» is a `rich_text`, not a type of its own: instructions
+        // plus a link to the billing portal is free content. Same criterion as
+        // «Programa de recompensas» — an unaudited candidate stays out of the
+        // catalogue while a generic type covers it.
+        $this->section($site, $contact, 'rich_text', 3, [
+            'title' => 'Facturación',
+            'body' => '<p>Contenido pendiente de redactar: instrucciones de facturación y liga al portal.</p>',
+            'video_url' => null,
         ]);
+
+        $this->section($site, $contact, 'stations_map', 4, $this->map('Mapa de estaciones'));
     }
 
     /**
@@ -177,6 +203,37 @@ class GnuVehicularBlueprintSeeder extends Seeder
             'phone' => '+524430000000',
             'prefilled_message' => 'Hola, quiero información sobre gas natural vehicular.',
         ]);
+    }
+
+    /**
+     * A `lead_capture_form` section. `fields` is locked: each entry maps to a
+     * column of the `leads` table, so changing it is a schema change.
+     *
+     * @return array<string, mixed>
+     */
+    private function leadForm(string $title, string $intro): array
+    {
+        return [
+            'title' => $title,
+            'intro' => $intro,
+            'submit_label' => 'Enviar',
+            'fields' => ['name', 'email', 'phone', 'message'],
+        ];
+    }
+
+    /**
+     * A `stations_map` section centred on Morelia. `center` and `zoom` are
+     * locked layout values; the pins come from the `stations` table.
+     *
+     * @return array<string, mixed>
+     */
+    private function map(string $title): array
+    {
+        return [
+            'title' => $title,
+            'center' => '19.7028,-101.1920',
+            'zoom' => '11',
+        ];
     }
 
     /**

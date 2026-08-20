@@ -16,14 +16,19 @@ beforeEach(function () {
 });
 
 /**
- * No page repeats a section type in this site, so the type alone identifies one.
+ * `$pageSlug` is needed for the types the site repeats across pages —
+ * `lead_capture_form` and `stations_map` live on both `/` and `/contacto`.
  * Named apart from `sectionOfType()` in HomeContentTest: Pest helpers are global.
  */
-function vehicularSection(string $type): Section
+function vehicularSection(string $type, ?string $pageSlug = null): Section
 {
     return Site::where('slug', 'gnu-vehicular')->firstOrFail()
         ->sections()
         ->where('type', $type)
+        ->when(
+            $pageSlug !== null,
+            fn ($query) => $query->whereHas('page', fn ($page) => $page->where('slug', $pageSlug)),
+        )
         ->firstOrFail();
 }
 
@@ -51,11 +56,13 @@ it('keeps testimonials on the home page instead of the site-wide sections', func
         ->assertJsonMissingPath('data.testimonials');
 });
 
-it('lists both nav columns in the menu', function () {
+it('lists the seeded nav columns in blueprint order', function () {
     $this->getJson('/api/public/gnu-vehicular/menu')
         ->assertOk()
+        ->assertJsonCount(3, 'data')
         ->assertJsonPath('data.0.title', 'Inicio')
-        ->assertJsonPath('data.1.title', 'Blog');
+        ->assertJsonPath('data.1.title', 'Contacto')
+        ->assertJsonPath('data.2.title', 'Blog');
 });
 
 it('simulates savings with this site prices, not the institutional ones', function () {
@@ -96,7 +103,7 @@ it('edits the rewards program through the admin API', function () {
 });
 
 it('keeps the lead form fields locked', function () {
-    $section = vehicularSection('lead_capture_form');
+    $section = vehicularSection('lead_capture_form', 'inicio');
 
     $this->withToken($this->token)
         ->putJson("/api/admin/sections/{$section->id}", [

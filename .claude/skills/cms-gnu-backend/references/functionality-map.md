@@ -30,7 +30,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 14 | Biblioteca de media (listar / borrar) | ✅ **sin tabla** | `Admin\MediaController@index` / `@destroy`, sobre el disco `public` | `HomeContentTest` — «lists the uploaded images and deletes one», «404s when deleting an image that does not exist», «cannot reach the media delete with a path outside the media folder», «does not expose routes to show or update a media file», «blocks the media api without a token» |
 | 15 | Notificación de lead nuevo al destinatario | ⬜ | — | ninguno |
 | 16 | Blueprint `gnu` | ✅ **17 de 17 sembradas** | `GnuBlueprintSeeder` | los de arriba corren sobre él, + `ServicesAndSustainabilityTest` y `GncAndContactTest` |
-| 17 | Blueprint `gnu-vehicular` | 🟡 portada + blog (2 de 5 columnas) | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7 tests |
+| 17 | Blueprint `gnu-vehicular` | 🟡 portada + contacto + blog (3 de 5 columnas) | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7, `VehicularContactTest` — 7 |
 | 18 | Blueprint `traninn-logistic` | ⬜ | — | ninguno |
 | 19 | Blueprint `tectuus` | ⬜ | — | ninguno |
 
@@ -60,16 +60,21 @@ necesidad.
 
 ### 2. Blueprints de los otros tres sitios
 
-`gnu` está migrado al formato nuevo; `gnu-vehicular` lo está a medias — portada y blog migrados y
-sembrados, sus otras tres columnas siguen en árbol crudo. `traninn-logistic` y `tectuus` siguen
+`gnu` está migrado al formato nuevo; `gnu-vehicular` lo está a medias — portada, contacto y blog
+migrados y sembrados, sus otras dos columnas siguen en árbol crudo. `traninn-logistic` y `tectuus` siguen
 enteros en árbol crudo.
 
 *Abierto* al migrarlos:
 - `gnu-vehicular` es el único árbol con **3 niveles** de anidamiento («Instala tu equipo de GNV» y sus
   hijos). `pages.parent_id` lo soporta; el mapa de `gnu` solo demuestra 2 niveles.
-- Los 5 candidatos sin verificar (`product_catalog`, `equipment_quote`, `financing`,
-  `service_scheduling`, `billing_info`) hay que auditarlos: el spec advierte que huelen a página
-  disfrazada de bloque, como pasó con `certifications` y `esr_ecovadis`.
+- Los 4 candidatos sin verificar que quedan (`product_catalog`, `equipment_quote`, `financing`,
+  `service_scheduling`) hay que auditarlos: el spec advierte que huelen a página disfrazada de
+  bloque, como pasó con `certifications` y `esr_ecovadis`. `billing_info` ya se descartó: es el
+  `rich_text` de `/contacto` en `gnu-vehicular`.
+- **Un lead no registra de qué formulario vino.** `gnu-vehicular` ya lleva dos `lead_capture_form`
+  (`/` y `/contacto`) escribiendo en la misma tabla, y la bandeja admin no los distingue. Se
+  resuelve con una columna `leads.source` el día que marketing pregunte qué formulario convierte;
+  hasta entonces no se agrega.
 
 ## Candidatos a borrar
 

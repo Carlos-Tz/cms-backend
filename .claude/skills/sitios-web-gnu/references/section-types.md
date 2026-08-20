@@ -235,7 +235,6 @@ sitio correspondiente con el mismo criterio que se aplicó a GNU.
 | `equipment_quote` | GNU Vehicular | «cotiza tu equipo» |
 | `financing` | GNU Vehicular | financiamiento |
 | `service_scheduling` | GNU Vehicular | «agenda tu verificación» |
-| `billing_info` | GNU Vehicular | facturación |
 
 ## Descartados, con motivo
 
@@ -247,4 +246,5 @@ Para que no vuelvan a proponerse:
 | `blog` | `GET /api/public/{site}/blog` ya existe en `routes/public.php`. El blog es dominio de datos (`blog_posts`), no un tipo de sección. |
 | `child_index` | Tendría cero campos editables: la lista de páginas hijas ya sale de `GET /api/public/{site}/menu` y su orden es derivable del mapa de páginas. Agregarlo solo si una página padre necesita esa lista en una posición que no sea la última. |
 | `cta_band` | Ninguna página de GNU pide un llamado a la acción que no sea `lead_capture_form`. |
+| `billing_info` | «Facturación» es hijo de *Contacto* en GNU Vehicular, así que es sección; y son instrucciones más una liga al portal, o sea contenido libre. Se resuelve con el `rich_text` de `/contacto`. |
 | `certifications`, `esr_ecovadis` | Son páginas de GNU (`/sobre-nosotros/certificaciones`, `/desarrollo-sostenible/distintivo-esr`, `/desarrollo-sostenible/ecovadis`), no bloques. Se resuelven con `page_hero` + `feature_grid` / `rich_text`. |
