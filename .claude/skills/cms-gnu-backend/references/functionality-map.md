@@ -30,7 +30,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 14 | Biblioteca de media (listar / borrar) | ✅ **sin tabla** | `Admin\MediaController@index` / `@destroy`, sobre el disco `public` | `HomeContentTest` — «lists the uploaded images and deletes one», «404s when deleting an image that does not exist», «cannot reach the media delete with a path outside the media folder», «does not expose routes to show or update a media file», «blocks the media api without a token» |
 | 15 | Notificación de lead nuevo al destinatario | ⬜ | — | ninguno |
 | 16 | Blueprint `gnu` | ✅ **17 de 17 sembradas** | `GnuBlueprintSeeder` | los de arriba corren sobre él, + `ServicesAndSustainabilityTest` y `GncAndContactTest` |
-| 17 | Blueprint `gnu-vehicular` | 🟡 solo el slice de blog | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests |
+| 17 | Blueprint `gnu-vehicular` | 🟡 portada + blog (2 de 5 columnas) | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7 tests |
 | 18 | Blueprint `traninn-logistic` | ⬜ | — | ninguno |
 | 19 | Blueprint `tectuus` | ⬜ | — | ninguno |
 
@@ -60,12 +60,11 @@ necesidad.
 
 ### 2. Blueprints de los otros tres sitios
 
-`gnu` está migrado al formato nuevo; `gnu-vehicular`, `traninn-logistic` y `tectuus` siguen siendo el
-árbol crudo del cliente. Bloqueado a propósito hasta que GNU valide el modelo.
+`gnu` está migrado al formato nuevo; `gnu-vehicular` lo está a medias — portada y blog migrados y
+sembrados, sus otras tres columnas siguen en árbol crudo. `traninn-logistic` y `tectuus` siguen
+enteros en árbol crudo.
 
 *Abierto* al migrarlos:
-- `gnu-vehicular` tiene un nodo, **«Programa de recompensas»**, sin tipo asignado y ausente de la
-  tabla de candidatos sin verificar. Hay que clasificarlo.
 - `gnu-vehicular` es el único árbol con **3 niveles** de anidamiento («Instala tu equipo de GNV» y sus
   hijos). `pages.parent_id` lo soporta; el mapa de `gnu` solo demuestra 2 niveles.
 - Los 5 candidatos sin verificar (`product_catalog`, `equipment_quote`, `financing`,
@@ -96,7 +95,7 @@ Verificado en esta pasada. Cada uno es un commit chico e independiente.
 | `CLAUDE.md`, «Current phase» | «scaffolding only», «todos los demás controladores son placeholders» | Falso: secciones, blog, leads, simulador, estaciones y media son reales, con 92 tests |
 | `CLAUDE.md`, forma de respuesta | `{data, meta}` | Es `{status, data, meta}`. Los stubs sí devuelven dos claves, y así se distinguen |
 | `CLAUDE.md`, `config/blueprints/{site}.php` | «la forma legible por máquina eventual» | **Descartado.** Los seeders ya son el blueprint y funcionan. Una capa de config intermedia con un solo consumidor no se paga. Se reconsidera si aparece un segundo consumidor |
-| `sitios-web-gnu/references/gnu-vehicular.md` | árbol crudo, sin migrar | Pero `GnuVehicularBlueprintSeeder` ya existe y siembra su blog. El código va adelante del spec en ese sitio |
+| `sitios-web-gnu/references/gnu-vehicular.md` | árbol crudo, sin migrar | Migrado a medias: portada y blog en formato blueprint, las otras tres columnas siguen como árbol crudo en el apéndice |
 | `CLAUDE.md`, «Current phase» | «no hay migraciones ni modelos de dominio» | Falso: `sites`, `pages`, `sections`, `blog_posts`, `leads`, `stations` existen con sus modelos. La única tabla que no existe es `media`, y es a propósito |
 
 ## Fuera de alcance
