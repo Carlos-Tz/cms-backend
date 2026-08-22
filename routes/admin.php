@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\LeadController;
@@ -40,6 +41,8 @@ Route::middleware('auth:api')->group(function (): void {
     // Leads only come from the public forms: the panel reads and deletes them.
     Route::apiResource('leads', LeadController::class)->only(['index', 'show', 'destroy']);
     Route::apiResource('stations', StationController::class);
+    // Appointments are booked on the public site: the panel reads and cancels.
+    Route::apiResource('appointments', AppointmentController::class)->only(['index', 'show', 'destroy']);
     // Media is a flat image library on disk: upload, list and delete. A file has
     // nothing to show in detail and nothing to update.
     Route::apiResource('media', MediaController::class)->only(['index', 'store', 'destroy']);

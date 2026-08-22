@@ -13,7 +13,7 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 
 | tipo | reglas | sembrado | páginas en `gnu` | sitios (spec) | nota |
 |---|---|---|---|---|---|
-| `page_hero` | ✅ | ✅ `gnu` 16 páginas; `gnu-vehicular` `/blog` y `/contacto` | 16 de 17 | los 4 | la portada `/` no lo lleva |
+| `page_hero` | ✅ | ✅ `gnu` 16 páginas; `gnu-vehicular` 6 páginas | 16 de 17 | los 4 | la portada `/` no lo lleva |
 | `banner_carousel` | ✅ | ✅ `gnu` y `gnu-vehicular`, ambos en `/` | 1 | los 4 | |
 | `savings_simulator` | ✅ | ✅ `gnu` `/` y `/gnc`, `gnu-vehicular` `/` (3 combustibles) | 2 | `gnu`, `gnu-vehicular`, `traninn-logistic` | el cálculo lo sirve `GET savings-simulator`; **cada instancia guarda sus propios precios** y se elige con `?page={slug}` |
 | `clients_showcase` | ✅ | ✅ `gnu` `/` | 2 | `gnu`, `traninn-logistic`, `tectuus` | |
@@ -21,16 +21,17 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 | `contact_info` | ✅ | ✅ `gnu` y `gnu-vehicular`, global | global | los 4 | `page_id = null` |
 | `social_icons` | ✅ | ✅ `gnu` y `gnu-vehicular`, global | global | los 4 | `network` es `fijo`; enum en las reglas: facebook, instagram, twitter, linkedin, youtube, tiktok |
 | `whatsapp_button` | ✅ | ✅ `gnu` y `gnu-vehicular`, global | global | los 4 | |
-| `rich_text` | ✅ | ✅ `gnu`, 12 páginas; `gnu-vehicular` `/contacto` | **12 de 17** | `gnu` (+ los otros al migrar) | el de `/` es el bloque de video de la portada; el de `gnu-vehicular` `/contacto` es «Facturación». Al sembrar una página con dos instancias hará falta la columna `key` en `sections` |
+| `rich_text` | ✅ | ✅ `gnu`, 12 páginas; `gnu-vehicular` 4 páginas | **12 de 17** | `gnu` (+ los otros al migrar) | el de `/` es el bloque de video de la portada; el de `gnu-vehicular` `/contacto` es «Facturación». Al sembrar una página con dos instancias hará falta la columna `key` en `sections` |
 | `feature_grid` | ✅ | ✅ `gnu`, 7 páginas; `gnu-vehicular` `/` | **7 de 17** | `gnu`, `gnu-vehicular` (+ los otros al migrar) | el de la portada de `gnu-vehicular` es «Programa de recompensas» |
+| `service_scheduling` | ✅ | ✅ `gnu-vehicular` `/ubicaciones/agenda-tu-verificacion` | 0 | solo `gnu-vehicular` | único tipo exclusivo de un sitio. Los horarios no son campos: los sirve `GET appointments/availability` |
 | `testimonials` | ✅ | ✅ `gnu` global, `gnu-vehicular` en `/` | global | `gnu` (global), `gnu-vehicular` (sección de *Inicio*) | la divergencia de ámbito entre los dos sitios es deliberada |
-| `stations_map` | ✅ | ✅ `gnu` `/gnc` y `/contacto`, `gnu-vehicular` `/` y `/contacto` | 2 | `gnu`, `gnu-vehicular` | solo `title` es editable; `center` y `zoom` son `fijo`. Los pines salen de la tabla `stations`, no de la sección |
+| `stations_map` | ✅ | ✅ `gnu` `/gnc` y `/contacto`, `gnu-vehicular` `/`, `/ubicaciones` y `/contacto` | 2 | `gnu`, `gnu-vehicular` | solo `title` es editable; `center` y `zoom` son `fijo`. Los pines salen de la tabla `stations`, no de la sección |
 
 ## Qué se deduce de esto
 
-- **12 de 12 tipos editables.** El catálogo entero tiene reglas en `SCHEMAS`; ya no hay tipos
+- **13 de 13 tipos editables.** El catálogo entero tiene reglas en `SCHEMAS`; ya no hay tipos
   cerrados por defecto. Un tipo nuevo sí nace cerrado hasta que se le escriban las suyas.
-- **`gnu` está completo: 17 de 17 páginas.** De `gnu-vehicular` faltan 2 de sus 5 columnas;
+- **`gnu` está completo: 17 de 17 páginas.** De `gnu-vehicular` falta 1 de sus 5 columnas;
   `traninn-logistic` y `tectuus` no tienen nada.
 - Los 4 tipos globales de `gnu` (`contact_info`, `social_icons`, `whatsapp_button` y `testimonials`)
   están sembrados. En `gnu-vehicular` los globales son 3: `testimonials` es sección de su portada.
@@ -38,9 +39,9 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 ## Qué está sembrado hoy
 
 `GnuBlueprintSeeder` siembra **las 17 páginas** de `gnu` con sus 47 secciones, más 4 secciones
-globales, 4 artículos y 2 estaciones de ejemplo. `GnuVehicularBlueprintSeeder` siembra **la portada,
-contacto y el blog** de `gnu-vehicular`: `/` con sus 6 secciones, `/contacto` con 4, `/blog` con su
-hero, 3 secciones globales, 4 artículos y 2 estaciones (Morelia y Uruapan). `traninn-logistic` y `tectuus` no tienen seeder.
+globales, 4 artículos y 2 estaciones de ejemplo. `GnuVehicularBlueprintSeeder` siembra **8 páginas** de
+`gnu-vehicular`: `/` con sus 6 secciones, `/ubicaciones` y sus 4 hijas, `/contacto` con 4, `/blog`
+con su hero; más 3 secciones globales, 4 artículos y 2 estaciones (Morelia y Uruapan). `traninn-logistic` y `tectuus` no tienen seeder.
 
 Las estaciones que siembra son placeholders, igual que todos los valores: las reales las carga el
 admin por `POST /api/admin/stations`.

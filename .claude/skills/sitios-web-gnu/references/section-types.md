@@ -181,6 +181,27 @@ GNU y GNU Vehicular.
 Las estaciones **no** son campos de esta sección: vienen de la tabla `stations`, que el admin
 gestiona por separado (`StationController`). La sección solo dice *dónde se dibuja el mapa*.
 
+### `service_scheduling`
+
+Agenda de verificación vehicular. Solo GNU Vehicular, en
+`/ubicaciones/agenda-tu-verificacion`. La sección **no lleva los horarios**: le dice al front dónde
+va el widget y con qué textos, nada más.
+
+| campo | tipo | editable | notas |
+|---|---|---|---|
+| `title` | string | sí | |
+| `intro` | text | sí | nullable |
+| `success_message` | string | sí | confirmación que ve el visitante al agendar |
+
+**Los horarios no son campos de la sección.** Viven en `Appointment::SLOTS` (tres bloques de dos
+horas, de lunes a sábado, una cita cada uno) y el front los lee de
+`GET /api/public/{site}/appointments/availability?station={id}&date={fecha}`. Ponerlos también aquí
+crearía dos fuentes de verdad para lo mismo: el admin podría anunciar un horario que el endpoint
+rechaza. Cambiar los horarios es cambio de código, como cambiar `fields[]` de `lead_capture_form`.
+
+Las citas son filas de `appointments`, no contenido de la sección — igual que las estaciones con
+`stations_map`.
+
 ### `social_icons`
 
 Presente en los 4 sitios. En GNU es una sección global (todo el sitio), no de una página.
@@ -224,7 +245,7 @@ Sin `position`: dónde flota el botón es layout.
 
 ## Tipos exclusivos de un sitio — sin verificar
 
-Declarados en el macro archivo original pero **no auditados todavía**. Los cuatro tienen el mismo
+Declarados en el macro archivo original pero **no auditados todavía**. Los tres tienen el mismo
 olor a «página disfrazada de bloque» que tenían `certifications` y `esr_ecovadis`, que resultaron
 ser páginas de GNU y se eliminaron de este catálogo. No agregarlos como tipos hasta revisar el
 sitio correspondiente con el mismo criterio que se aplicó a GNU.
@@ -234,7 +255,6 @@ sitio correspondiente con el mismo criterio que se aplicó a GNU.
 | `product_catalog` | Tectuus | EDRM, compresoras, valvulería |
 | `equipment_quote` | GNU Vehicular | «cotiza tu equipo» |
 | `financing` | GNU Vehicular | financiamiento |
-| `service_scheduling` | GNU Vehicular | «agenda tu verificación» |
 
 ## Descartados, con motivo
 

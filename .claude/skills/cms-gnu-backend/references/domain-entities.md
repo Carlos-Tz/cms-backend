@@ -81,6 +81,40 @@ y se descartaría en silencio. Cambiar el formulario es un cambio de esquema.
 `created_at` es la fecha de captación; no hay columna extra para eso. `site_id` **no** es fillable a
 propósito: sale del route binding.
 
+### `stations`
+
+`id`, `site_id` FK cascade, `name`, `address`, `latitude` / `longitude` (`decimal(10,7)`), `phone`
+(nullable), `schedule` (nullable), `is_active`, timestamps. Index `[site_id, is_active]`.
+
+Las estaciones que dibuja el tipo `stations_map`, en `gnu` y `gnu-vehicular`. El spec es explícito:
+**no son campos de la sección**, la sección solo dice dónde se dibuja el mapa. Decimal y no float
+porque las coordenadas se comparan y se muestran, nunca se acumulan; 7 decimales son ~1 cm.
+
+`is_active` deja sacar una estación del mapa sin perder sus datos: el `GET` público filtra por el
+scope `active()`, el admin no. `site_id` es `prohibited` en update — una estación no cambia de sitio.
+
+### `appointments`
+
+`id`, `site_id` FK cascade, `station_id` FK cascade, `date`, `slot`, `name`, `email`, `phone`,
+`vehicle_plate`, `vehicle_description` (nullable), timestamps.
+**Unique `[station_id, date, slot]`**, index `[site_id, date]`.
+
+Las verificaciones que se agendan desde la sección `service_scheduling` de `gnu-vehicular`. Dominio
+de datos, como los leads: nacen en el sitio público, el admin las lee y las cancela borrándolas.
+
+Cuatro decisiones que no son obvias:
+
+- **Una cita por slot**, y el candado es el índice único, no la validación. El `Rule::unique` del
+  form request solo existe para que el 422 sea legible; la carrera entre validar e insertar la
+  atrapa un `catch (UniqueConstraintViolationException)` en el controlador.
+- **Los slots viven en `Appointment::SLOTS`**, no en una tabla ni en la sección: tres bloques de dos
+  horas de lunes a sábado. Cambiarlos es cambio de código, a propósito.
+- **`date` NO tiene cast a fecha.** Con el cast, Eloquent lo guardaría como `Y-m-d H:i:s` y ninguna
+  búsqueda de disponibilidad ni el índice único casarían con el `Y-m-d` que toma y devuelve la API.
+  Es un valor date-only en el contrato; se guarda y se compara como string.
+- **`site_id` es derivable de `station_id`** pero se guarda igual, por la convención de que toda
+  tabla de dominio lo lleve. Sale del route binding, nunca del payload.
+
 ### `users`
 
 Tabla estándar de Laravel. Único login del sistema, guard JWT `api`. `User` implementa `JWTSubject`.
@@ -90,15 +124,6 @@ Un solo rol global con acceso total. **No hay tabla de roles ni permisos** y no 
 diagrama DBML de las tablas de autenticación está en `docs/database/db-diagram-structure.md`.
 
 ## Declaradas por el spec, sin tabla todavía
-
-### `stations`
-
-Las estaciones que dibuja el tipo de sección `stations_map`, en `gnu` y `gnu-vehicular`. El spec es
-explícito: **no son campos de la sección**, la sección solo dice dónde se dibuja el mapa. El admin las
-gestiona por separado.
-
-Hoy existen el `apiResource` admin y el `GET` público, ambos stubs, sin tabla ni modelo detrás.
-Preguntas abiertas antes de crearla, en `functionality-map.md`.
 
 ### `media`
 
@@ -120,6 +145,8 @@ páginas»). Una tabla de menús y su CRUD admin contradicen eso. El `apiResourc
 - `BlogPostFactory` — sin `site_id` por default (se usa `->for($site)`); estados `draft()` y
   `scheduled()`
 - `LeadFactory` — igual, sin `site_id`
+- `StationFactory` — sin `site_id`; estado `inactive()`
+- `AppointmentFactory` — sin `site_id` ni `station_id`: se pasan con `->for($site)->for($station)`
 - `UserFactory` — estándar
 
 **No hay `SiteFactory`, `PageFactory` ni `SectionFactory`, y es deliberado**: sitios, páginas y

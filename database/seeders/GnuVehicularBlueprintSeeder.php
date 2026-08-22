@@ -12,8 +12,8 @@ use Illuminate\Support\Str;
  * sections, the `/blog` page with its four articles, and two sample stations
  * for the map.
  *
- * Still partial. The «Nuestros servicios» and «Ubicaciones» columns of
- * `references/gnu-vehicular.md` are not migrated yet — they carry the three
+ * Still partial. The «Nuestros servicios» column of
+ * `references/gnu-vehicular.md` is not migrated yet — it carries the two
  * remaining unaudited section candidates and the only three-level tree of the
  * project.
  *
@@ -34,6 +34,7 @@ class GnuVehicularBlueprintSeeder extends Seeder
         // Nav columns: Inicio (1), Nuestros servicios (2), Ubicaciones (3),
         // Contacto (4), Blog (5) — one column fewer than the institutional site.
         $this->home($site);
+        $this->locations($site);
         $this->contact($site);
 
         $blog = $this->page($site, 'blog', '/blog', 'Blog', 5);
@@ -142,6 +143,95 @@ class GnuVehicularBlueprintSeeder extends Seeder
             'Contacto',
             'Déjanos tus datos y un asesor se comunicará contigo.',
         ));
+    }
+
+    /**
+     * The «Ubicaciones» column and its four child pages. Unlike *Inicio* and
+     * *Contacto*, the children of this column are pages, not sections — the
+     * classification rule of `gnu.md`. First nesting level of this site.
+     *
+     * Morelia, Uruapan and Talleres are open `rich_text`: the client has not
+     * defined a shape for them, and free content does not need one.
+     */
+    private function locations(Site $site): void
+    {
+        $locations = $this->page($site, 'ubicaciones', '/ubicaciones', 'Ubicaciones', 3);
+
+        $this->section($site, $locations, 'page_hero', 1, [
+            'title' => 'Ubicaciones',
+            'subtitle' => 'Nuestras estaciones y talleres en Michoacán.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $locations, 'stations_map', 2, $this->map('Dónde encontrarnos'));
+
+        $pages = [
+            ['estaciones-morelia', 'Estaciones Morelia', 1],
+            ['estacion-uruapan', 'Estación Uruapan', 2],
+        ];
+
+        foreach ($pages as [$slug, $title, $position]) {
+            $page = $this->page($site, $slug, "/ubicaciones/{$slug}", $title, $position, $locations);
+
+            $this->section($site, $page, 'page_hero', 1, [
+                'title' => $title,
+                'subtitle' => null,
+                'image' => null,
+            ]);
+
+            $this->section($site, $page, 'rich_text', 2, [
+                'title' => null,
+                'body' => '<p>Contenido pendiente de redactar.</p>',
+                'video_url' => null,
+            ]);
+        }
+
+        $this->scheduling($site, $locations);
+
+        $workshops = $this->page($site, 'talleres', '/ubicaciones/talleres', 'Talleres', 4, $locations);
+
+        $this->section($site, $workshops, 'page_hero', 1, [
+            'title' => 'Talleres',
+            'subtitle' => null,
+            'image' => null,
+        ]);
+
+        $this->section($site, $workshops, 'rich_text', 2, [
+            'title' => null,
+            'body' => '<p>Contenido pendiente de redactar.</p>',
+            'video_url' => null,
+        ]);
+    }
+
+    /**
+     * «Agenda tu verificación». The only page carrying `service_scheduling`,
+     * the section that tells the front-end where the booking widget goes.
+     *
+     * The bookable hours are not content: they live in `Appointment::SLOTS` and
+     * the front reads them from `GET {site}/appointments/availability`.
+     */
+    private function scheduling(Site $site, Page $parent): void
+    {
+        $page = $this->page(
+            $site,
+            'agenda-tu-verificacion',
+            '/ubicaciones/agenda-tu-verificacion',
+            'Agenda tu verificación',
+            3,
+            $parent,
+        );
+
+        $this->section($site, $page, 'page_hero', 1, [
+            'title' => 'Agenda tu verificación',
+            'subtitle' => 'Elige estación, día y horario.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $page, 'service_scheduling', 2, [
+            'title' => 'Agenda tu verificación',
+            'intro' => 'Atendemos de lunes a sábado en horarios de dos horas. Cada horario recibe una unidad.',
+            'success_message' => 'Tu cita quedó registrada. Te esperamos.',
+        ]);
     }
 
     /**

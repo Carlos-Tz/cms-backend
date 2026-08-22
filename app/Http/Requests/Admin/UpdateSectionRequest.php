@@ -81,6 +81,13 @@ class UpdateSectionRequest extends FormRequest
         'stations_map' => [
             'title' => ['nullable', 'string', 'max:255'],
         ],
+        // The bookable hours are not fields here: `Appointment::SLOTS` and the
+        // availability endpoint are their single source of truth.
+        'service_scheduling' => [
+            'title' => ['required', 'string', 'max:255'],
+            'intro' => ['nullable', 'string', 'max:1000'],
+            'success_message' => ['required', 'string', 'max:255'],
+        ],
         'contact_info' => [
             'address' => ['required', 'string', 'max:500'],
             'phone' => ['required', 'string', 'max:40'],

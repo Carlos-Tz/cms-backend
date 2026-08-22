@@ -1,7 +1,7 @@
 # GNU Gas Natural Vehicular — `gnu-vehicular`
 
-Blueprint de contenido predefinido. **Migrado parcialmente**: las columnas *Inicio*, *Contacto* y
-*Blog*, que son las que están sembradas. *Nuestros servicios* y *Ubicaciones* siguen siendo el árbol
+Blueprint de contenido predefinido. **Migrado parcialmente**: las columnas *Inicio*, *Ubicaciones*,
+*Contacto* y *Blog*, que son las que están sembradas. *Nuestros servicios* sigue siendo el árbol
 crudo del cliente, en el apéndice.
 
 Los campos de cada tipo de sección están en [`section-types.md`](section-types.md); los valores
@@ -16,15 +16,20 @@ viven en `GnuVehicularBlueprintSeeder` y en la BD.
 ## Mapa de páginas
 
 Las columnas de navegación son 5: Inicio (1), Nuestros servicios (2), Ubicaciones (3), Contacto (4),
-Blog (5) — una menos que el sitio institucional. Solo las tres migradas aparecen abajo.
+Blog (5) — una menos que el sitio institucional. Solo las cuatro migradas aparecen abajo.
 
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
 | 1 | `/` | Inicio | — | 1 | `banner_carousel`, `savings_simulator`, `feature_grid`, `testimonials`, `stations_map`, `lead_capture_form` |
-| 4 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form`, `rich_text`, `stations_map` |
-| 5 | `/blog` | Blog | — | 5 | `page_hero` |
+| 2 | `/ubicaciones` | Ubicaciones | — | 3 | `page_hero`, `stations_map` |
+| 3 | `/ubicaciones/estaciones-morelia` | Estaciones Morelia | `/ubicaciones` | 1 | `page_hero`, `rich_text` |
+| 4 | `/ubicaciones/estacion-uruapan` | Estación Uruapan | `/ubicaciones` | 2 | `page_hero`, `rich_text` |
+| 5 | `/ubicaciones/agenda-tu-verificacion` | Agenda tu verificación | `/ubicaciones` | 3 | `page_hero`, `service_scheduling` |
+| 6 | `/ubicaciones/talleres` | Talleres | `/ubicaciones` | 4 | `page_hero`, `rich_text` |
+| 7 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form`, `rich_text`, `stations_map` |
+| 8 | `/blog` | Blog | — | 5 | `page_hero` |
 
-**Sembradas: 3 de 5 columnas.** El estado por tipo vive en
+**Sembradas: 4 de 5 columnas, 8 páginas.** El estado por tipo vive en
 [`implementation-status.md`](implementation-status.md).
 
 Notas de lectura:
@@ -44,6 +49,13 @@ Notas de lectura:
 - **El sitio lleva dos `lead_capture_form` y dos `stations_map`**, uno de cada uno en `/` y en
   `/contacto`. Ninguna página repite tipo dentro de sí misma, así que sigue sin hacer falta `key`.
   Consecuencia conocida: la bandeja admin no distingue de qué formulario vino cada lead.
+- **Los hijos de *Ubicaciones* son páginas, no secciones.** La regla de clasificación solo hace
+  secciones a los hijos de *Inicio* y *Contacto*. Es el primer nivel de anidamiento de este sitio.
+- **Morelia, Uruapan y Talleres son `rich_text` abierto**: el cliente no definió una forma para
+  ellos y el contenido libre no necesita una. Ojo: las páginas de Morelia y Uruapan son *contenido*,
+  distintas de las filas de `stations` que dibujan los pines del mapa.
+- **«Agenda tu verificación» lleva `service_scheduling`**, el único tipo del catálogo exclusivo de
+  este sitio. Los horarios no son contenido: los sirve `GET {site}/appointments/availability`.
 - **El `savings_simulator` de esta portada guarda sus propios precios**, distintos a los de `gnu`.
   El endpoint `GET /api/public/gnu-vehicular/savings-simulator` los usa sin parámetro `page`, porque
   es la única instancia del sitio.
@@ -65,13 +77,12 @@ Filas de `sections` con `page_id = null`. Son los tres requisitos transversales 
 
 ## Pendiente de migrar
 
-Las dos columnas restantes, *Nuestros servicios* y *Ubicaciones*. Arrastran dos cosas que `gnu` no
-tuvo:
+Solo queda *Nuestros servicios*. Arrastra dos cosas:
 
-- Los 3 candidatos de tipo **sin verificar** que quedan — `equipment_quote`, `financing`,
-  `service_scheduling` — hay que auditarlos con el mismo criterio que se aplicó a `certifications` y
-  `esr_ecovadis` en `gnu`, que resultaron ser páginas. `billing_info` ya se resolvió: es el
-  `rich_text` de `/contacto`.
+- Los 2 candidatos de tipo **sin verificar** que quedan — `equipment_quote` y `financing` — hay que
+  auditarlos con el mismo criterio que se aplicó a `certifications` y `esr_ecovadis` en `gnu`, que
+  resultaron ser páginas. `billing_info` ya se resolvió (es el `rich_text` de `/contacto`) y
+  `service_scheduling` sí llegó al catálogo como tipo.
 - Es el único árbol con **3 niveles** («Instala tu equipo de GNV» y sus hijos). `pages.parent_id` lo
   soporta; el mapa de `gnu` solo demuestra 2.
 

@@ -1,12 +1,12 @@
-# Superficie de API — los 48 endpoints
+# Superficie de API — los 53 endpoints
 
-Verificado con `php artisan route:list --path=api --except-vendor`. Si el conteo no da 48, este
+Verificado con `php artisan route:list --path=api --except-vendor`. Si el conteo no da 53, este
 archivo quedó atrás.
 
 `real` = implementado y con tests. `stub` = devuelve `{data, meta}` sin `status`, sin lógica y sin
 tabla detrás en varios casos.
 
-## Admin — `/api/admin` (40 rutas)
+## Admin — `/api/admin` (43 rutas)
 
 Todo dentro de `Route::middleware('auth:api')` menos `auth/login`.
 
@@ -89,6 +89,17 @@ línea de defensa, para el día que cambie esa restricción de ruta. Test:
 | PUT/PATCH | `stations/{station}` | `StationController@update` | la estación fresca. `site_id` `prohibited` |
 | DELETE | `stations/{station}` | `StationController@destroy` | mensaje |
 
+### Citas — 3, real
+
+| Método | URI | Acción | Devuelve |
+|---|---|---|---|
+| GET | `appointments` | `AppointmentController@index` | `?site={slug}`, `orderBy('date')`+`orderBy('slot')` **ascendente**, `paginate(20)`, con `station:id,name` |
+| GET | `appointments/{appointment}` | `AppointmentController@show` | la cita con su sitio y su estación |
+| DELETE | `appointments/{appointment}` | `AppointmentController@destroy` | mensaje. Cancelar es borrar: no hay columna de estado |
+
+**No hay `POST` ni `PUT` de citas en admin, a propósito**, igual que con los leads: una cita la
+genera el visitante. Orden ascendente y no `latest()` porque en una agenda importa lo que viene.
+
 ### Stubs completos — 15 rutas
 
 `apiResource` de 5 métodos cada uno, todos devolviendo `{data, meta:{resource, id}}`:
@@ -99,7 +110,7 @@ línea de defensa, para el día que cambie esa restricción de ruta. Test:
 | `users` | `UserController` | un solo rol global; no se pidió gestión de usuarios |
 | `menus` | `Admin\MenuController` | el menú es **derivado** y `GET /api/public/{site}/menu` ya lo deriva. Candidato a borrar |
 
-## Público — `/api/public/{site:slug}` (8 rutas)
+## Público — `/api/public/{site:slug}` (10 rutas)
 
 | Método | URI | Acción | Estado / devuelve |
 |---|---|---|---|
@@ -111,6 +122,27 @@ línea de defensa, para el día que cambie esa restricción de ruta. Test:
 | POST | `leads` | `LeadController@store` | **real** — `throttle:10,1`. `data: null` + agradecimiento, 201. Única escritura pública |
 | GET | `menu` | `MenuController@show` | **real** — árbol derivado de `pages`: raíces por `position`, hijos anidados en `children`. Solo `is_published`; una página oculta arrastra su rama entera. `{slug, path, title, children[]}` |
 | GET | `stations` | `StationController@index` | **real** — solo `is_active`, sin paginar (un mapa dibuja todos los pines). `{name, address, latitude, longitude, phone, schedule}` |
+| GET | `appointments/availability` | `AppointmentController@availability` | **real** — `?station={id}&date=Y-m-d`. Ver abajo |
+| POST | `appointments` | `AppointmentController@store` | **real** — `throttle:10,1`. 201 con `{date, slot, station}` confirmados. Segunda escritura pública |
+
+### `GET appointments/availability`
+
+Los horarios no son contenido: viven en `Appointment::SLOTS` — tres bloques de dos horas, de lunes a
+sábado, **una cita cada uno** — y este endpoint es como los conoce el front.
+
+```
+station        estación del sitio, activa; si no, 404
+día cerrado    domingo o fecha pasada  →  slots: []   (no un 422)
+día abierto    los 3 slots con available = ! existe cita (station, date, slot)
+```
+
+Devolver una lista vacía y no un error es deliberado: el widget consulta la semana completa y no
+debe romperse el día que el taller está cerrado.
+
+El `POST` valida además que la estación sea del sitio y esté activa, que la fecha no sea pasada ni
+domingo, y que el slot esté libre. El candado real contra el doble booking es el índice único
+`[station_id, date, slot]`; si dos visitantes chocan entre validar e insertar, el controlador
+convierte la violación en un 422 en español.
 
 ### `GET savings-simulator`
 

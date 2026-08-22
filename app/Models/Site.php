@@ -50,6 +50,14 @@ class Site extends Model
     }
 
     /**
+     * @return HasMany<Appointment, $this>
+     */
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    /**
      * Site-wide sections (contact info, social icons, whatsapp button).
      *
      * @return HasMany<Section, $this>
