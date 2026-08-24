@@ -71,8 +71,8 @@ listado lo sirve `GET /api/public/{site}/blog`.
 
 ### `leads`
 
-`id`, `site_id` FK cascade, `name`, `email`, `phone` (nullable), `message` (text nullable),
-timestamps. Index `[site_id, created_at]`.
+`id`, `site_id` FK cascade, `source` (nullable), `name`, `email`, `phone` (nullable), `message`
+(text nullable), timestamps. Index `[site_id, created_at]`.
 
 **Una columna por cada entrada del `fields[]` bloqueado de `lead_capture_form`.** Esa es la razón de
 que `fields[]` sea `fijo`: si el admin agregara un campo al formulario, el dato llegaría al endpoint
@@ -80,6 +80,16 @@ y se descartaría en silencio. Cambiar el formulario es un cambio de esquema.
 
 `created_at` es la fecha de captación; no hay columna extra para eso. `site_id` **no** es fillable a
 propósito: sale del route binding.
+
+**`source` es el slug de la página cuyo formulario produjo el lead.** Un sitio lleva varios
+`lead_capture_form` — `gnu-vehicular` tiene cuatro — y sin esta columna la bandeja no distingue una
+solicitud de cotización de una duda general. Sí es fillable, a diferencia de `site_id`: no es una
+frontera de confianza, un valor falsificado solo etiquetea mal una fila. Aun así el form request lo
+valida contra las páginas **publicadas de ese sitio**, para que la bandeja no se llene de basura.
+Nullable, para que un front que no lo mande siga funcionando.
+
+La bandeja filtra con `?source={slug}`. No lleva índice: al volumen de leads de un sitio de
+marketing no se paga.
 
 ### `stations`
 

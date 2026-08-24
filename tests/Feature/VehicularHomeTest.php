@@ -59,11 +59,12 @@ it('keeps testimonials on the home page instead of the site-wide sections', func
 it('lists the seeded nav columns in blueprint order', function () {
     $this->getJson('/api/public/gnu-vehicular/menu')
         ->assertOk()
-        ->assertJsonCount(4, 'data')
+        ->assertJsonCount(5, 'data')
         ->assertJsonPath('data.0.title', 'Inicio')
-        ->assertJsonPath('data.1.title', 'Ubicaciones')
-        ->assertJsonPath('data.2.title', 'Contacto')
-        ->assertJsonPath('data.3.title', 'Blog');
+        ->assertJsonPath('data.1.title', 'Nuestros servicios')
+        ->assertJsonPath('data.2.title', 'Ubicaciones')
+        ->assertJsonPath('data.3.title', 'Contacto')
+        ->assertJsonPath('data.4.title', 'Blog');
 });
 
 it('simulates savings with this site prices, not the institutional ones', function () {

@@ -30,7 +30,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 14 | Biblioteca de media (listar / borrar) | ✅ **sin tabla** | `Admin\MediaController@index` / `@destroy`, sobre el disco `public` | `HomeContentTest` — «lists the uploaded images and deletes one», «404s when deleting an image that does not exist», «cannot reach the media delete with a path outside the media folder», «does not expose routes to show or update a media file», «blocks the media api without a token» |
 | 15 | Notificación de lead nuevo al destinatario | ⬜ | — | ninguno |
 | 16 | Blueprint `gnu` | ✅ **17 de 17 sembradas** | `GnuBlueprintSeeder` | los de arriba corren sobre él, + `ServicesAndSustainabilityTest` y `GncAndContactTest` |
-| 17 | Blueprint `gnu-vehicular` | 🟡 4 de 5 columnas, 8 páginas | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7, `VehicularContactTest` — 7, `VehicularLocationsTest` — 9 |
+| 17 | Blueprint `gnu-vehicular` | ✅ **5 de 5 columnas, 14 páginas** | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7, `VehicularContactTest` — 7, `VehicularLocationsTest` — 9, `VehicularServicesTest` — 12 |
 | 18 | Agenda de verificación | ✅ real | `appointments`, `Public\AppointmentController`, `Admin\AppointmentController`, `StoreAppointmentRequest` | `AppointmentTest` — 15 tests |
 | 18 | Blueprint `traninn-logistic` | ⬜ | — | ninguno |
 | 19 | Blueprint `tectuus` | ⬜ | — | ninguno |
@@ -61,21 +61,23 @@ necesidad.
 
 ### 2. Blueprints de los otros tres sitios
 
-`gnu` está migrado al formato nuevo; a `gnu-vehicular` le falta una sola columna, *Nuestros
-servicios*, que sigue en árbol crudo. `traninn-logistic` y `tectuus` siguen
+`gnu` y `gnu-vehicular` están migrados y sembrados completos. `traninn-logistic` y `tectuus` siguen
+enteros en árbol crudo. `traninn-logistic` y `tectuus` siguen
 enteros en árbol crudo.
 
 *Abierto* al migrarlos:
-- `gnu-vehicular` es el único árbol con **3 niveles** de anidamiento («Instala tu equipo de GNV» y sus
-  hijos). `pages.parent_id` lo soporta; el mapa de `gnu` solo demuestra 2 niveles.
-- Los 3 candidatos sin verificar que quedan (`product_catalog`, `equipment_quote`, `financing`) hay
-  que auditarlos: el spec advierte que huelen a página disfrazada de bloque, como pasó con
-  `certifications` y `esr_ecovadis`. `billing_info` ya se descartó (es el `rich_text` de
-  `/contacto`) y `service_scheduling` sí resultó tipo: es el único exclusivo de un sitio.
-- **Un lead no registra de qué formulario vino.** `gnu-vehicular` ya lleva dos `lead_capture_form`
-  (`/` y `/contacto`) escribiendo en la misma tabla, y la bandeja admin no los distingue. Se
-  resuelve con una columna `leads.source` el día que marketing pregunte qué formulario convierte;
-  hasta entonces no se agrega.
+- Los **3 niveles** de anidamiento ya están demostrados por la columna de servicios de
+  `gnu-vehicular`: `pages.parent_id` y `MenuController::tree()`, que ya era recursivo, los
+  soportaron sin cambios.
+- Queda un solo candidato sin auditar, `product_catalog`, de Tectuus. Los cuatro de
+  `gnu-vehicular` ya se resolvieron: `billing_info`, `equipment_quote` y `financing` resultaron
+  bloques genéricos y solo `service_scheduling` llegó al catálogo. La advertencia del spec se
+  sostuvo: 3 de 4 eran páginas o bloques disfrazados de tipo.
+- ~~Un lead no registra de qué formulario vino.~~ **Resuelto** con `leads.source`: el front manda el
+  slug de la página del formulario, validado contra las páginas publicadas del sitio, y la bandeja
+  filtra con `?source=`. Se difirió mientras eran dos formularios genéricos; se implementó al
+  llegar a cuatro, dos de ellos comerciales («Cotiza tu equipo» y flotillas), donde no poder
+  separar una cotización de una duda dejaba la bandeja inservible.
 
 ## Candidatos a borrar
 
@@ -101,7 +103,7 @@ Verificado en esta pasada. Cada uno es un commit chico e independiente.
 | `CLAUDE.md`, «Current phase» | «scaffolding only», «todos los demás controladores son placeholders» | Falso: secciones, blog, leads, simulador, estaciones y media son reales, con 92 tests |
 | `CLAUDE.md`, forma de respuesta | `{data, meta}` | Es `{status, data, meta}`. Los stubs sí devuelven dos claves, y así se distinguen |
 | `CLAUDE.md`, `config/blueprints/{site}.php` | «la forma legible por máquina eventual» | **Descartado.** Los seeders ya son el blueprint y funcionan. Una capa de config intermedia con un solo consumidor no se paga. Se reconsidera si aparece un segundo consumidor |
-| `sitios-web-gnu/references/gnu-vehicular.md` | árbol crudo, sin migrar | Migrado casi entero: 4 de 5 columnas en formato blueprint; solo *Nuestros servicios* sigue como árbol crudo en el apéndice |
+| `sitios-web-gnu/references/gnu-vehicular.md` | árbol crudo, sin migrar | **Migrado completo**: las 5 columnas en formato blueprint; el árbol crudo queda solo como apéndice de trazabilidad |
 | `CLAUDE.md`, «Current phase» | «no hay migraciones ni modelos de dominio» | Falso: `sites`, `pages`, `sections`, `blog_posts`, `leads`, `stations` existen con sus modelos. La única tabla que no existe es `media`, y es a propósito |
 
 ## Fuera de alcance

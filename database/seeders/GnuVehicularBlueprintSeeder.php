@@ -8,14 +8,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
- * Seeds the GNU Vehicular site: its home and contact pages, the site-wide
- * sections, the `/blog` page with its four articles, and two sample stations
- * for the map.
- *
- * Still partial. The «Nuestros servicios» column of
- * `references/gnu-vehicular.md` is not migrated yet — it carries the two
- * remaining unaudited section candidates and the only three-level tree of the
- * project.
+ * Seeds the whole GNU Vehicular site: its five navigation columns and 14 pages,
+ * the site-wide sections, the four blog articles and two sample stations for
+ * the map.
  *
  * Idempotent: safe to re-run.
  */
@@ -34,6 +29,7 @@ class GnuVehicularBlueprintSeeder extends Seeder
         // Nav columns: Inicio (1), Nuestros servicios (2), Ubicaciones (3),
         // Contacto (4), Blog (5) — one column fewer than the institutional site.
         $this->home($site);
+        $this->services($site);
         $this->locations($site);
         $this->contact($site);
 
@@ -143,6 +139,156 @@ class GnuVehicularBlueprintSeeder extends Seeder
             'Contacto',
             'Déjanos tus datos y un asesor se comunicará contigo.',
         ));
+    }
+
+    /**
+     * The «Nuestros servicios» column — the only three-level branch of the
+     * project: *Instala tu equipo de GNV* hangs off the column, and *Cotiza tu
+     * equipo* and *Financiamiento* hang off that page.
+     *
+     * No `clients_showcase` here, unlike the institutional column: that type is
+     * declared for `gnu`, `traninn-logistic` and `tectuus`, not for this site.
+     */
+    private function services(Site $site): void
+    {
+        $services = $this->page($site, 'nuestros-servicios', '/nuestros-servicios', 'Nuestros servicios', 2);
+
+        $this->section($site, $services, 'page_hero', 1, [
+            'title' => 'Nuestros servicios',
+            'subtitle' => 'Conversión, flotillas y suministro móvil de gas natural vehicular.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $services, 'rich_text', 2, $this->body());
+
+        $this->installation($site, $services);
+
+        $fleets = $this->page(
+            $site,
+            'flotillas-empresariales',
+            '/nuestros-servicios/flotillas-empresariales',
+            'Flotillas empresariales',
+            2,
+            $services,
+        );
+
+        $this->section($site, $fleets, 'page_hero', 1, [
+            'title' => 'Flotillas empresariales',
+            'subtitle' => 'Convierte tu flotilla y baja tu costo por kilómetro.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $fleets, 'rich_text', 2, $this->body());
+        $this->section($site, $fleets, 'feature_grid', 3, $this->cards('Beneficios para tu flotilla', [
+            'Ahorro por unidad',
+            'Mantenimiento y soporte',
+            'Reportes de consumo',
+        ]));
+
+        // The only B2B page of the column: it captures, the informative ones do not.
+        $this->section($site, $fleets, 'lead_capture_form', 4, $this->leadForm(
+            'Cotiza para tu flotilla',
+            'Cuéntanos cuántas unidades tienes y un asesor se comunicará contigo.',
+        ));
+
+        $mobile = $this->page(
+            $site,
+            'estaciones-moviles',
+            '/nuestros-servicios/estaciones-moviles',
+            'Estaciones móviles',
+            3,
+            $services,
+        );
+
+        $this->section($site, $mobile, 'page_hero', 1, [
+            'title' => 'Estaciones móviles',
+            'subtitle' => 'Suministro de gas natural donde opera tu flotilla.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $mobile, 'rich_text', 2, $this->body());
+        $this->section($site, $mobile, 'feature_grid', 3, $this->cards('Cómo funciona', [
+            'Evaluación del sitio',
+            'Instalación de la unidad',
+            'Suministro programado',
+        ]));
+    }
+
+    /**
+     * «Instala tu equipo de GNV» and its two child pages, the third level.
+     *
+     * *Cotiza tu equipo* is a `lead_capture_form`, not a type of its own — same
+     * pattern as «Cotiza tu suministro» in the institutional site. There is no
+     * price calculation: the visitor leaves their data and an advisor quotes.
+     * *Financiamiento* is a `feature_grid`: the plans are structured cards.
+     * Both discard the `equipment_quote` and `financing` candidates.
+     */
+    private function installation(Site $site, Page $parent): void
+    {
+        $install = $this->page(
+            $site,
+            'instala-tu-equipo-de-gnv',
+            '/nuestros-servicios/instala-tu-equipo-de-gnv',
+            'Instala tu equipo de GNV',
+            1,
+            $parent,
+        );
+
+        $this->section($site, $install, 'page_hero', 1, [
+            'title' => 'Instala tu equipo de GNV',
+            'subtitle' => 'Conversión certificada para tu vehículo.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $install, 'rich_text', 2, $this->body());
+        $this->section($site, $install, 'feature_grid', 3, $this->cards('Qué incluye la conversión', [
+            'Equipo certificado',
+            'Instalación en taller autorizado',
+            'Garantía y revisiones',
+        ]));
+
+        $quote = $this->page(
+            $site,
+            'cotiza-tu-equipo',
+            '/nuestros-servicios/instala-tu-equipo-de-gnv/cotiza-tu-equipo',
+            'Cotiza tu equipo',
+            1,
+            $install,
+        );
+
+        $this->section($site, $quote, 'page_hero', 1, [
+            'title' => 'Cotiza tu equipo',
+            'subtitle' => null,
+            'image' => null,
+        ]);
+
+        $this->section($site, $quote, 'rich_text', 2, $this->body());
+        $this->section($site, $quote, 'lead_capture_form', 3, $this->leadForm(
+            'Cotiza tu equipo',
+            'Déjanos los datos de tu vehículo y te enviamos una cotización.',
+        ));
+
+        $financing = $this->page(
+            $site,
+            'financiamiento',
+            '/nuestros-servicios/instala-tu-equipo-de-gnv/financiamiento',
+            'Financiamiento',
+            2,
+            $install,
+        );
+
+        $this->section($site, $financing, 'page_hero', 1, [
+            'title' => 'Financiamiento',
+            'subtitle' => 'Paga tu conversión a plazos.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $financing, 'rich_text', 2, $this->body());
+        $this->section($site, $financing, 'feature_grid', 3, $this->cards('Planes disponibles', [
+            'Pago de contado',
+            'Plan a 12 meses',
+            'Plan para flotillas',
+        ]));
     }
 
     /**
@@ -293,6 +439,39 @@ class GnuVehicularBlueprintSeeder extends Seeder
             'phone' => '+524430000000',
             'prefilled_message' => 'Hola, quiero información sobre gas natural vehicular.',
         ]);
+    }
+
+    /**
+     * An empty `rich_text` body. Every page of the blueprint carries one and the
+     * copy is written by the admin, so the placeholder is always the same.
+     *
+     * @return array<string, mixed>
+     */
+    private function body(): array
+    {
+        return [
+            'title' => null,
+            'body' => '<p>Contenido pendiente de redactar.</p>',
+            'video_url' => null,
+        ];
+    }
+
+    /**
+     * A `feature_grid` with one placeholder card per title.
+     *
+     * @param  list<string>  $titles
+     * @return array<string, mixed>
+     */
+    private function cards(string $title, array $titles): array
+    {
+        return [
+            'title' => $title,
+            'items' => array_map(fn (string $card) => [
+                'icon' => null,
+                'title' => $card,
+                'text' => 'Contenido pendiente de redactar.',
+            ], $titles),
+        ];
     }
 
     /**

@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * A contact captured through a `lead_capture_form` section of a public site.
  *
  * `site_id` is not fillable on purpose: the site always comes from the route
- * binding of the public endpoint, never from the payload.
+ * binding of the public endpoint, never from the payload. `source` is: it says
+ * which page's form produced the lead, and the request validates it against the
+ * published pages of that site so it cannot hold junk.
  */
-#[Fillable(['name', 'email', 'phone', 'message'])]
+#[Fillable(['source', 'name', 'email', 'phone', 'message'])]
 class Lead extends Model
 {
     /** @use HasFactory<LeadFactory> */

@@ -1,8 +1,7 @@
 # GNU Gas Natural Vehicular — `gnu-vehicular`
 
-Blueprint de contenido predefinido. **Migrado parcialmente**: las columnas *Inicio*, *Ubicaciones*,
-*Contacto* y *Blog*, que son las que están sembradas. *Nuestros servicios* sigue siendo el árbol
-crudo del cliente, en el apéndice.
+Blueprint de contenido predefinido. **Migrado completo**: las 5 columnas y sus 14 páginas están en
+el mapa de abajo y sembradas por `GnuVehicularBlueprintSeeder`.
 
 Los campos de cada tipo de sección están en [`section-types.md`](section-types.md); los valores
 viven en `GnuVehicularBlueprintSeeder` y en la BD.
@@ -16,20 +15,26 @@ viven en `GnuVehicularBlueprintSeeder` y en la BD.
 ## Mapa de páginas
 
 Las columnas de navegación son 5: Inicio (1), Nuestros servicios (2), Ubicaciones (3), Contacto (4),
-Blog (5) — una menos que el sitio institucional. Solo las cuatro migradas aparecen abajo.
+Blog (5) — una menos que el sitio institucional.
 
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
 | 1 | `/` | Inicio | — | 1 | `banner_carousel`, `savings_simulator`, `feature_grid`, `testimonials`, `stations_map`, `lead_capture_form` |
-| 2 | `/ubicaciones` | Ubicaciones | — | 3 | `page_hero`, `stations_map` |
-| 3 | `/ubicaciones/estaciones-morelia` | Estaciones Morelia | `/ubicaciones` | 1 | `page_hero`, `rich_text` |
-| 4 | `/ubicaciones/estacion-uruapan` | Estación Uruapan | `/ubicaciones` | 2 | `page_hero`, `rich_text` |
-| 5 | `/ubicaciones/agenda-tu-verificacion` | Agenda tu verificación | `/ubicaciones` | 3 | `page_hero`, `service_scheduling` |
-| 6 | `/ubicaciones/talleres` | Talleres | `/ubicaciones` | 4 | `page_hero`, `rich_text` |
-| 7 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form`, `rich_text`, `stations_map` |
-| 8 | `/blog` | Blog | — | 5 | `page_hero` |
+| 2 | `/nuestros-servicios` | Nuestros servicios | — | 2 | `page_hero`, `rich_text` |
+| 3 | `/nuestros-servicios/instala-tu-equipo-de-gnv` | Instala tu equipo de GNV | `/nuestros-servicios` | 1 | `page_hero`, `rich_text`, `feature_grid` |
+| 4 | `…/instala-tu-equipo-de-gnv/cotiza-tu-equipo` | Cotiza tu equipo | `…/instala-tu-equipo-de-gnv` | 1 | `page_hero`, `rich_text`, `lead_capture_form` |
+| 5 | `…/instala-tu-equipo-de-gnv/financiamiento` | Financiamiento | `…/instala-tu-equipo-de-gnv` | 2 | `page_hero`, `rich_text`, `feature_grid` |
+| 6 | `/nuestros-servicios/flotillas-empresariales` | Flotillas empresariales | `/nuestros-servicios` | 2 | `page_hero`, `rich_text`, `feature_grid`, `lead_capture_form` |
+| 7 | `/nuestros-servicios/estaciones-moviles` | Estaciones móviles | `/nuestros-servicios` | 3 | `page_hero`, `rich_text`, `feature_grid` |
+| 8 | `/ubicaciones` | Ubicaciones | — | 3 | `page_hero`, `stations_map` |
+| 9 | `/ubicaciones/estaciones-morelia` | Estaciones Morelia | `/ubicaciones` | 1 | `page_hero`, `rich_text` |
+| 10 | `/ubicaciones/estacion-uruapan` | Estación Uruapan | `/ubicaciones` | 2 | `page_hero`, `rich_text` |
+| 11 | `/ubicaciones/agenda-tu-verificacion` | Agenda tu verificación | `/ubicaciones` | 3 | `page_hero`, `service_scheduling` |
+| 12 | `/ubicaciones/talleres` | Talleres | `/ubicaciones` | 4 | `page_hero`, `rich_text` |
+| 13 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form`, `rich_text`, `stations_map` |
+| 14 | `/blog` | Blog | — | 5 | `page_hero` |
 
-**Sembradas: 4 de 5 columnas, 8 páginas.** El estado por tipo vive en
+**Sembradas: 5 de 5 columnas, 14 páginas. El sitio está completo.** El estado por tipo vive en
 [`implementation-status.md`](implementation-status.md).
 
 Notas de lectura:
@@ -49,6 +54,19 @@ Notas de lectura:
 - **El sitio lleva dos `lead_capture_form` y dos `stations_map`**, uno de cada uno en `/` y en
   `/contacto`. Ninguna página repite tipo dentro de sí misma, así que sigue sin hacer falta `key`.
   Consecuencia conocida: la bandeja admin no distingue de qué formulario vino cada lead.
+- **«Nuestros servicios» es el único árbol de 3 niveles del proyecto.** *Cotiza tu equipo* y
+  *Financiamiento* son páginas nietas, no secciones de *Instala tu equipo de GNV*. `pages.parent_id`
+  siempre lo soportó; esta columna es la primera que lo demuestra, y `MenuController::tree()` ya era
+  recursivo, así que no hizo falta código nuevo.
+- **«Cotiza tu equipo» es un `lead_capture_form`, no un cotizador.** No hay cálculo de precio: el
+  visitante deja sus datos y un asesor cotiza. Mismo patrón que «Cotiza tu suministro» en `gnu`.
+  Descarta el candidato `equipment_quote`.
+- **«Financiamiento» es un `feature_grid`**: los planes son tarjetas estructuradas. Descarta el
+  candidato `financing`.
+- **Solo *Flotillas empresariales* capta leads** dentro de esa columna, además de *Cotiza tu
+  equipo*: es la página con intención comercial B2B; *Estaciones móviles* es informativa.
+- **La columna no lleva `clients_showcase`**, aunque la equivalente de `gnu` sí: ese tipo está
+  declarado para `gnu`, `traninn-logistic` y `tectuus`, no para este sitio.
 - **Los hijos de *Ubicaciones* son páginas, no secciones.** La regla de clasificación solo hace
   secciones a los hijos de *Inicio* y *Contacto*. Es el primer nivel de anidamiento de este sitio.
 - **Morelia, Uruapan y Talleres son `rich_text` abierto**: el cliente no definió una forma para
@@ -75,16 +93,24 @@ Filas de `sections` con `page_id = null`. Son los tres requisitos transversales 
 | `social_icons` | todo el sitio | En el árbol original está fuera del flujo principal. |
 | `whatsapp_button` | todo el sitio | Solo en «Requisitos principales», no en el árbol. |
 
-## Pendiente de migrar
+## Candidatos de tipo, resueltos
 
-Solo queda *Nuestros servicios*. Arrastra dos cosas:
+Los cuatro candidatos «sin verificar» que el spec listaba para este sitio ya están auditados. Tres
+se descartaron porque un tipo genérico los cubre, y solo uno llegó al catálogo:
 
-- Los 2 candidatos de tipo **sin verificar** que quedan — `equipment_quote` y `financing` — hay que
-  auditarlos con el mismo criterio que se aplicó a `certifications` y `esr_ecovadis` en `gnu`, que
-  resultaron ser páginas. `billing_info` ya se resolvió (es el `rich_text` de `/contacto`) y
-  `service_scheduling` sí llegó al catálogo como tipo.
-- Es el único árbol con **3 niveles** («Instala tu equipo de GNV» y sus hijos). `pages.parent_id` lo
-  soporta; el mapa de `gnu` solo demuestra 2.
+| candidato | resultado |
+|---|---|
+| `billing_info` | descartado — es el `rich_text` de `/contacto` |
+| `equipment_quote` | descartado — es el `lead_capture_form` de `cotiza-tu-equipo` |
+| `financing` | descartado — es el `feature_grid` de `financiamiento` |
+| `service_scheduling` | **tipo real** — único del catálogo exclusivo de un sitio |
+
+Tres de cuatro resultaron bloques genéricos disfrazados de tipo, la misma proporción que en `gnu`
+con `certifications` y `esr_ecovadis`. La advertencia del spec era correcta.
+
+**Pendiente conocido:** el sitio tiene 4 `lead_capture_form` (`/`, `/contacto`, `cotiza-tu-equipo` y
+`flotillas-empresariales`) escribiendo en la misma bandeja, y sigue sin registrarse de cuál vino
+cada lead. La decisión sobre `leads.source` sigue siendo YAGNI, pero vale más que cuando eran dos.
 
 ## Apéndice — árbol de navegación original
 

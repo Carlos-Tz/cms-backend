@@ -48,12 +48,12 @@ it('returns the scheduling page with the widget section', function () {
 it('nests the four child pages under the locations column in the menu', function () {
     $this->getJson('/api/public/gnu-vehicular/menu')
         ->assertOk()
-        ->assertJsonPath('data.1.title', 'Ubicaciones')
-        ->assertJsonCount(4, 'data.1.children')
-        ->assertJsonPath('data.1.children.0.title', 'Estaciones Morelia')
-        ->assertJsonPath('data.1.children.1.title', 'Estación Uruapan')
-        ->assertJsonPath('data.1.children.2.title', 'Agenda tu verificación')
-        ->assertJsonPath('data.1.children.3.title', 'Talleres');
+        ->assertJsonPath('data.2.title', 'Ubicaciones')
+        ->assertJsonCount(4, 'data.2.children')
+        ->assertJsonPath('data.2.children.0.title', 'Estaciones Morelia')
+        ->assertJsonPath('data.2.children.1.title', 'Estación Uruapan')
+        ->assertJsonPath('data.2.children.2.title', 'Agenda tu verificación')
+        ->assertJsonPath('data.2.children.3.title', 'Talleres');
 });
 
 it('lets the admin write the workshops copy', function () {

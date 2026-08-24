@@ -55,12 +55,16 @@ blueprint. Test: `does not expose routes to create or delete pages`.
 
 | Método | URI | Acción | Devuelve |
 |---|---|---|---|
-| GET | `leads` | `LeadController@index` | `?site={slug}`, `latest()`, `paginate(20)` |
+| GET | `leads` | `LeadController@index` | `?site={slug}`, `?source={pageSlug}`, `latest()`, `paginate(20)` |
 | GET | `leads/{lead}` | `LeadController@show` | el lead con su sitio |
 | DELETE | `leads/{lead}` | `LeadController@destroy` | mensaje |
 
 **No hay `POST` ni `PUT` de leads en admin, a propósito**: un lead lo genera el visitante, el admin
 solo lo lee y lo borra. Test: `does not let the admin create or edit a lead`.
+
+`?source` es cómo el panel separa las cotizaciones del resto: el front manda en `source` el slug de
+la página donde se renderizó el formulario, y el request lo valida contra las páginas publicadas de
+ese sitio. Sin él, los 4 formularios de `gnu-vehicular` caen indistinguibles en la misma bandeja.
 
 ### Media — 3, reales
 
@@ -119,7 +123,7 @@ genera el visitante. Orden ascendente y no `latest()` porque en una agenda impor
 | GET | `blog` | `BlogController@index` | **real** — `published()`, `latest('published_at')`, `paginate(10)`. **Sin `body`** |
 | GET | `blog/{postSlug}` | `BlogController@show` | **real** — el artículo con `body` |
 | GET | `savings-simulator` | `SavingsSimulatorController` | **real** — `?fuel={slug}&quantity={n}&page={slug}`. Ver abajo |
-| POST | `leads` | `LeadController@store` | **real** — `throttle:10,1`. `data: null` + agradecimiento, 201. Única escritura pública |
+| POST | `leads` | `LeadController@store` | **real** — `throttle:10,1`. `data: null` + agradecimiento, 201. Acepta `source` opcional: el slug de la página del formulario |
 | GET | `menu` | `MenuController@show` | **real** — árbol derivado de `pages`: raíces por `position`, hijos anidados en `children`. Solo `is_published`; una página oculta arrastra su rama entera. `{slug, path, title, children[]}` |
 | GET | `stations` | `StationController@index` | **real** — solo `is_active`, sin paginar (un mapa dibuja todos los pines). `{name, address, latitude, longitude, phone, schedule}` |
 | GET | `appointments/availability` | `AppointmentController@availability` | **real** — `?station={id}&date=Y-m-d`. Ver abajo |

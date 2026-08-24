@@ -68,6 +68,56 @@ it('rejects a lead for an unknown site', function () use ($payload) {
     $this->postJson('/api/public/sitio-inexistente/leads', $payload)->assertNotFound();
 });
 
+it('records which form produced the lead', function () use ($payload) {
+    $this->postJson('/api/public/gnu/leads', [...$payload, 'source' => 'gnc'])
+        ->assertCreated();
+
+    expect(Lead::sole()->source)->toBe('gnc');
+});
+
+it('accepts a lead without a source', function () use ($payload) {
+    $this->postJson('/api/public/gnu/leads', $payload)->assertCreated();
+
+    expect(Lead::sole()->source)->toBeNull();
+});
+
+it('rejects a source that is not a published page of this site', function () use ($payload) {
+    $this->postJson('/api/public/gnu/leads', [...$payload, 'source' => 'pagina-inventada'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors([
+            'source' => 'El origen del formulario no corresponde a una página de este sitio.',
+        ]);
+
+    // A real page, but of another site: still rejected.
+    $tectuus = Site::create(['slug' => 'tectuus', 'name' => 'Tectuus']);
+    $tectuus->pages()->create([
+        'slug' => 'cotizador', 'path' => '/cotizador', 'title' => 'Cotizador',
+        'position' => 1, 'is_published' => true,
+    ]);
+
+    $this->postJson('/api/public/gnu/leads', [...$payload, 'source' => 'cotizador'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['source']);
+
+    expect(Lead::count())->toBe(0);
+});
+
+it('filters the admin inbox by the form that produced the lead', function () {
+    Lead::factory()->for($this->site)->create(['name' => 'Cotización', 'source' => 'gnc']);
+    Lead::factory()->for($this->site)->create(['name' => 'Duda general', 'source' => 'inicio']);
+    Lead::factory()->for($this->site)->create(['name' => 'Sin origen']);
+
+    $this->withToken($this->token)->getJson('/api/admin/leads?site=gnu&source=gnc')
+        ->assertOk()
+        ->assertJsonPath('meta.total', 1)
+        ->assertJsonPath('data.0.name', 'Cotización');
+
+    // Without the filter the inbox still shows everything, source or not.
+    $this->withToken($this->token)->getJson('/api/admin/leads?site=gnu')
+        ->assertOk()
+        ->assertJsonPath('meta.total', 3);
+});
+
 it('blocks the admin lead api without a token', function () {
     $this->getJson('/api/admin/leads')
         ->assertUnauthorized()

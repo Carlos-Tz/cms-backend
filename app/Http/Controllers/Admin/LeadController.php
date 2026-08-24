@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 class LeadController extends Controller
 {
     /**
-     * List captured leads, newest first, optionally filtered by site slug.
+     * List captured leads, newest first, optionally filtered by site slug and
+     * by `source` — the page whose form produced them, which is how a quote
+     * request is told apart from a generic contact.
      */
     public function index(Request $request): JsonResponse
     {
@@ -23,6 +25,10 @@ class LeadController extends Controller
                 'site',
                 fn ($site) => $site->where('slug', $request->string('site'))
             ))
+            ->when(
+                $request->string('source')->isNotEmpty(),
+                fn ($query) => $query->where('source', $request->string('source'))
+            )
             ->latest()
             ->paginate(20);
 

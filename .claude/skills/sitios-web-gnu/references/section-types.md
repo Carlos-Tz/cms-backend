@@ -245,7 +245,7 @@ Sin `position`: dónde flota el botón es layout.
 
 ## Tipos exclusivos de un sitio — sin verificar
 
-Declarados en el macro archivo original pero **no auditados todavía**. Los tres tienen el mismo
+Declarado en el macro archivo original pero **no auditado todavía**. Tiene el mismo
 olor a «página disfrazada de bloque» que tenían `certifications` y `esr_ecovadis`, que resultaron
 ser páginas de GNU y se eliminaron de este catálogo. No agregarlos como tipos hasta revisar el
 sitio correspondiente con el mismo criterio que se aplicó a GNU.
@@ -253,8 +253,6 @@ sitio correspondiente con el mismo criterio que se aplicó a GNU.
 | candidato | sitio | qué es en el archivo original |
 |---|---|---|
 | `product_catalog` | Tectuus | EDRM, compresoras, valvulería |
-| `equipment_quote` | GNU Vehicular | «cotiza tu equipo» |
-| `financing` | GNU Vehicular | financiamiento |
 
 ## Descartados, con motivo
 
@@ -266,5 +264,7 @@ Para que no vuelvan a proponerse:
 | `blog` | `GET /api/public/{site}/blog` ya existe en `routes/public.php`. El blog es dominio de datos (`blog_posts`), no un tipo de sección. |
 | `child_index` | Tendría cero campos editables: la lista de páginas hijas ya sale de `GET /api/public/{site}/menu` y su orden es derivable del mapa de páginas. Agregarlo solo si una página padre necesita esa lista en una posición que no sea la última. |
 | `cta_band` | Ninguna página de GNU pide un llamado a la acción que no sea `lead_capture_form`. |
+| `equipment_quote` | «Cotiza tu equipo» no calcula nada: el visitante deja sus datos y un asesor cotiza. Es el `lead_capture_form` de `/nuestros-servicios/instala-tu-equipo-de-gnv/cotiza-tu-equipo`, igual que «Cotiza tu suministro» en `gnu`. Se reconsidera solo si aparece un tabulador de precios por tipo de equipo. |
+| `financing` | Los planes de financiamiento son tarjetas estructuradas, no una forma nueva. Es el `feature_grid` de `/nuestros-servicios/instala-tu-equipo-de-gnv/financiamiento`. |
 | `billing_info` | «Facturación» es hijo de *Contacto* en GNU Vehicular, así que es sección; y son instrucciones más una liga al portal, o sea contenido libre. Se resuelve con el `rich_text` de `/contacto`. |
 | `certifications`, `esr_ecovadis` | Son páginas de GNU (`/sobre-nosotros/certificaciones`, `/desarrollo-sostenible/distintivo-esr`, `/desarrollo-sostenible/ecovadis`), no bloques. Se resuelven con `page_hero` + `feature_grid` / `rich_text`. |
