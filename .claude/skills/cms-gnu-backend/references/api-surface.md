@@ -66,6 +66,11 @@ solo lo lee y lo borra. Test: `does not let the admin create or edit a lead`.
 la página donde se renderizó el formulario, y el request lo valida contra las páginas publicadas de
 ese sitio. Sin él, los 4 formularios de `gnu-vehicular` caen indistinguibles en la misma bandeja.
 
+`source` hace un segundo trabajo en el `POST`: resuelve qué sección `lead_capture_form` originó el
+lead, y su `fields[]` es la lista blanca contra la que se valida `details`. Una clave no declarada
+por esa sección es un 422 — así `cotiza-tu-equipo` acepta `vehicle_description` y no `fleet_size`,
+aunque el segundo exista en otro formulario del mismo sitio.
+
 ### Media — 3, reales
 
 | Método | URI | Acción | Estado |
@@ -123,7 +128,7 @@ genera el visitante. Orden ascendente y no `latest()` porque en una agenda impor
 | GET | `blog` | `BlogController@index` | **real** — `published()`, `latest('published_at')`, `paginate(10)`. **Sin `body`** |
 | GET | `blog/{postSlug}` | `BlogController@show` | **real** — el artículo con `body` |
 | GET | `savings-simulator` | `SavingsSimulatorController` | **real** — `?fuel={slug}&quantity={n}&page={slug}`. Ver abajo |
-| POST | `leads` | `LeadController@store` | **real** — `throttle:10,1`. `data: null` + agradecimiento, 201. Acepta `source` opcional: el slug de la página del formulario |
+| POST | `leads` | `LeadController@store` | **real** — `throttle:10,1`. `data: null` + agradecimiento, 201. Acepta `source` (slug de la página del formulario) y `details` (los campos extra que esa sección declare) |
 | GET | `menu` | `MenuController@show` | **real** — árbol derivado de `pages`: raíces por `position`, hijos anidados en `children`. Solo `is_published`; una página oculta arrastra su rama entera. `{slug, path, title, children[]}` |
 | GET | `stations` | `StationController@index` | **real** — solo `is_active`, sin paginar (un mapa dibuja todos los pines). `{name, address, latitude, longitude, phone, schedule}` |
 | GET | `appointments/availability` | `AppointmentController@availability` | **real** — `?station={id}&date=Y-m-d`. Ver abajo |

@@ -2,19 +2,23 @@
 
 namespace App\Http\Requests\Public;
 
+use App\Models\Lead;
 use App\Models\Site;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
  * Validates a lead submitted from a public site form.
  *
- * The fields mirror the locked `fields[]` of the `lead_capture_form` section:
- * anything else the front sends is dropped. `site_id` is never accepted here —
- * the site comes from the `{site}` segment of the route.
+ * `site_id` is never accepted here — the site comes from the `{site}` segment
+ * of the route.
  *
- * `source` is the exception to that mirror: it is not a form field the visitor
- * fills, it is the slug of the page the form was rendered on.
+ * The four core fields are columns of `leads`. Anything else a form declares in
+ * the `fields[]` of its `lead_capture_form` section travels in `details`, and
+ * **this class is what makes that declaration binding**: it reads the section
+ * the lead came from and rejects any key that section did not declare. Without
+ * it, `fields[]` would be a hint to the front-end that nothing enforces.
  */
 class StoreLeadRequest extends FormRequest
 {
@@ -42,11 +46,51 @@ class StoreLeadRequest extends FormRequest
                     ->where('site_id', $site->id)
                     ->where('is_published', true),
             ],
+            'details' => ['nullable', 'array', $this->onlyDeclaredFields($site)],
+            'details.*' => ['nullable', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
             'message' => ['nullable', 'string', 'max:2000'],
         ];
+    }
+
+    /**
+     * Reject any key the form of the `source` page did not declare.
+     *
+     * A lead with no `source` has no form to check against, so it accepts no
+     * extras at all: closed by default, like an unknown section type.
+     */
+    private function onlyDeclaredFields(Site $site): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) use ($site): void {
+            $unknown = array_diff(array_keys((array) $value), $this->declaredExtraFields($site));
+
+            if ($unknown !== []) {
+                $fail('El formulario de esta página no acepta: '.implode(', ', $unknown).'.');
+            }
+        };
+    }
+
+    /**
+     * The fields the source page's form declares beyond the four core ones.
+     *
+     * @return array<int, string>
+     */
+    private function declaredExtraFields(Site $site): array
+    {
+        $source = $this->string('source')->toString();
+
+        if ($source === '') {
+            return [];
+        }
+
+        $section = $site->sections()
+            ->where('type', 'lead_capture_form')
+            ->whereHas('page', fn ($page) => $page->where('slug', $source))
+            ->first();
+
+        return array_values(array_diff($section?->content['fields'] ?? [], Lead::CORE_FIELDS));
     }
 
     /**
@@ -56,6 +100,7 @@ class StoreLeadRequest extends FormRequest
     {
         return [
             'source' => 'origen',
+            'details' => 'datos del formulario',
             'name' => 'nombre',
             'email' => 'correo electrónico',
             'phone' => 'teléfono',

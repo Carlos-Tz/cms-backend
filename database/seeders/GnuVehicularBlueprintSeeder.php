@@ -189,6 +189,7 @@ class GnuVehicularBlueprintSeeder extends Seeder
         $this->section($site, $fleets, 'lead_capture_form', 4, $this->leadForm(
             'Cotiza para tu flotilla',
             'Cuéntanos cuántas unidades tienes y un asesor se comunicará contigo.',
+            ['fleet_size'],
         ));
 
         $mobile = $this->page(
@@ -266,6 +267,7 @@ class GnuVehicularBlueprintSeeder extends Seeder
         $this->section($site, $quote, 'lead_capture_form', 3, $this->leadForm(
             'Cotiza tu equipo',
             'Déjanos los datos de tu vehículo y te enviamos una cotización.',
+            ['vehicle_description'],
         ));
 
         $financing = $this->page(
@@ -475,18 +477,24 @@ class GnuVehicularBlueprintSeeder extends Seeder
     }
 
     /**
-     * A `lead_capture_form` section. `fields` is locked: each entry maps to a
-     * column of the `leads` table, so changing it is a schema change.
+     * A `lead_capture_form` section.
      *
+     * `fields` is locked: the four core entries map to columns of `leads`, and
+     * `$extra` declares the fields this particular form asks for on top of them
+     * — they travel in `leads.details`. The declaration is binding: the public
+     * endpoint rejects any key a form did not declare.
+     *
+     * @param  list<string>  $extra
      * @return array<string, mixed>
      */
-    private function leadForm(string $title, string $intro): array
+    private function leadForm(string $title, string $intro, array $extra = []): array
     {
         return [
             'title' => $title,
             'intro' => $intro,
             'submit_label' => 'Enviar',
-            'fields' => ['name', 'email', 'phone', 'message'],
+            // `message` stays last: it reads as the closing field of a form.
+            'fields' => ['name', 'email', 'phone', ...$extra, 'message'],
         ];
     }
 

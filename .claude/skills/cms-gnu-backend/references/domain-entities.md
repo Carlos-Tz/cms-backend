@@ -72,11 +72,20 @@ listado lo sirve `GET /api/public/{site}/blog`.
 ### `leads`
 
 `id`, `site_id` FK cascade, `source` (nullable), `name`, `email`, `phone` (nullable), `message`
-(text nullable), timestamps. Index `[site_id, created_at]`.
+(text nullable), `details` (json nullable), timestamps. Index `[site_id, created_at]`.
 
-**Una columna por cada entrada del `fields[]` bloqueado de `lead_capture_form`.** Esa es la razón de
-que `fields[]` sea `fijo`: si el admin agregara un campo al formulario, el dato llegaría al endpoint
-y se descartaría en silencio. Cambiar el formulario es un cambio de esquema.
+**Una columna por cada entrada core del `fields[]` de `lead_capture_form`** — `name`, `email`,
+`phone`, `message`, las que lleva todo formulario. `Lead::CORE_FIELDS` es esa lista.
+
+**`details` guarda los campos que un formulario pide de más.** Un formulario comercial pregunta lo
+suyo —el vehículo a convertir, el tamaño de una flotilla— y sin esta columna el dato terminaba
+enterrado en el texto libre del mensaje. Es JSON y no una columna por campo porque el conjunto se
+declara por sección en `fields[]`, así que un formulario nuevo no debe necesitar una migración.
+
+Lo que impide que se vuelva un basurero es que `StoreLeadRequest` **valida el payload contra el
+`fields[]` de la sección de la que vino el lead**, resuelta por `source`: una clave no declarada es
+un 422, y sin `source` no se acepta ningún extra. Ese request es lo que convierte `fields[]` de
+pista para el front en contrato real.
 
 `created_at` es la fecha de captación; no hay columna extra para eso. `site_id` **no** es fillable a
 propósito: sale del route binding.

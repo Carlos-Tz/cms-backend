@@ -156,12 +156,23 @@ Presente en los 4 sitios. Es la única escritura pública de la API
 |---|---|---|---|
 | `title` | string | sí | |
 | `intro` | text | sí | nullable |
-| `fields[]` | colección | **fijo** | ver motivo abajo |
+| `fields[]` | colección | **fijo** | los 4 de siempre, más los que pida este formulario. Ver abajo |
 | `submit_label` | string | sí | texto del botón |
 
-**`fields[]` es `fijo`** porque cada campo del formulario corresponde a una columna de la tabla
-`leads`. Si el admin agregara un campo, el dato llegaría al endpoint y se descartaría en silencio.
-Cambiar el formulario es un cambio de esquema, y pasa por desarrollo.
+**`fields[]` es `fijo` y además el backend lo hace cumplir.** Son dos capas distintas:
+
+- `name`, `email`, `phone` y `message` los lleva **todo** formulario y son columnas de `leads`.
+- Cualquier otro campo que declare una instancia es un **extra** de ese formulario y viaja en
+  `leads.details`. `POST /api/public/{site}/leads` lee el `fields[]` de la sección de la que vino el
+  lead —la resuelve por el `source`— y **rechaza con 422 cualquier clave que esa sección no
+  declare**. Un lead sin `source` no admite extras: cerrado por defecto.
+
+Por eso `fields[]` es `fijo`: quien lo declara define el contrato que el endpoint valida. El admin
+podría anunciar un campo que el backend rechaza, así que cambiar el formulario sigue siendo trabajo
+de desarrollo, en el seeder. Lo que ya no hace falta es una migración por cada campo nuevo.
+
+Instancias con extras hoy, ambas en `gnu-vehicular`: `cotiza-tu-equipo` declara
+`vehicle_description` y `flotillas-empresariales` declara `fleet_size`.
 
 El destinatario de la notificación no vive aquí: es configuración del sitio, no contenido de la
 sección.

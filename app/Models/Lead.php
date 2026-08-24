@@ -16,11 +16,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * which page's form produced the lead, and the request validates it against the
  * published pages of that site so it cannot hold junk.
  */
-#[Fillable(['source', 'name', 'email', 'phone', 'message'])]
+#[Fillable(['source', 'name', 'email', 'phone', 'message', 'details'])]
 class Lead extends Model
 {
     /** @use HasFactory<LeadFactory> */
     use HasFactory;
+
+    /**
+     * The fields every `lead_capture_form` has, one column each. Anything a
+     * form declares beyond these is an extra and lands in `details`.
+     *
+     * @var list<string>
+     */
+    public const CORE_FIELDS = ['name', 'email', 'phone', 'message'];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'details' => 'array',
+        ];
+    }
 
     /**
      * @return BelongsTo<Site, $this>

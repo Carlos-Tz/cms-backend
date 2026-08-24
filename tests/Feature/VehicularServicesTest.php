@@ -80,6 +80,69 @@ it('captures a lead from the equipment quote form', function () {
     expect(Lead::firstOrFail()->site->slug)->toBe('gnu-vehicular');
 });
 
+it('declares the extra field each commercial form asks for', function (string $page, int $index, string $field) {
+    $this->getJson("/api/public/gnu-vehicular/pages/{$page}")
+        ->assertOk()
+        ->assertJsonPath("data.sections.{$index}.content.fields", [
+            'name', 'email', 'phone', $field, 'message',
+        ]);
+})->with([
+    ['cotiza-tu-equipo', 2, 'vehicle_description'],
+    ['flotillas-empresariales', 3, 'fleet_size'],
+]);
+
+it('stores the vehicle of an equipment quote in its own field', function () {
+    $this->postJson('/api/public/gnu-vehicular/leads', [
+        'source' => 'cotiza-tu-equipo',
+        'name' => 'Ana Ruiz',
+        'email' => 'ana@example.com',
+        'details' => ['vehicle_description' => 'Nissan Versa 2020'],
+    ])->assertCreated();
+
+    expect(Lead::sole()->details)->toBe(['vehicle_description' => 'Nissan Versa 2020']);
+});
+
+it('stores the fleet size of a fleet quote', function () {
+    $this->postJson('/api/public/gnu-vehicular/leads', [
+        'source' => 'flotillas-empresariales',
+        'name' => 'Luis Mora',
+        'email' => 'luis@example.com',
+        'details' => ['fleet_size' => '12'],
+    ])->assertCreated();
+
+    expect(Lead::sole()->details)->toBe(['fleet_size' => '12']);
+});
+
+it('rejects a field declared by another form', function () {
+    // `fleet_size` is real, but not on this form: the declaration is per section.
+    $this->postJson('/api/public/gnu-vehicular/leads', [
+        'source' => 'cotiza-tu-equipo',
+        'name' => 'Ana Ruiz',
+        'email' => 'ana@example.com',
+        'details' => ['fleet_size' => '12'],
+    ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors([
+            'details' => 'El formulario de esta página no acepta: fleet_size.',
+        ]);
+
+    expect(Lead::count())->toBe(0);
+});
+
+it('shows the extra fields in the admin inbox', function () {
+    $this->postJson('/api/public/gnu-vehicular/leads', [
+        'source' => 'cotiza-tu-equipo',
+        'name' => 'Ana Ruiz',
+        'email' => 'ana@example.com',
+        'details' => ['vehicle_description' => 'Nissan Versa 2020'],
+    ])->assertCreated();
+
+    $this->withToken($this->token)
+        ->getJson('/api/admin/leads?site=gnu-vehicular&source=cotiza-tu-equipo')
+        ->assertOk()
+        ->assertJsonPath('data.0.details.vehicle_description', 'Nissan Versa 2020');
+});
+
 it('lets the admin write the financing plans', function () {
     $section = vehicularSection('feature_grid', 'financiamiento');
 
@@ -113,6 +176,7 @@ it('keeps the fleet form fields locked', function () {
         ])
         ->assertOk();
 
+    // The declared extra survives too: `fields[]` is locked as a whole.
     expect(vehicularSection('lead_capture_form', 'flotillas-empresariales')->content['fields'])
-        ->toBe(['name', 'email', 'phone', 'message']);
+        ->toBe(['name', 'email', 'phone', 'fleet_size', 'message']);
 });

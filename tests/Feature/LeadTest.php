@@ -118,6 +118,27 @@ it('filters the admin inbox by the form that produced the lead', function () {
         ->assertJsonPath('meta.total', 3);
 });
 
+it('rejects extra fields on a form that declares none', function () use ($payload) {
+    $this->postJson('/api/public/gnu/leads', [
+        ...$payload,
+        'source' => 'inicio',
+        'details' => ['vehicle_description' => 'Versa 2020'],
+    ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors([
+            'details' => 'El formulario de esta página no acepta: vehicle_description.',
+        ]);
+
+    expect(Lead::count())->toBe(0);
+});
+
+it('rejects extra fields on a lead with no source at all', function () use ($payload) {
+    // No source means no form to check against: closed by default.
+    $this->postJson('/api/public/gnu/leads', [...$payload, 'details' => ['lo_que_sea' => 'x']])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['details']);
+});
+
 it('blocks the admin lead api without a token', function () {
     $this->getJson('/api/admin/leads')
         ->assertUnauthorized()
