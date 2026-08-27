@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Page;
 use App\Models\Site;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
@@ -14,7 +12,7 @@ use Illuminate\Support\Str;
  * `.claude/skills/sitios-web-gnu`; the values below are placeholders the admin
  * replaces through the admin API. Idempotent: safe to re-run.
  */
-class GnuBlueprintSeeder extends Seeder
+class GnuBlueprintSeeder extends BlueprintSeeder
 {
     /**
      * Run the database seeds.
@@ -552,42 +550,5 @@ class GnuBlueprintSeeder extends Seeder
                 ],
             );
         }
-    }
-
-    /**
-     * Upsert a page by (site, slug). `position` orders the nav column for a root
-     * page, and the child within its column for a nested one.
-     */
-    private function page(
-        Site $site,
-        string $slug,
-        string $path,
-        string $title,
-        int $position,
-        ?Page $parent = null,
-    ): Page {
-        return Page::updateOrCreate(
-            ['site_id' => $site->id, 'slug' => $slug],
-            [
-                'parent_id' => $parent?->id,
-                'path' => $path,
-                'title' => $title,
-                'position' => $position,
-                'is_published' => true,
-            ],
-        );
-    }
-
-    /**
-     * Upsert a section by (site, page, type) — one instance per type per page today.
-     *
-     * @param  array<string, mixed>  $content
-     */
-    private function section(Site $site, ?Page $page, string $type, int $position, array $content): void
-    {
-        $site->sections()->updateOrCreate(
-            ['page_id' => $page?->id, 'type' => $type],
-            ['position' => $position, 'content' => $content],
-        );
     }
 }

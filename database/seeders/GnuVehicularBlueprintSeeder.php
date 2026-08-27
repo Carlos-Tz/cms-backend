@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Page;
 use App\Models\Site;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
@@ -14,7 +13,7 @@ use Illuminate\Support\Str;
  *
  * Idempotent: safe to re-run.
  */
-class GnuVehicularBlueprintSeeder extends Seeder
+class GnuVehicularBlueprintSeeder extends BlueprintSeeder
 {
     /**
      * Run the database seeds.
@@ -565,44 +564,5 @@ class GnuVehicularBlueprintSeeder extends Seeder
                 ],
             );
         }
-    }
-
-    /**
-     * Upsert a page by (site, slug). `position` orders the nav column.
-     *
-     * ponytail: duplicated from GnuBlueprintSeeder. Extract a base seeder when
-     * the third site lands — two copies do not pay for an abstraction yet.
-     */
-    private function page(
-        Site $site,
-        string $slug,
-        string $path,
-        string $title,
-        int $position,
-        ?Page $parent = null,
-    ): Page {
-        return Page::updateOrCreate(
-            ['site_id' => $site->id, 'slug' => $slug],
-            [
-                'parent_id' => $parent?->id,
-                'path' => $path,
-                'title' => $title,
-                'position' => $position,
-                'is_published' => true,
-            ],
-        );
-    }
-
-    /**
-     * Upsert a section by (site, page, type) — one instance per type per page today.
-     *
-     * @param  array<string, mixed>  $content
-     */
-    private function section(Site $site, ?Page $page, string $type, int $position, array $content): void
-    {
-        $site->sections()->updateOrCreate(
-            ['page_id' => $page?->id, 'type' => $type],
-            ['position' => $position, 'content' => $content],
-        );
     }
 }
