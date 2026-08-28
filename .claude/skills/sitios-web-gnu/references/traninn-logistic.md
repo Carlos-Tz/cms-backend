@@ -1,8 +1,8 @@
 # Traninn Logistic — `traninn-logistic`
 
-Blueprint de contenido predefinido. **Migrado parcial**: solo la columna *Inicio* y las secciones
-globales están en formato blueprint y sembradas por `TraninnLogisticBlueprintSeeder`. Las otras
-cuatro columnas siguen en el árbol crudo del apéndice.
+Blueprint de contenido predefinido. **Migrado parcial**: las columnas *Inicio* y *Sobre nosotros*, más
+las secciones globales, están en formato blueprint y sembradas por `TraninnLogisticBlueprintSeeder`.
+Las otras tres columnas siguen en el árbol crudo del apéndice.
 
 Los campos de cada tipo de sección están en [`section-types.md`](section-types.md); los valores viven
 en el seeder y en la BD.
@@ -22,11 +22,14 @@ Contacto (4), Ubicaciones (5). El sitio **no tiene blog**.
 |---|---|---|---|---|---|
 | 1 | `/` | Inicio | — | 1 | `banner_carousel`, `savings_simulator`, `rich_text`, `clients_showcase`, `lead_capture_form` |
 | — | `/nuestros-servicios` | Nuestros servicios | — | 2 | **sin migrar** |
-| — | `/sobre-nosotros` | Sobre nosotros | — | 3 | **sin migrar** |
+| 2 | `/sobre-nosotros` | Sobre nosotros | — | 3 | `page_hero`, `rich_text`, `clients_showcase` |
+| 3 | `/sobre-nosotros/que-hacemos` | ¿Qué hacemos? | `/sobre-nosotros` | 1 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
+| 4 | `/sobre-nosotros/proposito-empresarial` | Propósito empresarial | `/sobre-nosotros` | 2 | `page_hero`, `rich_text`, `image_gallery` |
+| 5 | `/sobre-nosotros/nuestra-historia` | Nuestra historia | `/sobre-nosotros` | 3 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
 | — | `/contacto` | Contacto | — | 4 | **sin migrar** |
 | — | `/ubicaciones` | Ubicaciones | — | 5 | **sin migrar** |
 
-**Sembradas: 1 de 5 columnas.** El estado por tipo vive en
+**Sembradas: 2 de 5 columnas, 5 páginas.** El estado por tipo vive en
 [`implementation-status.md`](implementation-status.md).
 
 Notas de lectura:
@@ -47,6 +50,18 @@ Notas de lectura:
   filas de `stations`, no campos nuevos.
 - **Sin `testimonials`**: ese tipo está declarado para `gnu` y `gnu-vehicular`, no para este sitio.
 - **Sin blog**: no hay `/blog` ni filas de `blog_posts`.
+- **«Nuestros clientes» bajo *Sobre nosotros* es una sección, no una cuarta página hija.** Es la
+  excepción de la regla 3 de clasificación de [`gnu.md`](gnu.md): su nombre coincide con un tipo del
+  catálogo. Queda como `clients_showcase` de la cabeza de columna, igual que el nodo homónimo bajo
+  *Nuestros servicios* en `gnu`.
+- **El sitio lleva dos `clients_showcase`**, en `/` y en `/sobre-nosotros`, y cada instancia guarda
+  sus propios valores. El de la portada es un muro de logos; el de *Sobre nosotros* llena además
+  `description`, `quote` y `quote_author`, los tres campos nullable que se agregaron al tipo.
+- **Las páginas hijas llevan `page_hero` junto con `banner_carousel`.** No se contradicen: el `page_hero`
+  es el H1 de la página y el carrusel es un bloque de contenido. La regla «el carrusel es el hero»
+  aplica solo a `/`, que por eso no lleva `page_hero`.
+- **`image_gallery` nació con esta columna.** El cliente pidió «imágenes» aparte de los banners en
+  tres de sus páginas, y no había tipo que lo cubriera sin incrustar HTML a mano.
 - **El `lead_capture_form` de la portada no declara extras**: los cuatro campos de siempre, que son
   columnas de `leads`. Cuando se migre la columna *Contacto* el sitio tendrá dos formularios, y ahí
   `leads.source` empieza a importar para separarlos en la bandeja.

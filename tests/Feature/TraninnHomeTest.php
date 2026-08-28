@@ -16,13 +16,18 @@ beforeEach(function () {
 
 /**
  * Named apart from the helpers of the other site tests: Pest helpers are global.
- * No page filter needed — the site seeds a single page today.
+ * `$pageSlug` is needed for `clients_showcase`, which the site carries on both
+ * `/` and `/sobre-nosotros`.
  */
-function traninnSection(string $type): Section
+function traninnSection(string $type, ?string $pageSlug = null): Section
 {
     return Site::where('slug', 'traninn-logistic')->firstOrFail()
         ->sections()
         ->where('type', $type)
+        ->when(
+            $pageSlug !== null,
+            fn ($query) => $query->whereHas('page', fn ($page) => $page->where('slug', $pageSlug)),
+        )
         ->firstOrFail();
 }
 
@@ -60,7 +65,7 @@ it('simulates savings with this site prices', function () {
 });
 
 it('replaces the client logos through the admin API', function () {
-    $section = traninnSection('clients_showcase');
+    $section = traninnSection('clients_showcase', 'inicio');
 
     $this->withToken($this->token)
         ->putJson("/api/admin/sections/{$section->id}", [
@@ -75,7 +80,7 @@ it('replaces the client logos through the admin API', function () {
         ->assertOk()
         ->assertJsonCount(2, 'data.content.logos');
 
-    expect(traninnSection('clients_showcase')->content['title'])
+    expect(traninnSection('clients_showcase', 'inicio')->content['title'])
         ->toBe('Empresas que confían en nosotros');
 });
 

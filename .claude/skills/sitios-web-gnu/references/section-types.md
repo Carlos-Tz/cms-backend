@@ -36,7 +36,8 @@ se construye?»*. Si la respuesta es no, está en el lugar equivocado.
 ## Tipos genéricos
 
 Cubren la mayoría de las páginas de contenido por reuso. 11 de las 17 páginas de GNU se arman
-únicamente con estos tres tipos.
+únicamente con `page_hero`, `rich_text` y `feature_grid`; `image_gallery` se sumó al grupo con la
+columna «Sobre nosotros» de Traninn Logistic.
 
 ### `page_hero`
 
@@ -74,6 +75,27 @@ Rejilla de tarjetas. Cubre valores, beneficios de un servicio, certificaciones e
 | `items[].icon` | media | sí | nullable |
 | `items[].title` | string | sí | |
 | `items[].text` | text | sí | |
+
+### `image_gallery`
+
+Rejilla de fotografías. Cubre el requisito de «imágenes» que aparece suelto en varias páginas de
+contenido, separado del carrusel: un `banner_carousel` es el encabezado ancho de una página y una
+galería son fotos de apoyo dentro del cuerpo.
+
+| campo | tipo | editable | notas |
+|---|---|---|---|
+| `title` | string | sí | nullable |
+| `images[]` | colección | sí | el admin agrega, quita y reordena imágenes |
+| `images[].image` | media | sí | |
+| `images[].caption` | string | sí | nullable; pie de foto |
+| `images[].alt` | string | sí | nullable; texto alternativo |
+
+Sin `layout` ni `columns`: cómo se acomoda la rejilla es decisión del front, igual que el ritmo del
+carrusel o la posición del botón de WhatsApp.
+
+Se agregó al catálogo en vez de resolverlo con imágenes incrustadas en el HTML de `rich_text`:
+así incrustadas no son contenido gestionable —no hay orden, ni `alt`, ni forma de quitar una sin
+editar HTML a mano— y el contrato de editabilidad promete que el admin solo actualiza valores.
 
 ---
 
@@ -133,6 +155,18 @@ globales no la tienen.
 | `logos[].image` | media | sí | |
 | `logos[].name` | string | sí | |
 | `logos[].url` | url | sí | nullable |
+| `logos[].description` | text | sí | nullable; qué hacemos para ese cliente |
+| `logos[].quote` | text | sí | nullable; testimonio breve del cliente |
+| `logos[].quote_author` | string | sí | nullable; quién firma el testimonio |
+
+Los tres últimos son **nullable a propósito**: la instancia que solo quiere un muro de logos los deja
+vacíos y la que quiere fichas con testimonio los llena. Es el mecanismo que prescribe «Prohibido:
+overrides por página» — el campo vive en el tipo, no en la página.
+
+El testimonio va **dentro del cliente** en vez de en una sección `testimonials` aparte porque así
+queda atado a quién lo dijo; con dos secciones separadas el front tendría que adivinar la
+correspondencia. `testimonials` sigue existiendo para los testimonios que no pertenecen a un cliente
+del muro.
 
 ### `testimonials`
 

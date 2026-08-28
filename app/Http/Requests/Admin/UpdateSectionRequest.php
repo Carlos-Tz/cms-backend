@@ -56,12 +56,26 @@ class UpdateSectionRequest extends FormRequest
             'fuel_prices.*.unit' => ['required', 'string', 'max:20'],
             'fuel_prices.*.equivalence_factor' => ['required', 'numeric', 'gt:0'],
         ],
+        // `description`, `quote` and `quote_author` are nullable so the instances
+        // that only show a wall of logos leave them empty. That is the blueprint's
+        // mechanism for a field that applies on one page and not on another —
+        // per-page overrides of a type are forbidden.
         'clients_showcase' => [
             'title' => ['nullable', 'string', 'max:255'],
             'logos' => ['present', 'array'],
             'logos.*.image' => ['required', 'string', 'max:2048'],
             'logos.*.name' => ['required', 'string', 'max:255'],
             'logos.*.url' => ['nullable', 'url', 'max:2048'],
+            'logos.*.description' => ['nullable', 'string', 'max:1000'],
+            'logos.*.quote' => ['nullable', 'string', 'max:2000'],
+            'logos.*.quote_author' => ['nullable', 'string', 'max:255'],
+        ],
+        'image_gallery' => [
+            'title' => ['nullable', 'string', 'max:255'],
+            'images' => ['present', 'array'],
+            'images.*.image' => ['required', 'string', 'max:2048'],
+            'images.*.caption' => ['nullable', 'string', 'max:255'],
+            'images.*.alt' => ['nullable', 'string', 'max:255'],
         ],
         'testimonials' => [
             'title' => ['nullable', 'string', 'max:255'],

@@ -75,6 +75,7 @@ Genéricos, cubren la mayoría de las páginas de contenido por reuso:
 - `rich_text` — contenido libre; incluye `video_url`, que absorbe el requisito transversal de
   video. Puede repetirse en una misma página.
 - `feature_grid` — rejilla de tarjetas (valores, beneficios, certificaciones, iniciativas).
+- `image_gallery` — rejilla de fotografías con pie de foto y texto alternativo.
 
 Compartidos entre sitios:
 
@@ -85,7 +86,8 @@ Compartidos entre sitios:
 - `lead_capture_form` — los 4 sitios («captación de leads»).
 - `savings_simulator` — GNU, GNU Vehicular, Traninn Logistic. No Tectuus.
 - `testimonials` — GNU, GNU Vehicular.
-- `clients_showcase` («nuestros clientes») — GNU, Traninn Logistic, Tectuus.
+- `clients_showcase` («nuestros clientes») — GNU, Traninn Logistic, Tectuus. Cada logo puede
+  llevar descripción y un testimonio propio, ambos nullable.
 - `stations_map` — GNU y GNU Vehicular.
 
 Candidatos exclusivos de un sitio, **sin verificar**: `product_catalog` (Tectuus),
