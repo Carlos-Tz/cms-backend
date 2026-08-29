@@ -4,18 +4,25 @@
   "name": "GNU CMS - Staging",
   "variables": [
     { "key": "BASE_URL", "value": "https://gnu-headless-cms.165.227.59.215.sslip.io", "secret": false },
+    { "key": "ADMIN_EMAIL", "value": "", "secret": false },
+    { "key": "ADMIN_PASSWORD", "value": "", "secret": true },
     { "key": "ACCESS_TOKEN", "value": "", "secret": false },
+
     { "key": "SITE", "value": "gnu", "secret": false },
     { "key": "SITE_ID", "value": "1", "secret": false },
+
     { "key": "PAGE_ID", "value": "1", "secret": false },
     { "key": "PAGE_SLUG", "value": "inicio", "secret": false },
     { "key": "SECTION_ID", "value": "1", "secret": false },
+
     { "key": "BLOG_POST_ID", "value": "1", "secret": false },
     { "key": "BLOG_SLUG", "value": "", "secret": false },
     { "key": "STATION_ID", "value": "1", "secret": false },
     { "key": "LEAD_ID", "value": "", "secret": false },
+    { "key": "APPOINTMENT_ID", "value": "", "secret": false },
+    { "key": "MEDIA_FILE", "value": "", "secret": false },
+
     { "key": "USER_ID", "value": "1", "secret": false },
-    { "key": "MENU_ID", "value": "1", "secret": false },
-    { "key": "MEDIA_ID", "value": "1", "secret": false }
+    { "key": "MENU_ID", "value": "1", "secret": false }
   ]
 }

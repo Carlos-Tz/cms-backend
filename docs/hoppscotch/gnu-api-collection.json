@@ -4,366 +4,151 @@
   "folders": [
     {
       "v": 6,
-      "name": "1. Autenticación",
+      "name": "1. Autenticacion",
       "folders": [],
       "requests": [
         {
           "v": "11",
-          "name": "Login",
+          "name": "Login (guarda el token)",
           "method": "POST",
           "endpoint": "<<BASE_URL>>/api/admin/auth/login",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda el token en la variable de entorno ACCESS_TOKEN\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.access_token) {\n  pw.env.set(\"ACCESS_TOKEN\", res.data.access_token);\n}",
-          "auth": { "authType": "none", "authActive": true },
+          "testScript": "const res = pw.response.body;\npw.test(\"Status 200\", () => pw.expect(pw.response.status).toBe(200));\nif (res && res.data && res.data.access_token) {\n  pw.env.set(\"ACCESS_TOKEN\", res.data.access_token);\n}",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
           "body": {
             "contentType": "application/json",
-            "body": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password\"\n}"
+            "body": "{\n  \"email\": \"<<ADMIN_EMAIL>>\",\n  \"password\": \"<<ADMIN_PASSWORD>>\"\n}"
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Me",
+          "name": "Me — usuario autenticado",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/auth/me",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Logout",
+          "name": "Logout — invalida el token",
           "method": "POST",
           "endpoint": "<<BASE_URL>>/api/admin/auth/logout",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Limpia el token tras cerrar sesión\npw.env.set(\"ACCESS_TOKEN\", \"\");",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
-      ]
-    },
-    {
-      "v": 6,
-      "name": "2. Sitios (admin)",
-      "folders": [],
-      "requests": [
         {
-          "v": "11",
-          "name": "Listar sitios — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/sites",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Crear sitio — STUB",
-          "method": "POST",
-          "endpoint": "<<BASE_URL>>/api/admin/sites",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"slug\": \"gnu\",\n  \"name\": \"GNU Gas Natural\"\n}"
-          },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Ver sitio — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/sites/<<SITE_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar sitio — STUB",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/sites/<<SITE_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"name\": \"GNU Gas Natural\"\n}"
-          },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Eliminar sitio — STUB",
-          "method": "DELETE",
-          "endpoint": "<<BASE_URL>>/api/admin/sites/<<SITE_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
         }
-      ],
-      "auth": { "authType": "inherit", "authActive": true },
-      "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
       ]
     },
     {
       "v": 6,
-      "name": "3. Usuarios (admin)",
+      "name": "2. Paginas (admin)",
       "folders": [],
       "requests": [
         {
           "v": "11",
-          "name": "Listar usuarios — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/users",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Crear usuario — STUB",
-          "method": "POST",
-          "endpoint": "<<BASE_URL>>/api/admin/users",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"name\": \"Administrador\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}"
-          },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Ver usuario — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/users/<<USER_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar usuario — STUB",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/users/<<USER_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"name\": \"Administrador\"\n}"
-          },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Eliminar usuario — STUB",
-          "method": "DELETE",
-          "endpoint": "<<BASE_URL>>/api/admin/users/<<USER_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        }
-      ],
-      "auth": { "authType": "inherit", "authActive": true },
-      "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
-      ]
-    },
-    {
-      "v": 6,
-      "name": "4. Menús (admin)",
-      "folders": [],
-      "requests": [
-        {
-          "v": "11",
-          "name": "Listar menús — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/menus",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// El menú público se deriva de las páginas: GET /api/public/{site}/menu",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Crear menú — STUB",
-          "method": "POST",
-          "endpoint": "<<BASE_URL>>/api/admin/menus",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"site_id\": <<SITE_ID>>,\n  \"name\": \"Principal\"\n}"
-          },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Ver menú — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/menus/<<MENU_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar menú — STUB",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/menus/<<MENU_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"name\": \"Principal\"\n}"
-          },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Eliminar menú — STUB",
-          "method": "DELETE",
-          "endpoint": "<<BASE_URL>>/api/admin/menus/<<MENU_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        }
-      ],
-      "auth": { "authType": "inherit", "authActive": true },
-      "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
-      ]
-    },
-    {
-      "v": 6,
-      "name": "5. Páginas (admin)",
-      "folders": [],
-      "requests": [
-        {
-          "v": "11",
-          "name": "Listar páginas",
+          "name": "Listar paginas de un sitio",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/pages",
           "params": [
-            { "key": "site", "value": "<<SITE>>", "active": true }
+            {
+              "key": "site",
+              "value": "<<SITE>>",
+              "active": true
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda la primera página en PAGE_ID / PAGE_SLUG\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"PAGE_ID\", String(res.data[0].id));\n  pw.env.set(\"PAGE_SLUG\", String(res.data[0].slug));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Ver página con sus secciones",
+          "name": "Ver pagina con sus secciones",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/pages/<<PAGE_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda la primera sección de la página en SECTION_ID\nconst res = pw.response.body;\nif (res && res.data && res.data.sections && res.data.sections.length > 0) {\n  pw.env.set(\"SECTION_ID\", String(res.data.sections[0].id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Publicar / despublicar página",
+          "name": "Publicar / despublicar pagina — solo is_published",
           "method": "PUT",
           "endpoint": "<<BASE_URL>>/api/admin/pages/<<PAGE_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Publicar es lo único editable de una página: ruta, título y orden son blueprint.",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
             "contentType": "application/json",
             "body": "{\n  \"is_published\": true\n}"
@@ -372,181 +157,544 @@
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
       ]
     },
     {
       "v": 6,
-      "name": "6. Secciones (admin)",
-      "folders": [],
+      "name": "3. Secciones (admin)",
+      "folders": [
+        {
+          "v": 6,
+          "name": "Actualizar contenido — un ejemplo por tipo",
+          "folders": [],
+          "requests": [
+            {
+              "v": "11",
+              "name": "PUT page_hero",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Sobre nosotros\",\n    \"subtitle\": \"Quiénes somos.\",\n    \"image\": \"media/hero.jpg\"\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT rich_text",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": null,\n    \"body\": \"<p>Contenido en HTML.</p>\",\n    \"video_url\": \"https://www.youtube.com/watch?v=xxxxxxxxxxx\"\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT feature_grid",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Beneficios\",\n    \"items\": [\n      {\n        \"icon\": \"media/icono.svg\",\n        \"title\": \"Ahorro\",\n        \"text\": \"Menos costo por kilómetro.\"\n      },\n      {\n        \"icon\": null,\n        \"title\": \"Menos emisiones\",\n        \"text\": \"Combustible más limpio.\"\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT banner_carousel",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"slides\": [\n      {\n        \"image\": \"media/banner-1.jpg\",\n        \"title\": \"Título del banner\",\n        \"subtitle\": \"Subtítulo opcional\",\n        \"link_url\": \"https://ejemplo.mx\",\n        \"link_label\": \"Conocer más\"\n      },\n      {\n        \"image\": \"media/banner-2.jpg\",\n        \"title\": null,\n        \"subtitle\": null,\n        \"link_url\": null,\n        \"link_label\": null\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT image_gallery",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Nuestra flota\",\n    \"images\": [\n      {\n        \"image\": \"media/foto-1.jpg\",\n        \"caption\": \"Unidad de GNC\",\n        \"alt\": \"Tracto con cisterna\"\n      },\n      {\n        \"image\": \"media/foto-2.jpg\",\n        \"caption\": null,\n        \"alt\": null\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT clients_showcase",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Nuestros clientes\",\n    \"logos\": [\n      {\n        \"image\": \"media/cliente-1.png\",\n        \"name\": \"Cliente Uno\",\n        \"url\": \"https://cliente-uno.mx\",\n        \"description\": \"Transportamos su gas natural desde 2021.\",\n        \"quote\": \"Nunca hemos parado la planta por falta de suministro.\",\n        \"quote_author\": \"Jefe de operaciones\"\n      },\n      {\n        \"image\": \"media/cliente-2.png\",\n        \"name\": \"Cliente Dos\",\n        \"url\": null,\n        \"description\": null,\n        \"quote\": null,\n        \"quote_author\": null\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT testimonials",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Lo que dicen de nosotros\",\n    \"items\": [\n      {\n        \"quote\": \"Excelente servicio.\",\n        \"author\": \"Nombre Apellido\",\n        \"role\": \"Director de logística\",\n        \"photo\": \"media/foto.jpg\"\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT savings_simulator",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Simulador de ahorro\",\n    \"intro\": \"Compara tu combustible actual contra el gas natural.\",\n    \"fuel_prices\": [\n      {\n        \"fuel\": \"gas-natural\",\n        \"label\": \"Gas natural\",\n        \"price_per_unit\": 12.8,\n        \"unit\": \"m³\",\n        \"equivalence_factor\": 1\n      },\n      {\n        \"fuel\": \"diesel\",\n        \"label\": \"Diésel\",\n        \"price_per_unit\": 26.4,\n        \"unit\": \"litro\",\n        \"equivalence_factor\": 0.95\n      },\n      {\n        \"fuel\": \"gasolina\",\n        \"label\": \"Gasolina\",\n        \"price_per_unit\": 24.9,\n        \"unit\": \"litro\",\n        \"equivalence_factor\": 0.84\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT lead_capture_form — `fields` es fijo: si lo mandas se ignora",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Contáctanos\",\n    \"intro\": \"Déjanos tus datos y un asesor se comunicará contigo.\",\n    \"submit_label\": \"Enviar\"\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT stations_map — `center` y `zoom` son fijos; los pines salen de /stations",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Mapa de estaciones\"\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT service_scheduling — los horarios NO son campos: ver /appointments/availability",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"title\": \"Agenda tu verificación\",\n    \"intro\": \"Elige estación, día y horario.\",\n    \"success_message\": \"Tu cita quedó registrada. Te esperamos.\"\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT contact_info",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"address\": \"Av. Ejemplo 123, Morelia, Michoacán\",\n    \"phone\": \"+52 443 000 0000\",\n    \"email\": \"contacto@ejemplo.mx\",\n    \"schedule\": \"Lunes a viernes de 9:00 a 18:00\",\n    \"additional_info\": null\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT social_icons — `network` es fijo (enum del front)",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"networks\": [\n      {\n        \"network\": \"facebook\",\n        \"url\": \"https://facebook.com/ejemplo\"\n      },\n      {\n        \"network\": \"instagram\",\n        \"url\": \"https://instagram.com/ejemplo\"\n      }\n    ]\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            },
+            {
+              "v": "11",
+              "name": "PUT whatsapp_button",
+              "method": "PUT",
+              "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
+              "params": [],
+              "headers": [],
+              "preRequestScript": "",
+              "testScript": "",
+              "auth": {
+                "authType": "bearer",
+                "authActive": true,
+                "token": "<<ACCESS_TOKEN>>"
+              },
+              "body": {
+                "contentType": "application/json",
+                "body": "{\n  \"content\": {\n    \"phone\": \"+524430000000\",\n    \"prefilled_message\": \"Hola, quiero información.\"\n  }\n}"
+              },
+              "requestVariables": [],
+              "responses": {}
+            }
+          ],
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "headers": [
+            {
+              "key": "Accept",
+              "value": "application/json",
+              "active": true
+            }
+          ]
+        }
+      ],
       "requests": [
         {
           "v": "11",
-          "name": "Listar secciones",
+          "name": "Listar secciones (filtra por sitio / pagina / globales)",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/sections",
           "params": [
-            { "key": "site", "value": "<<SITE>>", "active": true },
-            { "key": "page", "value": "<<PAGE_SLUG>>", "active": false },
-            { "key": "global", "value": "1", "active": false }
+            {
+              "key": "site",
+              "value": "<<SITE>>",
+              "active": true
+            },
+            {
+              "key": "page",
+              "value": "<<PAGE_SLUG>>",
+              "active": false
+            },
+            {
+              "key": "global",
+              "value": "1",
+              "active": false
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda la primera sección en SECTION_ID\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"SECTION_ID\", String(res.data[0].id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Ver sección",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar contenido (page_hero)",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// El cuerpo depende del `type` de la sección. Campos fijos se ignoran y se conservan.",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"content\": {\n    \"title\": \"Energía que mueve a México\",\n    \"subtitle\": \"Gas natural para la industria y el transporte.\",\n    \"image\": \"media/hero.jpg\"\n  }\n}"
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Actualizar contenido (banner_carousel)",
-          "method": "PUT",
+          "name": "Ver seccion",
+          "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Los items de una colección sí los agrega, quita y reordena el admin.",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"content\": {\n    \"slides\": [\n      {\n        \"image\": \"media/slide-1.jpg\",\n        \"title\": \"Ahorra hasta 40%\",\n        \"subtitle\": \"Convierte tu flotilla a gas natural.\",\n        \"link_url\": \"https://gnu.mx/contacto\",\n        \"link_label\": \"Cotizar\"\n      }\n    ]\n  }\n}"
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
       ]
     },
     {
       "v": 6,
-      "name": "7. Blog (admin)",
+      "name": "4. Blog (admin)",
       "folders": [],
       "requests": [
         {
           "v": "11",
-          "name": "Listar artículos",
+          "name": "Listar articulos",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/blog-posts",
           "params": [
-            { "key": "site", "value": "<<SITE>>", "active": true },
-            { "key": "page", "value": "1", "active": false }
+            {
+              "key": "site",
+              "value": "<<SITE>>",
+              "active": true
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "active": false
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda el primer artículo en BLOG_POST_ID\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"BLOG_POST_ID\", String(res.data[0].id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Crear artículo",
-          "method": "POST",
-          "endpoint": "<<BASE_URL>>/api/admin/blog-posts",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// Guarda el artículo creado en BLOG_POST_ID\nconst res = pw.response.body;\npw.test(\"Status 201\", () => {\n  pw.expect(pw.response.status).toBe(201);\n});\nif (res && res.data && res.data.id) {\n  pw.env.set(\"BLOG_POST_ID\", String(res.data.id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"site_id\": <<SITE_ID>>,\n  \"title\": \"Beneficios del gas natural vehicular\",\n  \"slug\": \"beneficios-del-gas-natural-vehicular\",\n  \"excerpt\": \"Menos emisiones y menor costo por kilómetro.\",\n  \"body\": \"<p>Contenido del artículo.</p>\",\n  \"cover_image\": \"media/portada.jpg\",\n  \"published_at\": \"2026-01-15\"\n}"
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Ver artículo",
+          "name": "Crear articulo",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/blog-posts",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"site_id\": 1,\n  \"slug\": \"titulo-del-articulo\",\n  \"title\": \"Título del artículo\",\n  \"excerpt\": \"Resumen corto.\",\n  \"body\": \"<p>Cuerpo en HTML.</p>\",\n  \"cover_image\": \"media/portada.jpg\",\n  \"published_at\": \"2026-08-28 10:00:00\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver articulo",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/blog-posts/<<BLOG_POST_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar artículo",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/blog-posts/<<BLOG_POST_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// site_id está prohibido al actualizar: un artículo no cambia de sitio.",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"title\": \"Beneficios del gas natural vehicular\",\n  \"slug\": \"beneficios-del-gas-natural-vehicular\",\n  \"excerpt\": \"Menos emisiones y menor costo por kilómetro.\",\n  \"body\": \"<p>Contenido actualizado.</p>\",\n  \"cover_image\": \"media/portada.jpg\",\n  \"published_at\": \"2026-01-15\"\n}"
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Eliminar artículo",
+          "name": "Actualizar articulo — site_id prohibido",
+          "method": "PUT",
+          "endpoint": "<<BASE_URL>>/api/admin/blog-posts/<<BLOG_POST_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"slug\": \"titulo-del-articulo\",\n  \"title\": \"Título del artículo\",\n  \"excerpt\": \"Resumen corto.\",\n  \"body\": \"<p>Cuerpo en HTML.</p>\",\n  \"cover_image\": \"media/portada.jpg\",\n  \"published_at\": \"2026-08-28 10:00:00\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Eliminar articulo",
           "method": "DELETE",
           "endpoint": "<<BASE_URL>>/api/admin/blog-posts/<<BLOG_POST_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
       ]
     },
     {
       "v": 6,
-      "name": "8. Estaciones (admin)",
+      "name": "5. Estaciones (admin)",
       "folders": [],
       "requests": [
         {
@@ -555,104 +703,168 @@
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/stations",
           "params": [
-            { "key": "site", "value": "<<SITE>>", "active": true },
-            { "key": "page", "value": "1", "active": false }
+            {
+              "key": "site",
+              "value": "<<SITE>>",
+              "active": true
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "active": false
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda la primera estación en STATION_ID\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"STATION_ID\", String(res.data[0].id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Crear estación",
-          "method": "POST",
-          "endpoint": "<<BASE_URL>>/api/admin/stations",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// Guarda la estación creada en STATION_ID\nconst res = pw.response.body;\npw.test(\"Status 201\", () => {\n  pw.expect(pw.response.status).toBe(201);\n});\nif (res && res.data && res.data.id) {\n  pw.env.set(\"STATION_ID\", String(res.data.id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"site_id\": <<SITE_ID>>,\n  \"name\": \"Estación Monterrey Norte\",\n  \"address\": \"Av. Universidad 1200, Monterrey, N.L.\",\n  \"latitude\": 25.6866,\n  \"longitude\": -100.3161,\n  \"phone\": \"8181234567\",\n  \"schedule\": \"Lunes a domingo, 24 horas\",\n  \"is_active\": true\n}"
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Ver estación",
+          "name": "Crear estacion",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/stations",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"site_id\": 1,\n  \"name\": \"Estación Morelia\",\n  \"address\": \"Av. Madero Poniente 1000, Morelia, Mich.\",\n  \"latitude\": 19.7028,\n  \"longitude\": -101.192,\n  \"phone\": \"+52 443 000 0000\",\n  \"schedule\": \"Lunes a domingo de 6:00 a 22:00\",\n  \"is_active\": true\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver estacion",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/stations/<<STATION_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar estación",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/stations/<<STATION_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// site_id está prohibido al actualizar: una estación no cambia de sitio.",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"name\": \"Estación Monterrey Norte\",\n  \"address\": \"Av. Universidad 1200, Monterrey, N.L.\",\n  \"latitude\": 25.6866,\n  \"longitude\": -100.3161,\n  \"phone\": \"8181234567\",\n  \"schedule\": \"Lunes a domingo, 24 horas\",\n  \"is_active\": false\n}"
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Eliminar estación",
+          "name": "Actualizar estacion — site_id prohibido",
+          "method": "PUT",
+          "endpoint": "<<BASE_URL>>/api/admin/stations/<<STATION_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"name\": \"Estación Morelia\",\n  \"address\": \"Av. Madero Poniente 1000, Morelia, Mich.\",\n  \"latitude\": 19.7028,\n  \"longitude\": -101.192,\n  \"phone\": \"+52 443 000 0000\",\n  \"schedule\": \"Lunes a domingo de 6:00 a 22:00\",\n  \"is_active\": true\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Eliminar estacion",
           "method": "DELETE",
           "endpoint": "<<BASE_URL>>/api/admin/stations/<<STATION_ID>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
       ]
     },
     {
       "v": 6,
-      "name": "9. Leads (admin)",
+      "name": "6. Leads (admin)",
       "folders": [],
       "requests": [
         {
           "v": "11",
-          "name": "Listar leads",
+          "name": "Listar leads (filtra por formulario con source)",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/admin/leads",
           "params": [
-            { "key": "site", "value": "<<SITE>>", "active": true },
-            { "key": "page", "value": "1", "active": false }
+            {
+              "key": "site",
+              "value": "<<SITE>>",
+              "active": true
+            },
+            {
+              "key": "source",
+              "value": "<<PAGE_SLUG>>",
+              "active": false
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "active": false
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda el id del lead más reciente en LEAD_ID\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"LEAD_ID\", String(res.data[0].id));\n}",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
@@ -665,8 +877,15 @@
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
@@ -679,36 +898,172 @@
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
       ]
     },
     {
       "v": 6,
-      "name": "10. Media (admin)",
+      "name": "7. Agenda de verificacion (admin)",
       "folders": [],
       "requests": [
         {
           "v": "11",
-          "name": "Subir archivo",
+          "name": "Listar citas",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/appointments",
+          "params": [
+            {
+              "key": "site",
+              "value": "<<SITE>>",
+              "active": true
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "active": false
+            }
+          ],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver cita",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/appointments/<<APPOINTMENT_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Cancelar cita",
+          "method": "DELETE",
+          "endpoint": "<<BASE_URL>>/api/admin/appointments/<<APPOINTMENT_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
+      ]
+    },
+    {
+      "v": 6,
+      "name": "8. Media (admin)",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "Listar imagenes subidas",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/media",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Subir imagen (max. 5 MB) — devuelve path y url",
           "method": "POST",
           "endpoint": "<<BASE_URL>>/api/admin/media",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Devuelve { path, url }: `path` es lo que se guarda dentro del content de una sección.\npw.test(\"Status 201\", () => {\n  pw.expect(pw.response.status).toBe(201);\n});",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "testScript": "pw.test(\"Status 201\", () => pw.expect(pw.response.status).toBe(201));\n// `data.path` es lo que se guarda en los campos `image` de las secciones.",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
             "contentType": "multipart/form-data",
             "body": [
-              { "key": "file", "value": "", "active": true, "isFile": true }
+              {
+                "key": "file",
+                "value": "",
+                "active": true,
+                "isFile": true
+              }
             ]
           },
           "requestVariables": [],
@@ -716,113 +1071,100 @@
         },
         {
           "v": "11",
-          "name": "Listar media — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/media",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// Sin tabla `media` todavía: solo `store` está implementado.",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Ver media — STUB",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/admin/media/<<MEDIA_ID>>",
+          "name": "Eliminar imagen por nombre de archivo",
+          "method": "DELETE",
+          "endpoint": "<<BASE_URL>>/api/admin/media/<<MEDIA_FILE>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Actualizar media — STUB",
-          "method": "PUT",
-          "endpoint": "<<BASE_URL>>/api/admin/media/<<MEDIA_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
           "body": {
-            "contentType": "application/json",
-            "body": "{\n  \"alt\": \"Descripción de la imagen\"\n}"
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
+      ]
+    },
+    {
+      "v": 6,
+      "name": "9. API publica (sin token)",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "Menu del sitio (arbol de paginas publicadas)",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/menu",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
           },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Eliminar media — STUB",
-          "method": "DELETE",
-          "endpoint": "<<BASE_URL>>/api/admin/media/<<MEDIA_ID>>",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "",
-          "auth": { "authType": "bearer", "authActive": true, "token": "<<ACCESS_TOKEN>>" },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        }
-      ],
-      "auth": { "authType": "inherit", "authActive": true },
-      "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
-      ]
-    },
-    {
-      "v": 6,
-      "name": "11. API pública",
-      "folders": [],
-      "requests": [
-        {
-          "v": "11",
-          "name": "Menú del sitio",
-          "method": "GET",
-          "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/menu",
-          "params": [],
-          "headers": [],
-          "preRequestScript": "",
-          "testScript": "// Árbol de navegación derivado de las páginas publicadas.\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
-          "requestVariables": [],
-          "responses": {}
-        },
-        {
-          "v": "11",
-          "name": "Globales del sitio",
+          "name": "Secciones globales del sitio",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/globals",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Secciones sin página: contact_info, social_icons, whatsapp_button.",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Página por slug",
+          "name": "Pagina por slug con sus secciones",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/pages/<<PAGE_SLUG>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Solo páginas publicadas; devuelve las secciones en orden de blueprint.",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
@@ -832,89 +1174,530 @@
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/savings-simulator",
           "params": [
-            { "key": "fuel", "value": "diesel", "active": true },
-            { "key": "quantity", "value": "100", "active": true },
-            { "key": "page", "value": "<<PAGE_SLUG>>", "active": false }
+            {
+              "key": "fuel",
+              "value": "diesel",
+              "active": true
+            },
+            {
+              "key": "quantity",
+              "value": "1000",
+              "active": true
+            },
+            {
+              "key": "page",
+              "value": "<<PAGE_SLUG>>",
+              "active": false
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// `page` elige qué sección savings_simulator usar; sin él toma la primera del sitio.",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Blog — listado",
+          "name": "Blog — listado paginado",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/blog",
           "params": [
-            { "key": "page", "value": "1", "active": false }
+            {
+              "key": "page",
+              "value": "1",
+              "active": false
+            }
           ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Guarda el slug del artículo más reciente en BLOG_SLUG\nconst res = pw.response.body;\npw.test(\"Status 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\nif (res && res.data && res.data.length > 0) {\n  pw.env.set(\"BLOG_SLUG\", String(res.data[0].slug));\n}",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Blog — artículo por slug",
+          "name": "Blog — articulo por slug",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/blog/<<BLOG_SLUG>>",
           "params": [],
           "headers": [],
           "preRequestScript": "",
           "testScript": "",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Estaciones activas",
+          "name": "Estaciones activas (pines del mapa)",
           "method": "GET",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/stations",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Sin paginar: alimenta los pines de la sección stations_map.",
-          "auth": { "authType": "none", "authActive": true },
-          "body": { "contentType": null, "body": null },
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
           "requestVariables": [],
           "responses": {}
         },
         {
           "v": "11",
-          "name": "Captar lead",
+          "name": "Disponibilidad de la agenda",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/appointments/availability",
+          "params": [
+            {
+              "key": "station",
+              "value": "<<STATION_ID>>",
+              "active": true
+            },
+            {
+              "key": "date",
+              "value": "2026-09-01",
+              "active": true
+            }
+          ],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Agendar cita — slots: 10:00-12:00, 12:00-14:00, 14:00-16:00",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/appointments",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"station_id\": 1,\n  \"date\": \"2026-09-01\",\n  \"slot\": \"10:00-12:00\",\n  \"name\": \"Nombre Apellido\",\n  \"email\": \"cliente@ejemplo.mx\",\n  \"phone\": \"4430000000\",\n  \"vehicle_plate\": \"ABC-123-D\",\n  \"vehicle_description\": \"Tracto Kenworth 2019\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Captar lead — unica escritura publica",
           "method": "POST",
           "endpoint": "<<BASE_URL>>/api/public/<<SITE>>/leads",
           "params": [],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "// Única escritura pública. Throttle: 10 por minuto.\npw.test(\"Status 201\", () => {\n  pw.expect(pw.response.status).toBe(201);\n});",
-          "auth": { "authType": "none", "authActive": true },
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
           "body": {
             "contentType": "application/json",
-            "body": "{\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"phone\": \"8181234567\",\n  \"message\": \"Quiero cotizar GNV para mi flotilla.\"\n}"
+            "body": "{\n  \"name\": \"Nombre Apellido\",\n  \"email\": \"cliente@ejemplo.mx\",\n  \"phone\": \"4430000000\",\n  \"message\": \"Quiero información.\",\n  \"source\": \"<<PAGE_SLUG>>\",\n  \"details\": {}\n}"
           },
           "requestVariables": [],
           "responses": {}
         }
       ],
-      "auth": { "authType": "inherit", "authActive": true },
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
       "headers": [
-        { "key": "Accept", "value": "application/json", "active": true }
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
+      ]
+    },
+    {
+      "v": 6,
+      "name": "10. Sin implementar (stubs)",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "Listar sitios — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/sites",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Crear sitio — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/sites",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver sitio — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/sites/<<SITE_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Actualizar sitio — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "PUT",
+          "endpoint": "<<BASE_URL>>/api/admin/sites/<<SITE_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Eliminar sitio — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "DELETE",
+          "endpoint": "<<BASE_URL>>/api/admin/sites/<<SITE_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Listar usuarios — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/users",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Crear usuario — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/users",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver usuario — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/users/<<USER_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Actualizar usuario — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "PUT",
+          "endpoint": "<<BASE_URL>>/api/admin/users/<<USER_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Eliminar usuario — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "DELETE",
+          "endpoint": "<<BASE_URL>>/api/admin/users/<<USER_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Listar menus — STUB: devuelve {data, meta} sin \"status\" — usa /public/{site}/menu",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/menus",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Crear menu — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "POST",
+          "endpoint": "<<BASE_URL>>/api/admin/menus",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Ver menu — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "GET",
+          "endpoint": "<<BASE_URL>>/api/admin/menus/<<MENU_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Actualizar menu — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "PUT",
+          "endpoint": "<<BASE_URL>>/api/admin/menus/<<MENU_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Eliminar menu — STUB: devuelve {data, meta} sin \"status\"",
+          "method": "DELETE",
+          "endpoint": "<<BASE_URL>>/api/admin/menus/<<MENU_ID>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "authActive": true,
+            "token": "<<ACCESS_TOKEN>>"
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [
+        {
+          "key": "Accept",
+          "value": "application/json",
+          "active": true
+        }
       ]
     }
   ],
   "requests": [],
-  "auth": { "authType": "none", "authActive": true },
+  "auth": {
+    "authType": "none",
+    "authActive": true
+  },
   "headers": [
-    { "key": "Accept", "value": "application/json", "active": true }
+    {
+      "key": "Accept",
+      "value": "application/json",
+      "active": true
+    }
   ]
 }
