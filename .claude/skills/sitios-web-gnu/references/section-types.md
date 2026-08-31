@@ -213,7 +213,8 @@ sección.
 
 ### `stations_map`
 
-GNU y GNU Vehicular.
+GNU, GNU Vehicular y Traninn Logistic. En los dos primeros los pines son estaciones de carga; en
+Traninn son bases de operación. La tabla `stations` es la misma y el significado lo pone el sitio.
 
 | campo | tipo | editable | notas |
 |---|---|---|---|

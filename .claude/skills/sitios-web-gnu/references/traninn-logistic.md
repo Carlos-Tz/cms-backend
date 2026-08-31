@@ -1,8 +1,9 @@
 # Traninn Logistic — `traninn-logistic`
 
-Blueprint de contenido predefinido. **Migrado parcial**: las columnas *Inicio* y *Sobre nosotros*, más
-las secciones globales, están en formato blueprint y sembradas por `TraninnLogisticBlueprintSeeder`.
-Las otras tres columnas siguen en el árbol crudo del apéndice.
+Blueprint de contenido predefinido. **Migrado parcial**: cuatro de las cinco columnas —*Inicio*,
+*Nuestros servicios*, *Sobre nosotros* y *Ubicaciones*— más las secciones globales están en formato
+blueprint y sembradas por `TraninnLogisticBlueprintSeeder`. Solo *Contacto* sigue en el árbol crudo
+del apéndice.
 
 Los campos de cada tipo de sección están en [`section-types.md`](section-types.md); los valores viven
 en el seeder y en la BD.
@@ -21,15 +22,18 @@ Contacto (4), Ubicaciones (5). El sitio **no tiene blog**.
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
 | 1 | `/` | Inicio | — | 1 | `banner_carousel`, `savings_simulator`, `rich_text`, `clients_showcase`, `lead_capture_form` |
-| — | `/nuestros-servicios` | Nuestros servicios | — | 2 | **sin migrar** |
-| 2 | `/sobre-nosotros` | Sobre nosotros | — | 3 | `page_hero`, `rich_text`, `clients_showcase` |
-| 3 | `/sobre-nosotros/que-hacemos` | ¿Qué hacemos? | `/sobre-nosotros` | 1 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
-| 4 | `/sobre-nosotros/proposito-empresarial` | Propósito empresarial | `/sobre-nosotros` | 2 | `page_hero`, `rich_text`, `image_gallery` |
-| 5 | `/sobre-nosotros/nuestra-historia` | Nuestra historia | `/sobre-nosotros` | 3 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
+| 2 | `/nuestros-servicios` | Nuestros servicios | — | 2 | `page_hero`, `rich_text` |
+| 3 | `/nuestros-servicios/transporte-de-gnc` | Transporte de GNC | `/nuestros-servicios` | 1 | `page_hero`, `rich_text`, `feature_grid` |
+| 4 | `/nuestros-servicios/logistica` | Logística | `/nuestros-servicios` | 2 | `page_hero`, `rich_text`, `feature_grid` |
+| 5 | `/nuestros-servicios/carga-pesada` | Carga pesada | `/nuestros-servicios` | 3 | `page_hero`, `rich_text`, `feature_grid` |
+| 6 | `/sobre-nosotros` | Sobre nosotros | — | 3 | `page_hero`, `rich_text`, `clients_showcase` |
+| 7 | `/sobre-nosotros/que-hacemos` | ¿Qué hacemos? | `/sobre-nosotros` | 1 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
+| 8 | `/sobre-nosotros/proposito-empresarial` | Propósito empresarial | `/sobre-nosotros` | 2 | `page_hero`, `rich_text`, `image_gallery` |
+| 9 | `/sobre-nosotros/nuestra-historia` | Nuestra historia | `/sobre-nosotros` | 3 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
 | — | `/contacto` | Contacto | — | 4 | **sin migrar** |
-| — | `/ubicaciones` | Ubicaciones | — | 5 | **sin migrar** |
+| 10 | `/ubicaciones` | Ubicaciones | — | 5 | `page_hero`, `stations_map` |
 
-**Sembradas: 2 de 5 columnas, 5 páginas.** El estado por tipo vive en
+**Sembradas: 4 de 5 columnas, 10 páginas.** El estado por tipo vive en
 [`implementation-status.md`](implementation-status.md).
 
 Notas de lectura:
@@ -45,9 +49,16 @@ Notas de lectura:
 - **El `savings_simulator` guarda sus propios precios**, cotizados por m³ de gas transportado: este
   sitio vende flete, no conversiones. Como es la única instancia del sitio,
   `GET /api/public/traninn-logistic/savings-simulator` la resuelve sin el parámetro `page`.
-- **Sin `stations_map` ni `stations`.** *Ubicaciones* es una columna sin subsecciones declaradas y el
-  spec no le atribuye mapa interactivo. Si al migrar esa columna aparece uno, es `stations_map` más
-  filas de `stations`, no campos nuevos.
+- ***Ubicaciones* lleva mapa, y esa forma la decidió el blueprint, no el cliente.** Es la única
+  columna que el árbol entregó sin declarar nada adentro, así que se resolvió como en `gnu` y
+  `gnu-vehicular`: `page_hero` + `stations_map`, con los pines saliendo de la tabla `stations`. El
+  seeder deja dos bases placeholder (Morelia y Uruapan); las reales las carga el admin por
+  `POST /api/admin/stations`. Son bases de operación, no estaciones de carga: la tabla es la misma,
+  el significado lo pone el sitio.
+- **Las tres páginas de servicios son informativas: ninguna capta leads.** El formulario vive en la
+  portada y vivirá en la columna *Contacto*. Mismo criterio que *Estaciones móviles* en
+  `gnu-vehicular`. La columna tampoco lleva `clients_showcase`, a diferencia de la equivalente de
+  `gnu`: en este árbol *Nuestros clientes* cuelga de *Inicio* y de *Sobre nosotros*.
 - **Sin `testimonials`**: ese tipo está declarado para `gnu` y `gnu-vehicular`, no para este sitio.
 - **Sin blog**: no hay `/blog` ni filas de `blog_posts`.
 - **«Nuestros clientes» bajo *Sobre nosotros* es una sección, no una cuarta página hija.** Es la

@@ -61,7 +61,7 @@ documentado. Si aparece un cuarto sin justificación, sobra.
 |---|---|---|---|---|---|
 | GNU (institucional) | `gnu` | Inicio, Nuestros servicios, Sobre nosotros, Desarrollo sostenible, Contacto, Blog | Sí | Sí | Sí (mapa de estaciones) |
 | GNU Gas Natural Vehicular | `gnu-vehicular` | Inicio, Nuestros servicios, Ubicaciones, Contacto, Blog | Sí | Sí | Sí (mapa de estaciones + ubicaciones específicas) |
-| Traninn Logistic | `traninn-logistic` | Inicio, Nuestros servicios, Sobre nosotros, Contacto, Ubicaciones | No | Sí | Ubicaciones (sin mapa interactivo declarado) |
+| Traninn Logistic | `traninn-logistic` | Inicio, Nuestros servicios, Sobre nosotros, Contacto, Ubicaciones | No | Sí | Sí (mapa de bases en Ubicaciones) |
 | Tectuus | `tectuus` | Inicio, Sobre nosotros, Productos, Contacto | No | No | No |
 
 ## Catálogo de tipos de sección
@@ -88,7 +88,7 @@ Compartidos entre sitios:
 - `testimonials` — GNU, GNU Vehicular.
 - `clients_showcase` («nuestros clientes») — GNU, Traninn Logistic, Tectuus. Cada logo puede
   llevar descripción y un testimonio propio, ambos nullable.
-- `stations_map` — GNU y GNU Vehicular.
+- `stations_map` — GNU, GNU Vehicular y Traninn Logistic.
 
 Candidatos exclusivos de un sitio, **sin verificar**: `product_catalog` (Tectuus),
 `equipment_quote`, `financing`, `service_scheduling`, `billing_info` (GNU Vehicular). Tienen el

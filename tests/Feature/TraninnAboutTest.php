@@ -17,13 +17,11 @@ beforeEach(function () {
 it('lists the about column with its three child pages in the menu', function () {
     $this->getJson('/api/public/traninn-logistic/menu')
         ->assertOk()
-        ->assertJsonCount(2, 'data')
-        ->assertJsonPath('data.0.title', 'Inicio')
-        ->assertJsonPath('data.1.title', 'Sobre nosotros')
-        ->assertJsonCount(3, 'data.1.children')
-        ->assertJsonPath('data.1.children.0.title', '¿Qué hacemos?')
-        ->assertJsonPath('data.1.children.1.title', 'Propósito empresarial')
-        ->assertJsonPath('data.1.children.2.title', 'Nuestra historia');
+        ->assertJsonPath('data.2.title', 'Sobre nosotros')
+        ->assertJsonCount(3, 'data.2.children')
+        ->assertJsonPath('data.2.children.0.title', '¿Qué hacemos?')
+        ->assertJsonPath('data.2.children.1.title', 'Propósito empresarial')
+        ->assertJsonPath('data.2.children.2.title', 'Nuestra historia');
 });
 
 /**

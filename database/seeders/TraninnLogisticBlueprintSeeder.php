@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use App\Models\Site;
 
 /**
- * Seeds the «Inicio» and «Sobre nosotros» columns of Traninn Logistic, plus the
- * site-wide sections.
+ * Seeds four of the five navigation columns of Traninn Logistic — Inicio,
+ * Nuestros servicios, Sobre nosotros and Ubicaciones — plus the site-wide
+ * sections and the placeholder stations that feed the map.
  *
- * Partial on purpose: the other three columns (Nuestros servicios, Contacto,
- * Ubicaciones) are still raw client tree in
- * `.claude/skills/sitios-web-gnu/references/traninn-logistic.md` and land in a
+ * Partial on purpose: *Contacto* is still raw client tree in
+ * `.claude/skills/sitios-web-gnu/references/traninn-logistic.md` and lands in a
  * later pass. Idempotent: safe to re-run.
  */
 class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
@@ -25,11 +25,13 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             ['name' => 'Traninn Logistic'],
         );
 
-        // Nav columns: Inicio (1), Sobre nosotros (3). Positions 2, 4 and 5 —
-        // Nuestros servicios, Contacto and Ubicaciones — are not seeded yet, and
-        // the public menu simply skips them.
+        // Nav columns: Inicio (1), Nuestros servicios (2), Sobre nosotros (3),
+        // Ubicaciones (5). Position 4 — Contacto — is not seeded yet, and the
+        // public menu simply skips it.
         $this->home($site);
+        $this->services($site);
         $this->aboutUs($site);
+        $this->locations($site);
         $this->globals($site);
     }
 
@@ -114,6 +116,83 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             // form declares no extras, so it accepts nothing beyond them.
             'fields' => ['name', 'email', 'phone', 'message'],
         ]);
+    }
+
+    /**
+     * The «Nuestros servicios» column and its three child pages.
+     *
+     * All three are informative: none captures leads. The form lives on the home
+     * page and in the *Contacto* column, the same criterion applied to
+     * *Estaciones móviles* in the vehicular site.
+     *
+     * No `clients_showcase` here, unlike the equivalent column of `gnu`: in this
+     * site's tree «Nuestros clientes» hangs off *Inicio* and *Sobre nosotros*.
+     */
+    private function services(Site $site): void
+    {
+        $services = $this->page($site, 'nuestros-servicios', '/nuestros-servicios', 'Nuestros servicios', 2);
+
+        $this->section($site, $services, 'page_hero', 1, [
+            'title' => 'Nuestros servicios',
+            'subtitle' => 'Transporte de GNC, logística y carga pesada.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $services, 'rich_text', 2, $this->body());
+
+        $pages = [
+            ['transporte-de-gnc', 'Transporte de GNC', 1, 'Suministro de gas natural comprimido donde lo necesites.', [
+                'Unidades certificadas',
+                'Cobertura regional',
+                'Suministro programado',
+            ]],
+            ['logistica', 'Logística', 2, 'Planeación y control de tus rutas.', [
+                'Planeación de rutas',
+                'Monitoreo en tiempo real',
+                'Reportes de operación',
+            ]],
+            ['carga-pesada', 'Carga pesada', 3, 'Equipo y experiencia para cargas de gran tonelaje.', [
+                'Flota de gran tonelaje',
+                'Maniobras especializadas',
+                'Seguro de carga',
+            ]],
+        ];
+
+        foreach ($pages as [$slug, $title, $position, $subtitle, $cards]) {
+            $page = $this->page($site, $slug, "/nuestros-servicios/{$slug}", $title, $position, $services);
+
+            $this->section($site, $page, 'page_hero', 1, [
+                'title' => $title,
+                'subtitle' => $subtitle,
+                'image' => null,
+            ]);
+
+            $this->section($site, $page, 'rich_text', 2, $this->body());
+            $this->section($site, $page, 'feature_grid', 3, $this->cards("Qué incluye {$title}", $cards));
+        }
+    }
+
+    /**
+     * The «Ubicaciones» column. The client declared no children for it, so its
+     * shape is a decision of this blueprint: a map, fed by the `stations` table.
+     *
+     * The pins are not fields of the section — the admin loads the real rows
+     * through `POST /api/admin/stations`, and the seeder only leaves two
+     * placeholders so the map has something to draw.
+     */
+    private function locations(Site $site): void
+    {
+        $locations = $this->page($site, 'ubicaciones', '/ubicaciones', 'Ubicaciones', 5);
+
+        $this->section($site, $locations, 'page_hero', 1, [
+            'title' => 'Ubicaciones',
+            'subtitle' => 'Dónde operamos.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $locations, 'stations_map', 2, $this->map('Nuestras bases'));
+
+        $this->stations($site);
     }
 
     /**
@@ -300,5 +379,67 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
                 ['image' => 'media/placeholder-foto-2.jpg', 'caption' => null, 'alt' => null],
             ],
         ];
+    }
+
+    /**
+     * A `feature_grid` with one placeholder card per title.
+     *
+     * @param  list<string>  $titles
+     * @return array<string, mixed>
+     */
+    private function cards(string $title, array $titles): array
+    {
+        return [
+            'title' => $title,
+            'items' => array_map(fn (string $card) => [
+                'icon' => null,
+                'title' => $card,
+                'text' => 'Contenido pendiente de redactar.',
+            ], $titles),
+        ];
+    }
+
+    /**
+     * A `stations_map` centred on Morelia, where this site's `contact_info`
+     * places the company. `center` and `zoom` are locked layout values.
+     *
+     * Each site centres its own city, so this is not a duplicate of the helper
+     * in the other two seeders.
+     *
+     * @return array<string, mixed>
+     */
+    private function map(string $title): array
+    {
+        return [
+            'title' => $title,
+            'center' => '19.7028,-101.1920',
+            'zoom' => '11',
+        ];
+    }
+
+    /**
+     * Two placeholder rows so the map has pins. These are operating bases, not
+     * filling stations: the table is the same, the meaning is the site's.
+     */
+    private function stations(Site $site): void
+    {
+        $bases = [
+            ['Base Morelia', 'Carretera Morelia-Salamanca km 12, Morelia, Mich.', 19.7412, -101.2500],
+            ['Base Uruapan', 'Carretera Uruapan-Paracho km 5, Uruapan, Mich.', 19.4550, -102.0300],
+        ];
+
+        foreach ($bases as [$name, $address, $latitude, $longitude]) {
+            $site->stations()->updateOrCreate(
+                ['name' => $name],
+                [
+                    'address' => $address,
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'phone' => '+52 443 000 0000',
+                    'schedule' => 'Lunes a viernes de 8:00 a 18:00',
+                    'is_active' => true,
+                ],
+            );
+        }
     }
 }

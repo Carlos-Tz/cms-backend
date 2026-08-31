@@ -5,7 +5,7 @@ cuando cierres un hueco** — si no, en dos fases vuelve a ser inútil, que es e
 a la sección «Current phase» de `CLAUDE.md`.
 
 Verificado con `php artisan route:list --path=api --except-vendor` (48 rutas) y
-`php artisan test --compact` (165 tests, 693 aserciones, todos verdes).
+`php artisan test --compact` (171 tests, 742 aserciones, todos verdes).
 
 Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es stub · ⬜ no existe nada
 
@@ -32,7 +32,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 16 | Blueprint `gnu` | ✅ **17 de 17 sembradas** | `GnuBlueprintSeeder` | los de arriba corren sobre él, + `ServicesAndSustainabilityTest` y `GncAndContactTest` |
 | 17 | Blueprint `gnu-vehicular` | ✅ **5 de 5 columnas, 14 páginas** | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7, `VehicularContactTest` — 7, `VehicularLocationsTest` — 9, `VehicularServicesTest` — 12 |
 | 18 | Agenda de verificación | ✅ real | `appointments`, `Public\AppointmentController`, `Admin\AppointmentController`, `StoreAppointmentRequest` | `AppointmentTest` — 15 tests |
-| 18 | Blueprint `traninn-logistic` | 🟡 **2 de 5 columnas: portada, Sobre nosotros y globales** | `TraninnLogisticBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TraninnHomeTest` — 5 tests · `TraninnAboutTest` — 6 tests |
+| 18 | Blueprint `traninn-logistic` | 🟡 **4 de 5 columnas: solo falta Contacto** | `TraninnLogisticBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TraninnHomeTest` — 5 tests · `TraninnAboutTest` — 6 tests · `TraninnServicesTest` — 6 tests |
 | 19 | Blueprint `tectuus` | ⬜ | — | ninguno |
 
 El estado por tipo de sección (fila 4) no se repite aquí: vive en
@@ -62,8 +62,7 @@ necesidad.
 ### 2. Blueprints de los otros tres sitios
 
 `gnu` y `gnu-vehicular` están migrados y sembrados completos. De `traninn-logistic` están migradas y
-sembradas las columnas ***Inicio*** y ***Sobre nosotros*** y sus globales; sus otras tres columnas y
-todo `tectuus` siguen en árbol crudo.
+sembradas 4 de sus 5 columnas; solo *Contacto* y todo `tectuus` siguen en árbol crudo.
 
 *Abierto* al migrarlos:
 - Los **3 niveles** de anidamiento ya están demostrados por la columna de servicios de
@@ -75,6 +74,9 @@ todo `tectuus` siguen en árbol crudo.
   (`image_gallery`) y **tres campos nullable** en `clients_showcase`. Ninguno necesitó migración —
   `sections.type` es un `string` libre y `content` es JSON—, así que el costo fue una entrada en
   `SCHEMAS` y su renglón en el catálogo.
+- *Ubicaciones* de Traninn fue el primer nodo que el cliente entregó **vacío**: una cabeza de
+  columna sin nada declarado adentro. Se resolvió con `stations_map` + filas de `stations`, o sea
+  reusando lo de los otros dos sitios; la forma la decidió el blueprint y quedó anotado que así fue.
 - Queda un solo candidato sin auditar, `product_catalog`, de Tectuus. Los cuatro de
   `gnu-vehicular` ya se resolvieron: `billing_info`, `equipment_quote` y `financing` resultaron
   bloques genéricos y solo `service_scheduling` llegó al catálogo. La advertencia del spec se
