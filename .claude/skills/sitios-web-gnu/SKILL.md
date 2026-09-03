@@ -120,15 +120,18 @@ Requisito adicional en GNU, GNU Vehicular y Traninn Logistic (no Tectuus):
 - `references/gnu.md` — sitio institucional GNU. **Ya migrado al formato de blueprint**: mapa de 17
   páginas, secciones globales, y la clasificación de los nodos del árbol original.
 - `references/gnu-vehicular.md` — GNU Gas Natural Vehicular.
-- `references/traninn-logistic.md` — Traninn Logistic. **Migrado parcial**: solo la columna *Inicio*.
-- `references/tectuus.md` — Tectuus.
+- `references/traninn-logistic.md` — Traninn Logistic. **Migrado completo**: las 5 columnas, 11 páginas.
+- `references/tectuus.md` — Tectuus. **Migrado parcial**: solo la columna *Inicio*.
 
 Para todo lo que sea backend —endpoints, entidades que no son secciones, forma de las respuestas, y
 qué está implementado— la skill es **`cms-gnu-backend`**.
 
-**`traninn-logistic` está migrado a medias y `tectuus` sigue en el formato viejo**: solo el árbol de
-navegación tal como lo entregó el cliente, sin distinguir páginas de secciones y sin campos. De
-`traninn-logistic` ya está migrada y sembrada la columna *Inicio*; sus otras cuatro columnas no.
-Al migrarlos, aplicar la misma regla de clasificación documentada en `references/gnu.md` — el árbol
-del cliente mezcla páginas, bloques y títulos de artículos sin marcarlos, y clasificar por nombre
-falla.
+**`tectuus` está migrado a medias**: de sus 4 columnas solo *Inicio* está en formato blueprint y
+sembrada; *Sobre nosotros*, *Productos* y *Contacto* siguen en el árbol de navegación tal como lo
+entregó el cliente, sin distinguir páginas de secciones y sin campos. Al migrarlas, aplicar la misma
+regla de clasificación documentada en `references/gnu.md` — el árbol del cliente mezcla páginas,
+bloques y títulos de artículos sin marcarlos, y clasificar por nombre falla.
+
+La columna *Productos* de `tectuus` es la única decisión de diseño que queda abierta en el blueprint:
+EDRM, Compresoras y Valvulería pueden ser tres páginas hijas o un `product_catalog`, el último
+candidato de tipo sin auditar del catálogo.

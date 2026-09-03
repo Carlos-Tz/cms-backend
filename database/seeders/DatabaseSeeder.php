@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             GnuBlueprintSeeder::class,
             GnuVehicularBlueprintSeeder::class,
             TraninnLogisticBlueprintSeeder::class,
+            TectuusBlueprintSeeder::class,
         ]);
     }
 }
