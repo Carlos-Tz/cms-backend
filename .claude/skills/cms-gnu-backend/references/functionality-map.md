@@ -32,8 +32,8 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 16 | Blueprint `gnu` | ✅ **17 de 17 sembradas** | `GnuBlueprintSeeder` | los de arriba corren sobre él, + `ServicesAndSustainabilityTest` y `GncAndContactTest` |
 | 17 | Blueprint `gnu-vehicular` | ✅ **5 de 5 columnas, 14 páginas** | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7, `VehicularContactTest` — 7, `VehicularLocationsTest` — 9, `VehicularServicesTest` — 12 |
 | 18 | Agenda de verificación | ✅ real | `appointments`, `Public\AppointmentController`, `Admin\AppointmentController`, `StoreAppointmentRequest` | `AppointmentTest` — 15 tests |
-| 18 | Blueprint `traninn-logistic` | 🟡 **4 de 5 columnas: solo falta Contacto** | `TraninnLogisticBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TraninnHomeTest` — 5 tests · `TraninnAboutTest` — 6 tests · `TraninnServicesTest` — 6 tests |
-| 19 | Blueprint `tectuus` | ⬜ | — | ninguno |
+| 19 | Blueprint `traninn-logistic` | ✅ **5 de 5 columnas, 11 páginas** | `TraninnLogisticBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TraninnHomeTest` — 5 tests · `TraninnAboutTest` — 6 tests · `TraninnServicesTest` — 6 tests · `TraninnContactTest` — 6 tests |
+| 20 | Blueprint `tectuus` | 🟡 **1 de 4 columnas: solo Inicio** | `TectuusBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TectuusHomeTest` — 6 tests |
 
 El estado por tipo de sección (fila 4) no se repite aquí: vive en
 `sitios-web-gnu/references/implementation-status.md`, al lado de la definición de cada tipo.
@@ -61,8 +61,9 @@ necesidad.
 
 ### 2. Blueprints de los otros tres sitios
 
-`gnu` y `gnu-vehicular` están migrados y sembrados completos. De `traninn-logistic` están migradas y
-sembradas 4 de sus 5 columnas; solo *Contacto* y todo `tectuus` siguen en árbol crudo.
+`gnu`, `gnu-vehicular` y `traninn-logistic` están migrados y sembrados completos. De `tectuus` está
+migrada y sembrada 1 de sus 4 columnas, *Inicio*; *Sobre nosotros*, *Productos* y *Contacto* siguen
+en árbol crudo.
 
 *Abierto* al migrarlos:
 - Los **3 niveles** de anidamiento ya están demostrados por la columna de servicios de
