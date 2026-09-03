@@ -1,9 +1,8 @@
 # Traninn Logistic — `traninn-logistic`
 
-Blueprint de contenido predefinido. **Migrado parcial**: cuatro de las cinco columnas —*Inicio*,
-*Nuestros servicios*, *Sobre nosotros* y *Ubicaciones*— más las secciones globales están en formato
-blueprint y sembradas por `TraninnLogisticBlueprintSeeder`. Solo *Contacto* sigue en el árbol crudo
-del apéndice.
+Blueprint de contenido predefinido. **Migrado completo**: las cinco columnas —*Inicio*,
+*Nuestros servicios*, *Sobre nosotros*, *Contacto* y *Ubicaciones*— más las secciones globales están
+en formato blueprint y sembradas por `TraninnLogisticBlueprintSeeder`.
 
 Los campos de cada tipo de sección están en [`section-types.md`](section-types.md); los valores viven
 en el seeder y en la BD.
@@ -30,10 +29,10 @@ Contacto (4), Ubicaciones (5). El sitio **no tiene blog**.
 | 7 | `/sobre-nosotros/que-hacemos` | ¿Qué hacemos? | `/sobre-nosotros` | 1 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
 | 8 | `/sobre-nosotros/proposito-empresarial` | Propósito empresarial | `/sobre-nosotros` | 2 | `page_hero`, `rich_text`, `image_gallery` |
 | 9 | `/sobre-nosotros/nuestra-historia` | Nuestra historia | `/sobre-nosotros` | 3 | `page_hero`, `banner_carousel`, `rich_text`, `image_gallery` |
-| — | `/contacto` | Contacto | — | 4 | **sin migrar** |
-| 10 | `/ubicaciones` | Ubicaciones | — | 5 | `page_hero`, `stations_map` |
+| 10 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form` |
+| 11 | `/ubicaciones` | Ubicaciones | — | 5 | `page_hero`, `stations_map` |
 
-**Sembradas: 4 de 5 columnas, 10 páginas.** El estado por tipo vive en
+**Sembradas: las 5 columnas, 11 páginas.** El estado por tipo vive en
 [`implementation-status.md`](implementation-status.md).
 
 Notas de lectura:
@@ -56,7 +55,7 @@ Notas de lectura:
   `POST /api/admin/stations`. Son bases de operación, no estaciones de carga: la tabla es la misma,
   el significado lo pone el sitio.
 - **Las tres páginas de servicios son informativas: ninguna capta leads.** El formulario vive en la
-  portada y vivirá en la columna *Contacto*. Mismo criterio que *Estaciones móviles* en
+  portada y en la columna *Contacto*. Mismo criterio que *Estaciones móviles* en
   `gnu-vehicular`. La columna tampoco lleva `clients_showcase`, a diferencia de la equivalente de
   `gnu`: en este árbol *Nuestros clientes* cuelga de *Inicio* y de *Sobre nosotros*.
 - **Sin `testimonials`**: ese tipo está declarado para `gnu` y `gnu-vehicular`, no para este sitio.
@@ -73,9 +72,12 @@ Notas de lectura:
   aplica solo a `/`, que por eso no lleva `page_hero`.
 - **`image_gallery` nació con esta columna.** El cliente pidió «imágenes» aparte de los banners en
   tres de sus páginas, y no había tipo que lo cubriera sin incrustar HTML a mano.
-- **El `lead_capture_form` de la portada no declara extras**: los cuatro campos de siempre, que son
-  columnas de `leads`. Cuando se migre la columna *Contacto* el sitio tendrá dos formularios, y ahí
-  `leads.source` empieza a importar para separarlos en la bandeja.
+- **Ninguno de los dos `lead_capture_form` declara extras**: los cuatro campos de siempre, que son
+  columnas de `leads`. El sitio tiene dos formularios —`/` y `/contacto`—, así que `leads.source`
+  (`inicio` o `contacto`) es lo que los separa en la bandeja.
+- **`/contacto` no lleva `stations_map`**, a diferencia de las páginas de contacto de `gnu` y
+  `gnu-vehicular`: en este sitio el mapa es exclusivo de `/ubicaciones`. La columna cubre el único
+  nodo que declaró el cliente —«Captación de leads»— más el hero que llevan todas las páginas.
 
 ## Secciones globales
 

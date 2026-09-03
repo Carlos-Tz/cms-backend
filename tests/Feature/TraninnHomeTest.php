@@ -85,7 +85,7 @@ it('replaces the client logos through the admin API', function () {
 });
 
 it('keeps the lead form fields locked', function () {
-    $section = traninnSection('lead_capture_form');
+    $section = traninnSection('lead_capture_form', 'inicio');
 
     $this->withToken($this->token)
         ->putJson("/api/admin/sections/{$section->id}", [
@@ -97,6 +97,6 @@ it('keeps the lead form fields locked', function () {
         ])
         ->assertOk();
 
-    expect(traninnSection('lead_capture_form')->content['fields'])
+    expect(traninnSection('lead_capture_form', 'inicio')->content['fields'])
         ->toBe(['name', 'email', 'phone', 'message']);
 });

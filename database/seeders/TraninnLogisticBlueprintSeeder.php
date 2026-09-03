@@ -5,13 +5,11 @@ namespace Database\Seeders;
 use App\Models\Site;
 
 /**
- * Seeds four of the five navigation columns of Traninn Logistic — Inicio,
- * Nuestros servicios, Sobre nosotros and Ubicaciones — plus the site-wide
+ * Seeds the five navigation columns of Traninn Logistic — Inicio, Nuestros
+ * servicios, Sobre nosotros, Contacto and Ubicaciones — plus the site-wide
  * sections and the placeholder stations that feed the map.
  *
- * Partial on purpose: *Contacto* is still raw client tree in
- * `.claude/skills/sitios-web-gnu/references/traninn-logistic.md` and lands in a
- * later pass. Idempotent: safe to re-run.
+ * Idempotent: safe to re-run.
  */
 class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
 {
@@ -26,11 +24,11 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
         );
 
         // Nav columns: Inicio (1), Nuestros servicios (2), Sobre nosotros (3),
-        // Ubicaciones (5). Position 4 — Contacto — is not seeded yet, and the
-        // public menu simply skips it.
+        // Contacto (4), Ubicaciones (5).
         $this->home($site);
         $this->services($site);
         $this->aboutUs($site);
+        $this->contact($site);
         $this->locations($site);
         $this->globals($site);
     }
@@ -170,6 +168,37 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             $this->section($site, $page, 'rich_text', 2, $this->body());
             $this->section($site, $page, 'feature_grid', 3, $this->cards("Qué incluye {$title}", $cards));
         }
+    }
+
+    /**
+     * The «Contacto» column. The client tree lists a single node under it —
+     * «Captación de leads» — which is the `lead_capture_form`; the hero is the
+     * same one every non-home page of this site carries.
+     *
+     * No `stations_map` here, unlike `gnu` and `gnu-vehicular`: in this site the
+     * map belongs to `/ubicaciones` only.
+     *
+     * This is the site's second `lead_capture_form` — the other one is on the
+     * home page — so `leads.source` is what tells the two apart in the inbox.
+     */
+    private function contact(Site $site): void
+    {
+        $contact = $this->page($site, 'contacto', '/contacto', 'Contacto', 4);
+
+        $this->section($site, $contact, 'page_hero', 1, [
+            'title' => 'Contacto',
+            'subtitle' => 'Estamos para ayudarte.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $contact, 'lead_capture_form', 2, [
+            'title' => 'Escríbenos',
+            'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
+            'submit_label' => 'Enviar',
+            // Locked: the four core entries map to columns of `leads`, and this
+            // form declares no extras, so it accepts nothing beyond them.
+            'fields' => ['name', 'email', 'phone', 'message'],
+        ]);
     }
 
     /**

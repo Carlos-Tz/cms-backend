@@ -15,19 +15,15 @@ beforeEach(function () {
     $this->token = JWTAuth::fromUser(User::factory()->create());
 });
 
-/**
- * Four of the five columns are seeded. *Contacto* sits at position 4 and is not
- * seeded yet, so the menu skips it without leaving a gap.
- */
-it('lists the four seeded columns in navigation order', function () {
+it('lists the five columns in navigation order', function () {
     $this->getJson('/api/public/traninn-logistic/menu')
         ->assertOk()
-        ->assertJsonCount(4, 'data')
+        ->assertJsonCount(5, 'data')
         ->assertJsonPath('data.0.title', 'Inicio')
         ->assertJsonPath('data.1.title', 'Nuestros servicios')
         ->assertJsonPath('data.2.title', 'Sobre nosotros')
-        ->assertJsonPath('data.3.title', 'Ubicaciones')
-        ->assertJsonMissing(['title' => 'Contacto']);
+        ->assertJsonPath('data.3.title', 'Contacto')
+        ->assertJsonPath('data.4.title', 'Ubicaciones');
 });
 
 it('hangs the three services off their column', function () {
