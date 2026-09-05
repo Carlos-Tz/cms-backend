@@ -291,14 +291,9 @@ Sin `position`: dónde flota el botón es layout.
 
 ## Tipos exclusivos de un sitio — sin verificar
 
-Declarado en el macro archivo original pero **no auditado todavía**. Tiene el mismo
-olor a «página disfrazada de bloque» que tenían `certifications` y `esr_ecovadis`, que resultaron
-ser páginas de GNU y se eliminaron de este catálogo. No agregarlos como tipos hasta revisar el
-sitio correspondiente con el mismo criterio que se aplicó a GNU.
-
-| candidato | sitio | qué es en el archivo original |
-|---|---|---|
-| `product_catalog` | Tectuus | EDRM, compresoras, valvulería |
+**Ninguno.** Los 5 candidatos que declaraba el macro archivo original ya se auditaron: 4 resultaron
+páginas o bloques genéricos, 1 llegó al catálogo (`service_scheduling`) y el último,
+`product_catalog`, resultó dominio de datos. La advertencia del spec se sostuvo entera.
 
 ## Descartados, con motivo
 
@@ -308,6 +303,7 @@ Para que no vuelvan a proponerse:
 |---|---|
 | `video_embed` | El video es un requisito transversal, no una sección. Es el campo `video_url` de `rich_text`. |
 | `blog` | `GET /api/public/{site}/blog` ya existe en `routes/public.php`. El blog es dominio de datos (`blog_posts`), no un tipo de sección. |
+| `product_catalog` | Mismo caso que `blog`. El cliente pidió gestionar categorías y productos de forma **dinámica** —el admin los agrega, edita y elimina—, y eso es dominio de datos: `product_categories` y `products`, servidas por `GET /api/public/{site}/product-categories`, `…/products` y `…/products/{slug}`. La página `/productos` lleva solo `page_hero`, igual que `/blog`. Un tipo de sección tendría cero campos editables. |
 | `child_index` | Tendría cero campos editables: la lista de páginas hijas ya sale de `GET /api/public/{site}/menu` y su orden es derivable del mapa de páginas. Agregarlo solo si una página padre necesita esa lista en una posición que no sea la última. |
 | `cta_band` | Ninguna página de GNU pide un llamado a la acción que no sea `lead_capture_form`. |
 | `equipment_quote` | «Cotiza tu equipo» no calcula nada: el visitante deja sus datos y un asesor cotiza. Es el `lead_capture_form` de `/nuestros-servicios/instala-tu-equipo-de-gnv/cotiza-tu-equipo`, igual que «Cotiza tu suministro» en `gnu`. Se reconsidera solo si aparece un tabulador de precios por tipo de equipo. |

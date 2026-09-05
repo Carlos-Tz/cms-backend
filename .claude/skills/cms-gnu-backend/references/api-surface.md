@@ -1,12 +1,12 @@
-# Superficie de API — los 53 endpoints
+# Superficie de API — los 66 endpoints
 
-Verificado con `php artisan route:list --path=api --except-vendor`. Si el conteo no da 53, este
+Verificado con `php artisan route:list --path=api --except-vendor`. Si el conteo no da 66, este
 archivo quedó atrás.
 
 `real` = implementado y con tests. `stub` = devuelve `{data, meta}` sin `status`, sin lógica y sin
 tabla detrás en varios casos.
 
-## Admin — `/api/admin` (43 rutas)
+## Admin — `/api/admin` (53 rutas)
 
 Todo dentro de `Route::middleware('auth:api')` menos `auth/login`.
 
@@ -98,6 +98,28 @@ línea de defensa, para el día que cambie esa restricción de ruta. Test:
 | PUT/PATCH | `stations/{station}` | `StationController@update` | la estación fresca. `site_id` `prohibited` |
 | DELETE | `stations/{station}` | `StationController@destroy` | mensaje |
 
+### Catálogo de productos — 10, real
+
+Dos `apiResource` completos, como el blog: categorías y productos son datos, no estructura de
+blueprint.
+
+| Método | URI | Acción | Devuelve |
+|---|---|---|---|
+| GET | `product-categories` | `ProductCategoryController@index` | `?site={slug}`, `withCount('products')`, `orderBy('position')`, `paginate(20)` |
+| POST | `product-categories` | `ProductCategoryController@store` | 201. `site_id` requerido; el `slug` se deriva del `name` si no viene |
+| GET | `product-categories/{product_category}` | `…@show` | la categoría con su conteo de productos |
+| PUT/PATCH | `product-categories/{product_category}` | `…@update` | la categoría fresca. `site_id` `prohibited` |
+| DELETE | `product-categories/{product_category}` | `…@destroy` | mensaje, o **409** si todavía tiene productos |
+| GET | `products` | `ProductController@index` | `?site={slug}&category={slug}`, `orderBy('name')`, `paginate(20)`, con `category:id,slug,name`. **Incluye inactivos** |
+| POST | `products` | `ProductController@store` | 201. `site_id` requerido; `product_category_id` validado **contra ese sitio** |
+| GET | `products/{product}` | `ProductController@show` | el producto con su categoría |
+| PUT/PATCH | `products/{product}` | `ProductController@update` | el producto fresco. `site_id` `prohibited`; `images` ausente = lista vacía, no «conserva» |
+| DELETE | `products/{product}` | `ProductController@destroy` | mensaje |
+
+El 409 de `DELETE product-categories` es la única respuesta de ese código en toda la API: la FK es
+`restrictOnDelete` y el controlador la convierte en un mensaje legible en vez de dejar que reviente
+el motor.
+
 ### Citas — 3, real
 
 | Método | URI | Acción | Devuelve |
@@ -119,7 +141,7 @@ genera el visitante. Orden ascendente y no `latest()` porque en una agenda impor
 | `users` | `UserController` | un solo rol global; no se pidió gestión de usuarios |
 | `menus` | `Admin\MenuController` | el menú es **derivado** y `GET /api/public/{site}/menu` ya lo deriva. Candidato a borrar |
 
-## Público — `/api/public/{site:slug}` (10 rutas)
+## Público — `/api/public/{site:slug}` (13 rutas)
 
 | Método | URI | Acción | Estado / devuelve |
 |---|---|---|---|
@@ -130,6 +152,9 @@ genera el visitante. Orden ascendente y no `latest()` porque en una agenda impor
 | GET | `savings-simulator` | `SavingsSimulatorController` | **real** — `?fuel={slug}&quantity={n}&page={slug}`. Ver abajo |
 | POST | `leads` | `LeadController@store` | **real** — `throttle:10,1`. `data: null` + agradecimiento, 201. Acepta `source` (slug de la página del formulario) y `details` (los campos extra que esa sección declare) |
 | GET | `menu` | `MenuController@show` | **real** — árbol derivado de `pages`: raíces por `position`, hijos anidados en `children`. Solo `is_published`; una página oculta arrastra su rama entera. `{slug, path, title, children[]}` |
+| GET | `product-categories` | `ProductController@categories` | **real** — todas las del sitio por `position`, sin paginar. `{slug, name, description, image, products_count}`, contando **solo los activos**. Es lo que alimenta el submenú de *Productos*: las categorías no son páginas y no salen en `menu` |
+| GET | `products` | `ProductController@index` | **real** — solo `active()`, `paginate(12)`. Filtros `?category={slug}` y `?q={búsqueda}` (LIKE sobre `name` y `description`). **Sin `description` ni `images`**: solo la primera imagen, mismo criterio que el listado del blog |
+| GET | `products/{productSlug}` | `ProductController@show` | **real** — el producto activo con su `description`, sus `images` y su categoría. 404 si está inactivo |
 | GET | `stations` | `StationController@index` | **real** — solo `is_active`, sin paginar (un mapa dibuja todos los pines). `{name, address, latitude, longitude, phone, schedule}` |
 | GET | `appointments/availability` | `AppointmentController@availability` | **real** — `?station={id}&date=Y-m-d`. Ver abajo |
 | POST | `appointments` | `AppointmentController@store` | **real** — `throttle:10,1`. 201 con `{date, slot, station}` confirmados. Segunda escritura pública |

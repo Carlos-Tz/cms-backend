@@ -90,15 +90,16 @@ Compartidos entre sitios:
   llevar descripción y un testimonio propio, ambos nullable.
 - `stations_map` — GNU, GNU Vehicular y Traninn Logistic.
 
-Candidatos exclusivos de un sitio, **sin verificar**: `product_catalog` (Tectuus),
-`equipment_quote`, `financing`, `service_scheduling`, `billing_info` (GNU Vehicular). Tienen el
-mismo olor a «página disfrazada de bloque» que tenían `certifications` y `esr_ecovadis`, que
-resultaron ser páginas de GNU. No promoverlos a tipos sin auditar su sitio.
+- `service_scheduling` — solo GNU Vehicular. Único tipo exclusivo de un sitio.
 
-`video_support` y `blog` **no son tipos de sección**: el primero es el campo `video_url` de
-`rich_text`, el segundo es dominio de datos (`blog_posts`) con sus rutas públicas ya definidas en
-`routes/public.php`. Los motivos completos, y los tipos descartados, están al final de
-`references/section-types.md`.
+**Ya no quedan candidatos sin auditar.** De los 5 que declaraba el macro archivo, `equipment_quote`,
+`financing` y `billing_info` resultaron bloques genéricos, `product_catalog` resultó dominio de
+datos, y solo `service_scheduling` llegó al catálogo.
+
+`video_support`, `blog` y `product_catalog` **no son tipos de sección**: el primero es el campo
+`video_url` de `rich_text`; los otros dos son dominio de datos (`blog_posts`, y
+`product_categories` + `products`) con sus rutas públicas ya definidas en `routes/public.php`. Los
+motivos completos, y los tipos descartados, están al final de `references/section-types.md`.
 
 ## Requisitos técnicos transversales (los 4 sitios)
 
@@ -121,17 +122,16 @@ Requisito adicional en GNU, GNU Vehicular y Traninn Logistic (no Tectuus):
   páginas, secciones globales, y la clasificación de los nodos del árbol original.
 - `references/gnu-vehicular.md` — GNU Gas Natural Vehicular.
 - `references/traninn-logistic.md` — Traninn Logistic. **Migrado completo**: las 5 columnas, 11 páginas.
-- `references/tectuus.md` — Tectuus. **Migrado parcial**: solo la columna *Inicio*.
+- `references/tectuus.md` — Tectuus. **Migrado completo**: las 4 columnas, 4 páginas, más las 3
+  categorías del catálogo de productos.
 
 Para todo lo que sea backend —endpoints, entidades que no son secciones, forma de las respuestas, y
 qué está implementado— la skill es **`cms-gnu-backend`**.
 
-**`tectuus` está migrado a medias**: de sus 4 columnas solo *Inicio* está en formato blueprint y
-sembrada; *Sobre nosotros*, *Productos* y *Contacto* siguen en el árbol de navegación tal como lo
-entregó el cliente, sin distinguir páginas de secciones y sin campos. Al migrarlas, aplicar la misma
-regla de clasificación documentada en `references/gnu.md` — el árbol del cliente mezcla páginas,
-bloques y títulos de artículos sin marcarlos, y clasificar por nombre falla.
+**Los 4 sitios están migrados y sembrados completos.** El árbol crudo del cliente queda en cada
+archivo solo como apéndice de trazabilidad.
 
-La columna *Productos* de `tectuus` es la única decisión de diseño que queda abierta en el blueprint:
-EDRM, Compresoras y Valvulería pueden ser tres páginas hijas o un `product_catalog`, el último
-candidato de tipo sin auditar del catálogo.
+La única decisión de diseño que quedaba abierta —la columna *Productos* de `tectuus`— está resuelta:
+EDRM, Compresoras y Valvulería **no son páginas ni un `product_catalog`**, son filas de
+`product_categories`, porque el cliente pidió gestionarlas de forma dinámica. `/productos` es una
+página con solo `page_hero`, calcada de `/blog`. Ver `references/tectuus.md`.

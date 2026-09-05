@@ -134,6 +134,49 @@ Cuatro decisiones que no son obvias:
 - **`site_id` es derivable de `station_id`** pero se guarda igual, por la convención de que toda
   tabla de dominio lo lleve. Sale del route binding, nunca del payload.
 
+### `product_categories`
+
+`id`, `site_id` FK cascade, `slug`, `name`, `description` (text nullable), `image` (string nullable),
+`position` (unsignedSmallInteger, default 1), timestamps. Unique `[site_id, slug]`.
+
+Las categorías del catálogo de Tectuus: EDRM, Compresoras y Valvulería, sembradas por
+`TectuusBlueprintSeeder`. **No son páginas**, así que no aparecen en `GET {site}/menu`; el front arma
+ese submenú con `GET {site}/product-categories`. El motivo completo está en
+`sitios-web-gnu/references/tectuus.md`.
+
+**Sin `is_active`**, a diferencia de `stations` y `products`: el cliente pidió estado a nivel
+producto, no de categoría. Una categoría sin productos activos simplemente devuelve
+`products_count = 0`.
+
+`position` ordena la lista; `image` guarda el `path` que devuelve `MediaController@store`, la misma
+convención que `blog_posts.cover_image`.
+
+### `products`
+
+`id`, `site_id` FK cascade, `product_category_id` FK **restrict**, `slug`, `name`, `description`
+(text), `price` (`decimal(12,2)` nullable), `images` (json), `is_active` (bool default true),
+timestamps. Unique `[site_id, slug]`, index `[site_id, product_category_id, is_active]`.
+
+Cuatro decisiones que no son obvias:
+
+- **`price` es nullable y significa «precio a cotizar».** El equipo industrial se cotiza más seguido
+  de lo que se lista. Sin columna de moneda: todo es MXN, y se agrega si aparece equipo importado.
+  Casteado a `decimal:2`, no a float: el precio se muestra y se compara, nunca se acumula en PHP.
+- **`images` es JSON**, una lista ordenada de paths de media — la misma forma que las colecciones de
+  `sections.content`. Una tabla `product_images` se paga cuando cada imagen necesite su `alt` y su
+  `caption`; hoy no los necesita.
+- **La FK de la categoría es `restrictOnDelete`, no cascade.** Borrar una categoría no debe llevarse
+  sus productos en silencio. `Admin\ProductCategoryController@destroy` comprueba
+  `products()->exists()` antes de borrar y responde **409** con mensaje en español; el candado real
+  es la FK, la comprobación solo lo hace legible.
+- **`site_id` es derivable de `product_category_id`** pero se guarda igual, por la convención de que
+  toda tabla de dominio lo lleve — misma decisión que `appointments.site_id`. Lo que impide un
+  producto cruzado es `ProductRequest`: valida `product_category_id` con
+  `Rule::exists(...)->where('site_id', $siteId)`, así que una categoría de otro sitio es un 422.
+
+El scope `active()` del modelo es lo que aplica la API pública; la admin no lo aplica, por eso lista
+inactivos — igual que el blog lista borradores.
+
 ### `users`
 
 Tabla estándar de Laravel. Único login del sistema, guard JWT `api`. `User` implementa `JWTSubject`.
@@ -166,6 +209,10 @@ páginas»). Una tabla de menús y su CRUD admin contradicen eso. El `apiResourc
 - `LeadFactory` — igual, sin `site_id`
 - `StationFactory` — sin `site_id`; estado `inactive()`
 - `AppointmentFactory` — sin `site_id` ni `station_id`: se pasan con `->for($site)->for($station)`
+- `ProductCategoryFactory` — sin `site_id`
+- `ProductFactory` — sin `site_id` ni `product_category_id`: se pasan con
+  `->for($site)->for($category, 'category')`, con el nombre de relación explícito porque la relación
+  se llama `category` y no `productCategory`. Estados `inactive()` y `quoted()` (`price` = null)
 - `UserFactory` — estándar
 
 **No hay `SiteFactory`, `PageFactory` ni `SectionFactory`, y es deliberado**: sitios, páginas y

@@ -4,8 +4,8 @@ Estado real del backend, verificado contra el código, las rutas y los tests. **
 cuando cierres un hueco** — si no, en dos fases vuelve a ser inútil, que es exactamente lo que le pasó
 a la sección «Current phase» de `CLAUDE.md`.
 
-Verificado con `php artisan route:list --path=api --except-vendor` (48 rutas) y
-`php artisan test --compact` (171 tests, 742 aserciones, todos verdes).
+Verificado con `php artisan route:list --path=api --except-vendor` (66 rutas) y
+`php artisan test --compact` (209 tests, 888 aserciones, todos verdes).
 
 Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es stub · ⬜ no existe nada
 
@@ -33,15 +33,17 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 17 | Blueprint `gnu-vehicular` | ✅ **5 de 5 columnas, 14 páginas** | `GnuVehicularBlueprintSeeder` | `BlogTest` — 2 tests, `VehicularHomeTest` — 7, `VehicularContactTest` — 7, `VehicularLocationsTest` — 9, `VehicularServicesTest` — 12 |
 | 18 | Agenda de verificación | ✅ real | `appointments`, `Public\AppointmentController`, `Admin\AppointmentController`, `StoreAppointmentRequest` | `AppointmentTest` — 15 tests |
 | 19 | Blueprint `traninn-logistic` | ✅ **5 de 5 columnas, 11 páginas** | `TraninnLogisticBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TraninnHomeTest` — 5 tests · `TraninnAboutTest` — 6 tests · `TraninnServicesTest` — 6 tests · `TraninnContactTest` — 6 tests |
-| 20 | Blueprint `tectuus` | 🟡 **1 de 4 columnas: solo Inicio** | `TectuusBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TectuusHomeTest` — 6 tests |
+| 20 | Blueprint `tectuus` | ✅ **4 de 4 columnas, 4 páginas** | `TectuusBlueprintSeeder` (hereda de `BlueprintSeeder`) | `TectuusHomeTest` — 6 tests · `TectuusAboutTest` — 4 · `TectuusProductsTest` — 16 · `TectuusContactTest` — 5 |
+| 21 | Catálogo de productos público (categorías, listado, filtro, búsqueda, detalle) | ✅ | `Public\ProductController` | `TectuusProductsTest` — 8 tests |
+| 22 | Catálogo de productos admin (CRUD de categorías y productos) | ✅ | `Admin\ProductCategoryController`, `Admin\ProductController` + `ProductCategoryRequest`, `ProductRequest` | `TectuusProductsTest` — 8 tests |
 
 El estado por tipo de sección (fila 4) no se repite aquí: vive en
 `sitios-web-gnu/references/implementation-status.md`, al lado de la definición de cada tipo.
 
 **`gnu` está completo**: las 17 páginas del blueprint, sus 47 secciones, las 4 globales, 4 artículos
 y 2 estaciones de ejemplo. Verificado nodo por nodo contra la página 1 de `docs/mapa-sitios-pdf.pdf`,
-columnas y «Requerimientos principales» incluidos. El trabajo pendiente ya no es de `gnu` sino de los
-otros tres sitios.
+columnas y «Requerimientos principales» incluidos. **Los cuatro sitios están completos**: ya no queda
+blueprint pendiente, solo los huecos de abajo.
 
 ## Huecos, con su pregunta abierta
 
@@ -59,13 +61,11 @@ notificación se quiera — el admin ya tiene la bandeja de leads. **Descartada 
 alcance de la pasada de `gnu`**: no aparece en los requisitos del PDF y la bandeja cubre la
 necesidad.
 
-### 2. Blueprints de los otros tres sitios
+### 2. Blueprints de los otros tres sitios — **cerrado**
 
-`gnu`, `gnu-vehicular` y `traninn-logistic` están migrados y sembrados completos. De `tectuus` está
-migrada y sembrada 1 de sus 4 columnas, *Inicio*; *Sobre nosotros*, *Productos* y *Contacto* siguen
-en árbol crudo.
-
-*Abierto* al migrarlos:
+**Los 4 sitios están migrados y sembrados completos**: `gnu` (17 páginas), `gnu-vehicular` (14),
+`traninn-logistic` (11) y `tectuus` (4, más las 3 categorías del catálogo). Lo que sigue es el
+registro de lo que se aprendió migrándolos, no trabajo pendiente:
 - Los **3 niveles** de anidamiento ya están demostrados por la columna de servicios de
   `gnu-vehicular`: `pages.parent_id` y `MenuController::tree()`, que ya era recursivo, los
   soportaron sin cambios.
@@ -78,10 +78,19 @@ en árbol crudo.
 - *Ubicaciones* de Traninn fue el primer nodo que el cliente entregó **vacío**: una cabeza de
   columna sin nada declarado adentro. Se resolvió con `stations_map` + filas de `stations`, o sea
   reusando lo de los otros dos sitios; la forma la decidió el blueprint y quedó anotado que así fue.
-- Queda un solo candidato sin auditar, `product_catalog`, de Tectuus. Los cuatro de
-  `gnu-vehicular` ya se resolvieron: `billing_info`, `equipment_quote` y `financing` resultaron
-  bloques genéricos y solo `service_scheduling` llegó al catálogo. La advertencia del spec se
-  sostuvo: 3 de 4 eran páginas o bloques disfrazados de tipo.
+- **No queda ningún candidato de tipo sin auditar.** De los 5 del macro archivo, `billing_info`,
+  `equipment_quote` y `financing` resultaron bloques genéricos, solo `service_scheduling` llegó al
+  catálogo, y `product_catalog` resultó **dominio de datos**, no un tipo: el cliente pidió gestionar
+  categorías y productos de forma dinámica, así que son tablas (`product_categories`, `products`) y
+  `/productos` es una página con solo `page_hero`, calcada de `/blog`. La advertencia del spec se
+  sostuvo entera: 4 de 5 eran páginas, bloques o datos disfrazados de tipo.
+- *Productos* de Tectuus fue la primera columna desde `appointments` que **sí necesitó tablas
+  nuevas**. El costo real: 2 migraciones, 2 modelos, 2 factories, 2 form requests, 3 controladores y
+  13 rutas. Ninguna sección nueva y ninguna entrada en `SCHEMAS` — la estructura de la página no
+  cambió.
+- La renuncia que trae: **las categorías no salen en `GET {site}/menu`**, porque el menú se deriva
+  de `pages`. Es la misma que ya se aceptó con los artículos del blog, y es la contrapartida de que
+  el admin pueda crear categorías sin tocar estructura. El front las pide a `product-categories`.
 - ~~Un lead no registra de qué formulario vino.~~ **Resuelto** con `leads.source`: el front manda el
   slug de la página del formulario, validado contra las páginas publicadas del sitio, y la bandeja
   filtra con `?source=`. Se difirió mientras eran dos formularios genéricos; se implementó al
@@ -98,7 +107,7 @@ que implementas algo — es una decisión aparte.
 | `apiResource('menus')` + `Admin\MenuController` (5 rutas) | El menú es **derivado** del mapa de páginas, y `GET /api/public/{site}/menu` ya lo deriva. Un CRUD de menús contradice el spec y crea una segunda verdad sobre el orden de la navegación |
 | `Admin\SiteController` `store`/`update`/`destroy` | 4 sitios fijos que siembra el blueprint. Un `index` read-only para poblar el selector de sitio del panel es todo lo que se necesita |
 | `Admin\UserController` (5 rutas) | Un solo rol global y un solo usuario que siembra `AdminUserSeeder`. No se pidió gestión de usuarios |
-| `prompt.md` | Está 100% satisfecho por lo implementado (banners, simulador, cards de clientes, datos de contacto). Sirve como log histórico; no es un spec |
+| `prompt.md` | Sus 3 funcionalidades (catálogo de productos, captación de leads y «Quiénes somos» de Tectuus) ya están implementadas, igual que las de la pasada anterior. Sirve como log histórico; no es un spec |
 
 Borrar los tres primeros son **13 rutas menos** y 2 controladores menos, sin perder ninguna
 capacidad. `POST` y `DELETE` de `pages` ya se borraron al implementar `Admin\PageController`.

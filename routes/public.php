@@ -5,6 +5,7 @@ use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\LeadController;
 use App\Http\Controllers\Public\MenuController;
 use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\ProductController;
 use App\Http\Controllers\Public\SavingsSimulatorController;
 use App\Http\Controllers\Public\StationController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,11 @@ Route::prefix('{site:slug}')->group(function (): void {
     Route::get('savings-simulator', SavingsSimulatorController::class);
     Route::get('blog', [BlogController::class, 'index']);
     Route::get('blog/{postSlug}', [BlogController::class, 'show']);
+    // The category list feeds the *Productos* submenu: categories are rows, not
+    // pages, so they never come out of `GET menu`.
+    Route::get('product-categories', [ProductController::class, 'categories']);
+    Route::get('products', [ProductController::class, 'index']);
+    Route::get('products/{productSlug}', [ProductController::class, 'show']);
     Route::get('stations', [StationController::class, 'index']);
     Route::get('appointments/availability', [AppointmentController::class, 'availability']);
     // Throttled: the only public write, otherwise an open mailbox for spam.

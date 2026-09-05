@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\LeadController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\StationController;
@@ -38,6 +40,11 @@ Route::middleware('auth:api')->group(function (): void {
     Route::apiResource('sections', SectionController::class)->only(['index', 'show', 'update']);
     // No blog categories: the blueprint does not define any. Add them when asked for.
     Route::apiResource('blog-posts', BlogPostController::class);
+    // Categories and products are data, not blueprint structure: full CRUD, like
+    // the blog. The blueprint seeds the three categories of Tectuus; the admin
+    // manages them and their products from there on.
+    Route::apiResource('product-categories', ProductCategoryController::class);
+    Route::apiResource('products', ProductController::class);
     // Leads only come from the public forms: the panel reads and deletes them.
     Route::apiResource('leads', LeadController::class)->only(['index', 'show', 'destroy']);
     Route::apiResource('stations', StationController::class);

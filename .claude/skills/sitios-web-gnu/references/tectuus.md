@@ -3,9 +3,9 @@
 Sitio más simple de los 4: sin blog, sin simulador de ahorro, enfocado en catálogo de producto
 industrial.
 
-Blueprint de contenido predefinido. **Migrado parcial**: solo la columna *Inicio* y las secciones
-globales están en formato blueprint y sembradas por `TectuusBlueprintSeeder`. Las columnas *Sobre
-nosotros*, *Productos* y *Contacto* siguen en el árbol crudo del apéndice.
+Blueprint de contenido predefinido. **Migrado completo**: las 4 columnas, sus 4 páginas y las
+secciones globales están en formato blueprint y sembradas por `TectuusBlueprintSeeder`, más las 3
+categorías de producto. El árbol crudo del apéndice queda solo como trazabilidad.
 
 Los campos de cada tipo de sección están en [`section-types.md`](section-types.md); los valores viven
 en el seeder y en la BD.
@@ -23,9 +23,41 @@ sitio **no tiene blog**.
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
 | 1 | `/` | Inicio | — | 1 | `banner_carousel`, `rich_text`, `clients_showcase`, `lead_capture_form` |
+| 2 | `/sobre-nosotros` | Sobre nosotros | — | 2 | `page_hero`, `rich_text`, `image_gallery` |
+| 3 | `/productos` | Productos | — | 3 | `page_hero` |
+| 4 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form` |
 
-**Sembrada: 1 columna de 4, 1 página.** El estado por tipo vive en
+**Sembradas: 4 columnas de 4, 4 páginas, sin hijas.** El estado por tipo vive en
 [`implementation-status.md`](implementation-status.md).
+
+## Catálogo de productos — dominio de datos, no secciones
+
+La columna *Productos* es la única del blueprint que no se resuelve solo con secciones.
+
+EDRM, Compresoras y Valvulería **no son páginas hijas ni un tipo `product_catalog`**: son filas de
+`product_categories`, y los productos filas de `products`. El criterio es el del contrato de
+editabilidad — el cliente pidió agregarlas, editarlas y eliminarlas, o sea son **datos**, y la
+estructura no se toca. Precedente literal: `/blog` lleva solo `page_hero` y los artículos son filas
+de `blog_posts`.
+
+| capa | dónde vive |
+|---|---|
+| la página `/productos` | `pages`, con su único `page_hero` |
+| las 3 categorías | `product_categories`, sembradas: `edrm` (1), `compresoras` (2), `valvuleria` (3) |
+| los productos | `products`, cargados por el admin — el seeder no siembra ninguno |
+| las rutas de categoría y de detalle | del front, servidas por la API pública; no son filas de `pages` |
+
+Endpoints: `GET /api/public/tectuus/product-categories`,
+`GET …/products?category={slug}&q={búsqueda}` y `GET …/products/{productSlug}`. En la API admin son
+dos `apiResource` con CRUD completo, como el blog.
+
+**Las categorías no salen en `GET /api/public/tectuus/menu`**, porque el menú se deriva de `pages` y
+ellas no son páginas. El front arma ese submenú con `product-categories`. Es la misma renuncia que
+ya se aceptó con los artículos del blog, y la contrapartida de que el admin pueda crear categorías
+sin tocar estructura.
+
+Los campos y las decisiones de esquema de las dos tablas están en
+`cms-gnu-backend/references/domain-entities.md`.
 
 Notas de lectura:
 
@@ -45,13 +77,17 @@ Notas de lectura:
   Si aparecen testimonios, van dentro de `clients_showcase`, atados al cliente que los dijo.
 - **El `clients_showcase` de la portada es un muro de logos**: deja vacíos `description`, `quote` y
   `quote_author`, los tres campos nullable del tipo.
-- **El `lead_capture_form` no declara extras**: los cuatro campos de siempre, que son columnas de
-  `leads`. Cuando se migre la columna *Contacto*, su formulario será el segundo del sitio y
-  `leads.source` es lo que los separa en la bandeja.
-- **La columna *Productos* está pendiente y es la única decisión de diseño real que queda.** EDRM,
-  Compresoras y Valvulería pueden ser tres páginas hijas o un `product_catalog`, el último candidato
-  de tipo sin auditar del catálogo — ver [`section-types.md`](section-types.md), «Tipos exclusivos de
-  un sitio». No promoverlo a tipo sin auditar la columna con el criterio de [`gnu.md`](gnu.md).
+- **Ningún `lead_capture_form` declara extras**: los cuatro campos de siempre, que son columnas de
+  `leads`. El sitio tiene **dos** formularios, el de `/` y el de `/contacto`, y `leads.source` es lo
+  que los separa en la bandeja.
+- **Ninguna de las 4 columnas tiene páginas hijas.** *Sobre nosotros* y *Contacto* cuelgan un solo
+  nodo en el árbol del cliente —«¿Quiénes somos?» y «Captación de leads»— y en ambos casos ese nodo
+  es el contenido de la cabeza de columna, no una hija: es la regla 1 de [`gnu.md`](gnu.md), la
+  misma lectura que *Contacto* en [`traninn-logistic.md`](traninn-logistic.md). Los tres nodos de
+  *Productos* son categorías, no páginas.
+- **`/sobre-nosotros` lleva el video y las fotos de la empresa**: el requisito de «imágenes y
+  videos» de esa columna aterriza en `video_url` de su `rich_text` y en su `image_gallery`, no en
+  tipos nuevos.
 
 ## Secciones globales
 

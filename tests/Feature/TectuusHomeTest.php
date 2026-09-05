@@ -16,13 +16,18 @@ beforeEach(function () {
 
 /**
  * Named apart from the helpers of the other site tests: Pest helpers are global.
- * No `$pageSlug` yet — this site has a single seeded page, so no type repeats.
+ * `$pageSlug` is needed now that the four columns are seeded: `page_hero`,
+ * `rich_text` and `lead_capture_form` repeat across pages of this site.
  */
-function tectuusSection(string $type): Section
+function tectuusSection(string $type, ?string $pageSlug = null): Section
 {
     return Site::where('slug', 'tectuus')->firstOrFail()
         ->sections()
         ->where('type', $type)
+        ->when(
+            $pageSlug !== null,
+            fn ($query) => $query->whereHas('page', fn ($page) => $page->where('slug', $pageSlug)),
+        )
         ->firstOrFail();
 }
 
@@ -68,7 +73,7 @@ it('has no savings simulator', function () {
 });
 
 it('replaces the client logos through the admin API', function () {
-    $section = tectuusSection('clients_showcase');
+    $section = tectuusSection('clients_showcase', 'inicio');
 
     $this->withToken($this->token)
         ->putJson("/api/admin/sections/{$section->id}", [
@@ -83,12 +88,12 @@ it('replaces the client logos through the admin API', function () {
         ->assertOk()
         ->assertJsonCount(2, 'data.content.logos');
 
-    expect(tectuusSection('clients_showcase')->content['title'])
+    expect(tectuusSection('clients_showcase', 'inicio')->content['title'])
         ->toBe('Empresas que confían en nosotros');
 });
 
 it('keeps the lead form fields locked', function () {
-    $section = tectuusSection('lead_capture_form');
+    $section = tectuusSection('lead_capture_form', 'inicio');
 
     $this->withToken($this->token)
         ->putJson("/api/admin/sections/{$section->id}", [
@@ -100,6 +105,6 @@ it('keeps the lead form fields locked', function () {
         ])
         ->assertOk();
 
-    expect(tectuusSection('lead_capture_form')->content['fields'])
+    expect(tectuusSection('lead_capture_form', 'inicio')->content['fields'])
         ->toBe(['name', 'email', 'phone', 'message']);
 });

@@ -58,6 +58,22 @@ class Site extends Model
     }
 
     /**
+     * @return HasMany<ProductCategory, $this>
+     */
+    public function productCategories(): HasMany
+    {
+        return $this->hasMany(ProductCategory::class);
+    }
+
+    /**
+     * @return HasMany<Product, $this>
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    /**
      * Site-wide sections (contact info, social icons, whatsapp button).
      *
      * @return HasMany<Section, $this>

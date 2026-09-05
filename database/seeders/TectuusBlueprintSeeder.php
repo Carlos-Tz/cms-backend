@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Models\Site;
 
 /**
- * Seeds the «Inicio» navigation column of Tectuus plus the site-wide sections.
- * The remaining columns — Sobre nosotros, Productos and Contacto — land in
- * later phases.
+ * Seeds the four navigation columns of Tectuus — Inicio, Sobre nosotros,
+ * Productos and Contacto — plus the site-wide sections and the three product
+ * categories that feed the catalogue.
  *
  * Idempotent: safe to re-run.
  */
@@ -23,9 +23,12 @@ class TectuusBlueprintSeeder extends BlueprintSeeder
             ['name' => 'Tectuus'],
         );
 
-        // Nav columns: Inicio (1). Sobre nosotros (2), Productos (3) and
-        // Contacto (4) are not migrated yet.
+        // Nav columns: Inicio (1), Sobre nosotros (2), Productos (3),
+        // Contacto (4).
         $this->home($site);
+        $this->aboutUs($site);
+        $this->products($site);
+        $this->contact($site);
         $this->globals($site);
     }
 
@@ -73,6 +76,111 @@ class TectuusBlueprintSeeder extends BlueprintSeeder
 
         $this->section($site, $home, 'lead_capture_form', 4, [
             'title' => 'Contacto',
+            'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
+            'submit_label' => 'Enviar',
+            // Locked: the four core entries map to columns of `leads`, and this
+            // form declares no extras, so it accepts nothing beyond them.
+            'fields' => ['name', 'email', 'phone', 'message'],
+        ]);
+    }
+
+    /**
+     * The «Sobre nosotros» column. The client tree hangs a single child off it,
+     * «¿Quiénes somos?», which is the content of the column head and not a
+     * subpage: same reading as «Captación de leads» under *Contacto* in Traninn
+     * Logistic.
+     *
+     * The `rich_text` carries this column's video and the gallery its photos —
+     * the two things the phase asked for beyond the copy itself.
+     */
+    private function aboutUs(Site $site): void
+    {
+        $about = $this->page($site, 'sobre-nosotros', '/sobre-nosotros', 'Sobre nosotros', 2);
+
+        $this->section($site, $about, 'page_hero', 1, [
+            'title' => '¿Quiénes somos?',
+            'subtitle' => 'Historia, misión, visión y valores.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $about, 'rich_text', 2, [
+            'title' => null,
+            'body' => '<p>Contenido pendiente de redactar.</p>',
+            'video_url' => null,
+        ]);
+
+        $this->section($site, $about, 'image_gallery', 3, [
+            'title' => 'Nuestra empresa',
+            'images' => [
+                ['image' => 'media/placeholder-foto-1.jpg', 'caption' => null, 'alt' => null],
+                ['image' => 'media/placeholder-foto-2.jpg', 'caption' => null, 'alt' => null],
+            ],
+        ]);
+    }
+
+    /**
+     * The «Productos» column. Its three children in the client tree — EDRM,
+     * compresoras y valvulería — are **rows of `product_categories`**, not pages
+     * and not a `product_catalog` section: the admin creates, edits and deletes
+     * them, so they are data. Literal precedent of `/blog`, whose page carries
+     * only a hero while the articles are rows of `blog_posts`.
+     *
+     * Consequence worth stating: the categories do not appear in
+     * `GET {site}/menu`, which derives from `pages`. The front builds that
+     * submenu from `GET {site}/product-categories`.
+     */
+    private function products(Site $site): void
+    {
+        $products = $this->page($site, 'productos', '/productos', 'Productos', 3);
+
+        $this->section($site, $products, 'page_hero', 1, [
+            'title' => 'Productos',
+            'subtitle' => 'Equipo industrial para gas natural.',
+            'image' => null,
+        ]);
+
+        // The three categories the client declared. The products inside them are
+        // loaded by the admin through POST /api/admin/products, same as the
+        // stations of the other sites.
+        $categories = [
+            ['edrm', 'EDRM', 1, 'Estaciones de regulación y medición.'],
+            ['compresoras', 'Compresoras', 2, 'Equipos de compresión de gas natural.'],
+            ['valvuleria', 'Valvulería', 3, 'Válvulas y accesorios para gas natural.'],
+        ];
+
+        foreach ($categories as [$slug, $name, $position, $description]) {
+            $site->productCategories()->updateOrCreate(
+                ['slug' => $slug],
+                [
+                    'name' => $name,
+                    'description' => $description,
+                    'image' => null,
+                    'position' => $position,
+                ],
+            );
+        }
+    }
+
+    /**
+     * The «Contacto» column. The client tree lists a single node under it —
+     * «Captación de leads» — which is the `lead_capture_form`.
+     *
+     * This is the site's second form, so `leads.source` is what tells it apart
+     * from the one on the home page in the inbox. No new code: that mechanism is
+     * already generic.
+     */
+    private function contact(Site $site): void
+    {
+        $contact = $this->page($site, 'contacto', '/contacto', 'Contacto', 4);
+
+        $this->section($site, $contact, 'page_hero', 1, [
+            'title' => 'Contacto',
+            'subtitle' => 'Estamos para ayudarte.',
+            'image' => null,
+        ]);
+
+        $this->section($site, $contact, 'lead_capture_form', 2, [
+            'title' => 'Escríbenos',
             'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
             'submit_label' => 'Enviar',
             // Locked: the four core entries map to columns of `leads`, and this
