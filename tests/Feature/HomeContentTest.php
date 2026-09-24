@@ -229,6 +229,19 @@ it('uploads an image and returns its url', function () {
     Storage::disk('public')->assertExists($response->json('data.path'));
 });
 
+it('explains in spanish an upload that php rejected before validation', function () {
+    Storage::fake('public');
+
+    // What PHP hands over when a file breaks `upload_max_filesize`: an upload
+    // error instead of a file. `test: true` skips the is_uploaded_file() check.
+    $file = new UploadedFile(__FILE__, 'foto.jpg', 'image/jpeg', UPLOAD_ERR_INI_SIZE, true);
+
+    $this->withToken($this->token)
+        ->postJson('/api/admin/media', ['file' => $file])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['file' => 'El campo archivo no se pudo subir.']);
+});
+
 it('lists the uploaded images and deletes one', function () {
     Storage::fake('public');
 

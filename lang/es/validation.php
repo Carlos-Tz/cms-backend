@@ -33,6 +33,7 @@ return [
     'present' => 'El campo :attribute debe estar presente.',
     'required' => 'El campo :attribute es obligatorio.',
     'string' => 'El campo :attribute debe ser texto.',
+    'uploaded' => 'El campo :attribute no se pudo subir. Intenta de nuevo o usa un archivo más ligero.',
     'url' => 'El campo :attribute debe ser una URL válida.',
 
     'custom' => [],
