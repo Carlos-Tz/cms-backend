@@ -75,7 +75,7 @@ aunque el segundo exista en otro formulario del mismo sitio.
 
 | Método | URI | Acción | Estado |
 |---|---|---|---|
-| POST | `media` | `MediaController@store` | **real** — valida `file` `image\|max:5120`, guarda en `media` del disco `public`, devuelve `{path, url}` 201 |
+| POST | `media` | `MediaController@store` | **real** — valida `file` `image\|max:20480`, guarda en `media` del disco `public`, devuelve `{path, url}` 201 |
 | GET | `media` | `MediaController@index` | **real** — lista `media` del disco `public`, más reciente primero: `[{path, name, url}]` + `meta.total` |
 | DELETE | `media/{medium}` | `MediaController@destroy` | **real** — `{medium}` es el nombre del archivo; 404 si no existe |
 

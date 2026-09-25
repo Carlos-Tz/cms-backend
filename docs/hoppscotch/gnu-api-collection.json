@@ -1043,7 +1043,7 @@
         },
         {
           "v": "11",
-          "name": "Subir imagen (max. 5 MB) — devuelve path y url",
+          "name": "Subir imagen (max. 20 MB) — devuelve path y url",
           "method": "POST",
           "endpoint": "<<BASE_URL>>/api/admin/media",
           "params": [],
