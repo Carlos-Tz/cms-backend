@@ -133,16 +133,30 @@ it('blocks station writes without a token', function () {
         ->assertJsonPath('meta.message', 'No autenticado');
 });
 
-it('lets the admin edit the title of a stations_map section but not its layout', function () {
+it('lets the admin move the map of a stations_map section', function () {
     $section = $this->site->sections()->where('type', 'stations_map')->firstOrFail();
 
     $this->withToken($this->token)
         ->putJson("/api/admin/sections/{$section->id}", [
-            'content' => ['title' => 'Encuentra tu estación', 'center' => '0,0', 'zoom' => '20'],
+            // Pasted the way Google Maps copies it, with a space after the comma.
+            'content' => ['title' => 'Encuentra tu estación', 'center' => '25.6866, -100.3161', 'zoom' => '13'],
         ])
         ->assertOk()
         ->assertJsonPath('data.content.title', 'Encuentra tu estación')
-        // `center` and `zoom` are locked, so the stored values survive.
-        ->assertJsonPath('data.content.center', '25.6714,-100.3094')
-        ->assertJsonPath('data.content.zoom', '11');
+        ->assertJsonPath('data.content.center', '25.6866, -100.3161')
+        ->assertJsonPath('data.content.zoom', '13');
 });
+
+it('rejects a map center or zoom the map cannot draw', function (string $center) {
+    $section = $this->site->sections()->where('type', 'stations_map')->firstOrFail();
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => ['title' => 'Mapa', 'center' => $center, 'zoom' => '23'],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors([
+            'content.center' => 'El centro del mapa debe tener el formato «latitud,longitud», con la latitud entre -90 y 90 y la longitud entre -180 y 180.',
+            'content.zoom' => 'El zoom del mapa debe ser un número entero entre 0 y 22.',
+        ]);
+})->with(['90.5,-100.3094', '25.6714,-180.5', '25.6714', 'Monterrey']);

@@ -26,7 +26,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 11 | **Publicar / despublicar una página** | ✅ | `Admin\PageController` + `UpdatePageRequest` | `PageAndMenuTest` — «unpublishes and republishes a page through the admin API», «ignores blueprint fields sent alongside the publish flag», «does not expose routes to create or delete pages», «blocks page writes without a token» |
 | 12 | Menú de navegación público | ✅ | `Public\MenuController@show` | `PageAndMenuTest` — «derives the public menu from the page map», «drops an unpublished page and its whole branch from the menu» |
 | 12b | Listar páginas en el panel | ✅ | `Admin\PageController@index` / `@show` | `PageAndMenuTest` — «lists the pages of a site for the admin, including unpublished ones», «returns a page with its sections for the admin» |
-| 13 | Estaciones (mapa) | ✅ | `Admin\StationController` (CRUD) + `StationRequest` · `Public\StationController@index` | `StationTest` — 9 tests |
+| 13 | Estaciones (mapa) | ✅ | `Admin\StationController` (CRUD) + `StationRequest` · `Public\StationController@index` | `StationTest` — 10 tests |
 | 14 | Biblioteca de media (listar / borrar) | ✅ **sin tabla** | `Admin\MediaController@index` / `@destroy`, sobre el disco `public` | `HomeContentTest` — «lists the uploaded images and deletes one», «404s when deleting an image that does not exist», «cannot reach the media delete with a path outside the media folder», «does not expose routes to show or update a media file», «blocks the media api without a token» |
 | 15 | Notificación de lead nuevo al destinatario | ⬜ | — | ninguno |
 | 16 | Blueprint `gnu` | ✅ **17 de 17 sembradas** | `GnuBlueprintSeeder` | los de arriba corren sobre él, + `ServicesAndSustainabilityTest` y `GncAndContactTest` |

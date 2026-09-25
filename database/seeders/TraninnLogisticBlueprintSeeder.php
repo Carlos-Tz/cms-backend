@@ -430,7 +430,8 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
 
     /**
      * A `stations_map` centred on Morelia, where this site's `contact_info`
-     * places the company. `center` and `zoom` are locked layout values.
+     * places the company. `center` and `zoom` are the initial framing; the
+     * admin can move it.
      *
      * Each site centres its own city, so this is not a duplicate of the helper
      * in the other two seeders.

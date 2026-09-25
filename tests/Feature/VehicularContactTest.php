@@ -90,7 +90,7 @@ it('lists the lead in the admin inbox of its own site only', function () {
         ->assertJsonPath('meta.total', 0);
 });
 
-it('keeps the map layout fields locked when the admin renames it', function () {
+it('moves the map when the admin edits its center and zoom', function () {
     $section = vehicularSection('stations_map', 'contacto');
 
     $this->withToken($this->token)
@@ -102,8 +102,8 @@ it('keeps the map layout fields locked when the admin renames it', function () {
 
     $content = vehicularSection('stations_map', 'contacto')->content;
 
-    expect($content['center'])->toBe('19.7028,-101.1920')
-        ->and($content['zoom'])->toBe('11');
+    expect($content['center'])->toBe('0,0')
+        ->and($content['zoom'])->toBe('20');
 });
 
 it('draws a station created by the admin, and hides an inactive one', function () {

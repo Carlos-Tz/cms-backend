@@ -511,8 +511,8 @@ class GnuBlueprintSeeder extends BlueprintSeeder
     }
 
     /**
-     * A `stations_map` section. `center` and `zoom` are locked layout values;
-     * the pins come from the `stations` table, not from here.
+     * A `stations_map` section. `center` and `zoom` are the initial framing,
+     * the admin can move it; the pins come from the `stations` table, not from here.
      *
      * @return array<string, mixed>
      */

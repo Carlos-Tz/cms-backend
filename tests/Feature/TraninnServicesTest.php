@@ -95,7 +95,7 @@ it('feeds the map from the stations table, active ones only', function () {
         ->assertJsonCount(1, 'data');
 });
 
-it('keeps the map center and zoom locked', function () {
+it('lets the admin move the map center and zoom', function () {
     $section = traninnSection('stations_map', 'ubicaciones');
 
     $this->withToken($this->token)
@@ -111,6 +111,6 @@ it('keeps the map center and zoom locked', function () {
     $content = traninnSection('stations_map', 'ubicaciones')->content;
 
     expect($content['title'])->toBe('Dónde encontrarnos')
-        ->and($content['center'])->toBe('19.7028,-101.1920')
-        ->and($content['zoom'])->toBe('11');
+        ->and($content['center'])->toBe('0,0')
+        ->and($content['zoom'])->toBe('20');
 });

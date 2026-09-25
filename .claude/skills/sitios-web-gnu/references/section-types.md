@@ -17,7 +17,7 @@ Identificadores de campo en inglés; los encabezados y las notas en español.
 **Casi todos los campos son `editable`, y eso es correcto.** `fijo` marca únicamente lo que está
 atado a código o al esquema de la base de datos, donde un cambio del admin rompería algo en
 silencio. No es una etiqueta para lo que preferiríamos que nadie tocara. En todo el catálogo hay
-solo tres grupos `fijo`, y cada uno declara su motivo.
+solo dos grupos `fijo`, y cada uno declara su motivo.
 
 ## Prohibido: overrides por página
 
@@ -219,10 +219,12 @@ Traninn son bases de operación. La tabla `stations` es la misma y el significad
 | campo | tipo | editable | notas |
 |---|---|---|---|
 | `title` | string | sí | nullable |
-| `center` | string | **fijo** | coordenadas del centro inicial |
-| `zoom` | string | **fijo** | nivel de zoom inicial |
+| `center` | string | sí | centro inicial, «latitud,longitud»; mismos rangos que `stations` |
+| `zoom` | string | sí | nivel de zoom inicial, entero de 0 a 22 |
 
-**`center` y `zoom` son `fijo`** porque son configuración de layout sin significado de marketing.
+**`center` y `zoom` son editables**: las estaciones las da de alta el admin, así que el encuadre del
+mapa tiene que poder seguirlas. Antes eran `fijo` como «layout», justo el motivo que este catálogo
+no acepta. Siguen siendo string, la forma que siembran los seeders.
 
 Las estaciones **no** son campos de esta sección: vienen de la tabla `stations`, que el admin
 gestiona por separado (`StationController`). La sección solo dice *dónde se dibuja el mapa*.

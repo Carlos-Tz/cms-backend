@@ -369,7 +369,7 @@
             },
             {
               "v": "11",
-              "name": "PUT stations_map — `center` y `zoom` son fijos; los pines salen de /stations",
+              "name": "PUT stations_map — `center` («lat,lng») y `zoom` (0–22) son editables; los pines salen de /stations",
               "method": "PUT",
               "endpoint": "<<BASE_URL>>/api/admin/sections/<<SECTION_ID>>",
               "params": [],
@@ -383,7 +383,7 @@
               },
               "body": {
                 "contentType": "application/json",
-                "body": "{\n  \"content\": {\n    \"title\": \"Mapa de estaciones\"\n  }\n}"
+                "body": "{\n  \"content\": {\n    \"title\": \"Mapa de estaciones\",\n    \"center\": \"25.6714,-100.3094\",\n    \"zoom\": \"11\"\n  }\n}"
               },
               "requestVariables": [],
               "responses": {}

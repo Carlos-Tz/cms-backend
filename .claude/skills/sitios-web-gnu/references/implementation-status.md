@@ -26,7 +26,7 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 | `feature_grid` | ✅ | ✅ `gnu`, 7 páginas; `gnu-vehicular` 5 páginas; `traninn-logistic` 3 páginas | **7 de 17** | `gnu`, `gnu-vehicular` (+ los otros al migrar) | el de la portada de `gnu-vehicular` es «Programa de recompensas» |
 | `service_scheduling` | ✅ | ✅ `gnu-vehicular` `/ubicaciones/agenda-tu-verificacion` | 0 | solo `gnu-vehicular` | único tipo exclusivo de un sitio. Los horarios no son campos: los sirve `GET appointments/availability` |
 | `testimonials` | ✅ | ✅ `gnu` global, `gnu-vehicular` en `/` | global | `gnu` (global), `gnu-vehicular` (sección de *Inicio*) | la divergencia de ámbito entre los dos sitios es deliberada |
-| `stations_map` | ✅ | ✅ `gnu` `/gnc` y `/contacto`, `gnu-vehicular` `/`, `/ubicaciones` y `/contacto`, `traninn-logistic` `/ubicaciones` | 2 | `gnu`, `gnu-vehicular`, `traninn-logistic` | solo `title` es editable; `center` y `zoom` son `fijo`. Los pines salen de la tabla `stations`, no de la sección |
+| `stations_map` | ✅ | ✅ `gnu` `/gnc` y `/contacto`, `gnu-vehicular` `/`, `/ubicaciones` y `/contacto`, `traninn-logistic` `/ubicaciones` | 2 | `gnu`, `gnu-vehicular`, `traninn-logistic` | `title`, `center` («lat,lng») y `zoom` (0–22) son editables. Los pines salen de la tabla `stations`, no de la sección |
 
 ## Qué se deduce de esto
 

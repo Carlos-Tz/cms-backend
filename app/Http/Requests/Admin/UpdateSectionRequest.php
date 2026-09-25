@@ -90,10 +90,13 @@ class UpdateSectionRequest extends FormRequest
             'intro' => ['nullable', 'string', 'max:1000'],
             'submit_label' => ['required', 'string', 'max:60'],
         ],
-        // `center` and `zoom` are locked: map layout, not marketing content.
+        // `center` is «lat,lng» within the same bounds as StationRequest; `zoom` is an
+        // integer from 0 to 22. Both stay strings, the shape the seeders store.
         // The pins are not fields here — they come from the `stations` table.
         'stations_map' => [
             'title' => ['nullable', 'string', 'max:255'],
+            'center' => ['required', 'string', 'max:50', 'regex:/^-?(?:90(?:\.0+)?|[1-8]?\d(?:\.\d+)?),\s*-?(?:180(?:\.0+)?|(?:1[0-7]\d|[1-9]?\d)(?:\.\d+)?)$/'],
+            'zoom' => ['required', 'string', 'regex:/^(?:1?\d|2[0-2])$/'],
         ],
         // The bookable hours are not fields here: `Appointment::SLOTS` and the
         // availability endpoint are their single source of truth.
@@ -154,5 +157,16 @@ class UpdateSectionRequest extends FormRequest
     public function attributes(): array
     {
         return ['content' => 'contenido'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'content.center.regex' => 'El centro del mapa debe tener el formato «latitud,longitud», con la latitud entre -90 y 90 y la longitud entre -180 y 180.',
+            'content.zoom.regex' => 'El zoom del mapa debe ser un número entero entre 0 y 22.',
+        ];
     }
 }

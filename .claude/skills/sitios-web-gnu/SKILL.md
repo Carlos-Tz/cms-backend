@@ -52,8 +52,8 @@ gestiona; las secciones de una página son estructura y no las toca.
 
 Un detalle que hay que decir en voz alta: **casi todos los campos son `editable`, y eso es
 correcto.** `fijo` marca solo lo atado a código o al esquema de la BD, donde un cambio del admin
-rompería algo en silencio. En todo el catálogo hay tres grupos `fijo`, cada uno con su motivo
-documentado. Si aparece un cuarto sin justificación, sobra.
+rompería algo en silencio. En todo el catálogo hay dos grupos `fijo`, cada uno con su motivo
+documentado. Si aparece un tercero sin justificación, sobra.
 
 ## Resumen comparativo
 
