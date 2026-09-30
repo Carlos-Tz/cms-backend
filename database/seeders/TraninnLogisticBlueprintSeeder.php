@@ -93,6 +93,7 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $home, 'clients_showcase', 4, [
@@ -369,6 +370,7 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ];
     }
 

@@ -215,7 +215,7 @@
               },
               "body": {
                 "contentType": "application/json",
-                "body": "{\n  \"content\": {\n    \"title\": null,\n    \"body\": \"<p>Contenido en HTML.</p>\",\n    \"video_url\": \"https://www.youtube.com/watch?v=xxxxxxxxxxx\"\n  }\n}"
+                "body": "{\n  \"content\": {\n    \"title\": null,\n    \"body\": \"<p>Contenido en HTML.</p>\",\n    \"video_url\": \"https://www.youtube.com/watch?v=xxxxxxxxxxx\",\n    \"image_video_url\": \"media/portada-video.jpg\"\n  }\n}"
               },
               "requestVariables": [],
               "responses": {}

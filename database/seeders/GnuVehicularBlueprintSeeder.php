@@ -330,6 +330,7 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
                 'title' => null,
                 'body' => '<p>Contenido pendiente de redactar.</p>',
                 'video_url' => null,
+                'image_video_url' => null,
             ]);
         }
 
@@ -347,6 +348,7 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
     }
 
@@ -409,6 +411,7 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
             'title' => 'Facturación',
             'body' => '<p>Contenido pendiente de redactar: instrucciones de facturación y liga al portal.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $contact, 'stations_map', 4, $this->map('Mapa de estaciones'));
@@ -454,6 +457,7 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ];
     }
 

@@ -103,3 +103,46 @@ it('rejects a rich text section with an invalid video url and no body', function
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['content.body', 'content.video_url']);
 });
+
+it('stores the video cover image in the same request as the video url', function () {
+    $section = sectionOfPage('nuestra-historia', 'rich_text');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'body' => '<p>Nuestra historia empieza en Monterrey.</p>',
+                'video_url' => 'https://www.youtube.com/watch?v=abc123',
+                'image_video_url' => 'media/portada-video.jpg',
+            ],
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.content.image_video_url', 'media/portada-video.jpg');
+
+    $this->getJson('/api/public/gnu/pages/nuestra-historia')
+        ->assertOk()
+        ->assertJsonPath('data.sections.1.content.video_url', 'https://www.youtube.com/watch?v=abc123')
+        ->assertJsonPath('data.sections.1.content.image_video_url', 'media/portada-video.jpg');
+});
+
+it('rejects a video cover image that is not a string', function () {
+    $section = sectionOfPage('nuestra-historia', 'rich_text');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'body' => '<p>Nuestra historia empieza en Monterrey.</p>',
+                'image_video_url' => ['media/portada-video.jpg'],
+            ],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['content.image_video_url']);
+});
+
+it('seeds the video cover image as null', function () {
+    $content = $this->getJson('/api/public/gnu/pages/nuestra-historia')
+        ->assertOk()
+        ->json('data.sections.1.content');
+
+    // assertJsonPath(..., null) would also pass with the key missing.
+    expect($content)->toHaveKey('image_video_url', null);
+});

@@ -51,6 +51,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $home, 'clients_showcase', 4, [
@@ -147,6 +148,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $services, 'clients_showcase', 3, [
@@ -168,6 +170,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar para GNC.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $gnc, 'feature_grid', 3, [
@@ -212,6 +215,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
                 'title' => null,
                 'body' => "<p>Contenido pendiente de redactar para {$title}.</p>",
                 'video_url' => null,
+                'image_video_url' => null,
             ]);
 
             $this->section($site, $page, 'feature_grid', 3, [
@@ -271,6 +275,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
                 'title' => null,
                 'body' => "<p>Contenido pendiente de redactar para «{$page->title}».</p>",
                 'video_url' => null,
+                'image_video_url' => null,
             ]);
         }
 
@@ -319,6 +324,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Somos un grupo mexicano dedicado a la comercialización y distribución de gas natural.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $purpose = $this->page(
@@ -340,6 +346,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $purpose, 'feature_grid', 3, [
@@ -412,6 +419,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
     }
 

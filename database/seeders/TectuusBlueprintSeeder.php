@@ -61,6 +61,7 @@ class TectuusBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $home, 'clients_showcase', 3, [
@@ -107,6 +108,7 @@ class TectuusBlueprintSeeder extends BlueprintSeeder
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
+            'image_video_url' => null,
         ]);
 
         $this->section($site, $about, 'image_gallery', 3, [

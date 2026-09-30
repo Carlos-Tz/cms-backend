@@ -60,9 +60,14 @@ necesita su `key` en el mapa de la página.
 | `title` | string | sí | nullable |
 | `body` | html | sí | |
 | `video_url` | url | sí | nullable |
+| `image_video_url` | media | sí | nullable; imagen de portada del video |
 
 `video_url` absorbe el requisito transversal de «soporte para videos» de los 4 sitios: no existe un
 tipo `video_embed`. Una sección de solo video es un `rich_text` con `body` vacío.
+
+`image_video_url` viaja en el mismo `PUT` que `video_url`. El nombre termina en `_url` porque así lo
+pidió el front, pero el valor sigue la convención `media`: el `path` que devuelve
+`POST /api/admin/media`, no una URL validada.
 
 ### `feature_grid`
 

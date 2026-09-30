@@ -30,6 +30,8 @@ class UpdateSectionRequest extends FormRequest
             'title' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string'],
             'video_url' => ['nullable', 'url', 'max:2048'],
+            // Poster of the video: a media path like every image field, despite the `_url` name.
+            'image_video_url' => ['nullable', 'string', 'max:2048'],
         ],
         'feature_grid' => [
             'title' => ['nullable', 'string', 'max:255'],
