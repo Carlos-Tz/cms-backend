@@ -5,7 +5,7 @@ cuando cierres un hueco** — si no, en dos fases vuelve a ser inútil, que es e
 a la sección «Current phase» de `CLAUDE.md`.
 
 Verificado con `php artisan route:list --path=api --except-vendor` (66 rutas) y
-`php artisan test --compact` (209 tests, 888 aserciones, todos verdes).
+`php artisan test --compact` (224 tests, 963 aserciones, todos verdes).
 
 Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es stub · ⬜ no existe nada
 
@@ -16,7 +16,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 | 1 | Login admin JWT (`login`/`logout`/`me`) | ✅ | `Admin\AuthController` | `AuthTest` — los 6 |
 | 2 | Servir una página con sus secciones en orden | ✅ | `Public\PageController@show` | `HomeContentTest` — «returns the home page with its sections in blueprint order», «404s on an unknown site or page, in Spanish», «hides an unpublished page from the public API» |
 | 3 | Servir las secciones globales del sitio | ✅ | `Public\PageController@globals` | `HomeContentTest` — «returns the site-wide sections keyed by type» |
-| 4 | Editar el contenido de una sección | ✅ **12 de 12 tipos** | `Admin\SectionController` + `UpdateSectionRequest` | `HomeContentTest` — 8 tests, incluidos «replaces the testimonials through the admin API», «rejects a testimonial without an author» y «stores a video url on the home page rich text» · `AboutContentTest` — «replaces the feature grid items through the admin API», «rejects a feature grid item without a title», «updates a rich text section with a video», «rejects a rich text section with an invalid video url and no body» |
+| 4 | Editar el contenido de una sección | ✅ **17 de 17 tipos** | `Admin\SectionController` + `UpdateSectionRequest` | `HomeContentTest` — 13 tests, incluidos «updates the trust strip through the admin API», «rejects an unknown trust strip icon», «updates the stats band through the admin API», «updates the image text block through the admin API» y «requires image text content when the block is enabled» · `AboutContentTest` — «replaces the feature grid items through the admin API», «rejects a feature grid item without a title», «updates a rich text section with a video», «rejects a rich text section with an invalid video url and no body» |
 | 5 | Simulador de ahorro con cálculo en backend | ✅ | `Public\SavingsSimulatorController` | `HomeContentTest` — «computes the savings against diesel», «reflects an updated gas price in the simulation», «rejects an unknown fuel and a non positive quantity» |
 | 6 | Blog público (listado + artículo) | ✅ | `Public\BlogController` | `BlogTest` — 8 tests |
 | 7 | Blog admin (CRUD completo) | ✅ | `Admin\BlogPostController` + `BlogPostRequest` | `BlogTest` — 6 tests |
@@ -40,7 +40,7 @@ Leyenda: ✅ hecho y con tests · 🟡 parcial · 🔴 la ruta existe pero es st
 El estado por tipo de sección (fila 4) no se repite aquí: vive en
 `sitios-web-gnu/references/implementation-status.md`, al lado de la definición de cada tipo.
 
-**`gnu` está completo**: las 17 páginas del blueprint, sus 47 secciones, las 4 globales, 4 artículos
+**`gnu` está completo**: las 17 páginas del blueprint, sus 50 secciones, las 4 globales, 4 artículos
 y 2 estaciones de ejemplo. Verificado nodo por nodo contra la página 1 de `docs/mapa-sitios-pdf.pdf`,
 columnas y «Requerimientos principales» incluidos. **Los cuatro sitios están completos**: ya no queda
 blueprint pendiente, solo los huecos de abajo.

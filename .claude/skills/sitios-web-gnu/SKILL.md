@@ -76,10 +76,13 @@ Genéricos, cubren la mayoría de las páginas de contenido por reuso:
   video. Puede repetirse en una misma página.
 - `feature_grid` — rejilla de tarjetas (valores, beneficios, certificaciones, iniciativas).
 - `image_gallery` — rejilla de fotografías con pie de foto y texto alternativo.
+- `image_text` — imagen con texto, puntos destacados y CTA opcional; las portadas de los 4 sitios.
 
 Compartidos entre sitios:
 
 - `banner_carousel` — los 4 sitios.
+- `trust_strip` — los 4 sitios; tarjetas con icono de un catálogo cerrado.
+- `stats_band` — los 4 sitios; cifras editables, con el conteo de clientes derivado por el front.
 - `whatsapp_button` — los 4 sitios, siempre como contacto directo de marketing.
 - `social_icons` — los 4 sitios.
 - `contact_info` — sección global con los datos de contacto de la empresa.

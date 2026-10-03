@@ -39,7 +39,28 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
-        $this->section($site, $home, 'savings_simulator', 2, $this->fuelPrices(
+        $this->section($site, $home, 'trust_strip', 2, [
+            'title' => null,
+            'items' => [
+                [
+                    'icon' => 'percent',
+                    'title' => 'Ahorro real',
+                    'text' => 'Hasta 40% menos que la gasolina',
+                ],
+                [
+                    'icon' => 'map-pin',
+                    'title' => 'Cobertura nacional',
+                    'text' => '+120 estaciones en todo México',
+                ],
+                [
+                    'icon' => 'leaf',
+                    'title' => 'Energía responsable',
+                    'text' => 'Menor huella de carbono desde hoy',
+                ],
+            ],
+        ]);
+
+        $this->section($site, $home, 'savings_simulator', 3, $this->fuelPrices(
             'Simulador de ahorro',
             'Calcula cuánto ahorras al cambiar tu combustible actual por gas natural.',
         ));
@@ -47,14 +68,14 @@ class GnuBlueprintSeeder extends BlueprintSeeder
         // Carries the home page video: `video_url` is where the blueprint's
         // site-wide «soporte para videos» requirement lands, and `rich_text` is
         // the only type that has it.
-        $this->section($site, $home, 'rich_text', 3, [
+        $this->section($site, $home, 'rich_text', 4, [
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
             'image_video_url' => null,
         ]);
 
-        $this->section($site, $home, 'clients_showcase', 4, [
+        $this->section($site, $home, 'clients_showcase', 5, [
             'title' => 'Nuestros clientes',
             'logos' => [
                 [
@@ -65,7 +86,29 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
-        $this->section($site, $home, 'lead_capture_form', 5, [
+        $this->section($site, $home, 'stats_band', 6, [
+            'stats' => [
+                ['value' => 40, 'suffix' => '%', 'label' => 'de ahorro frente a la gasolina'],
+                ['value' => 120, 'suffix' => '+', 'label' => 'estaciones en México'],
+                ['value' => 3, 'suffix' => '', 'label' => 'soluciones: GNC, GND y GNV'],
+            ],
+            'cta_label' => 'Conoce nuestros servicios',
+            'cta_href' => '/nuestros-servicios',
+        ]);
+
+        $this->section($site, $home, 'image_text', 7, [
+            'enabled' => false,
+            'image' => null,
+            'eyebrow' => null,
+            'badge' => null,
+            'title' => null,
+            'description' => null,
+            'items' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
+
+        $this->section($site, $home, 'lead_capture_form', 8, [
             'title' => 'Contáctanos',
             'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
             'submit_label' => 'Enviar',

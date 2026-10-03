@@ -15,6 +15,9 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 |---|---|---|---|---|---|
 | `page_hero` | ✅ | ✅ `gnu` 16 páginas; `gnu-vehicular` 13 páginas; `traninn-logistic` 10 páginas; `tectuus` 3 páginas | 16 de 17 | los 4 | la portada `/` no lo lleva |
 | `banner_carousel` | ✅ | ✅ los 4 sitios sembrados, en `/` | 1 | los 4 | |
+| `trust_strip` | ✅ | ✅ los 4 sitios en `/`; GNU lleva 3 mensajes, los otros empiezan con `items: []` | 1 | los 4 | `icon` es un enum cerrado: `percent`, `map-pin`, `leaf` |
+| `stats_band` | ✅ | ✅ los 4 sitios en `/`; GNU lleva 3 métricas y CTA, los otros empiezan con `stats: []` | 1 | los 4 | después de `clients_showcase`; en GNU Vehicular, después de `testimonials` |
+| `image_text` | ✅ | ✅ los 4 sitios en `/`, `enabled: false` | 1 | los 4 | se activa con imagen, título y descripción; no agrega ni elimina secciones |
 | `savings_simulator` | ✅ | ✅ `gnu` `/` y `/gnc`, `gnu-vehicular` `/`, `traninn-logistic` `/` (3 combustibles) | 2 | `gnu`, `gnu-vehicular`, `traninn-logistic` | el cálculo lo sirve `GET savings-simulator`; **cada instancia guarda sus propios precios** y se elige con `?page={slug}` |
 | `clients_showcase` | ✅ | ✅ `gnu` `/` y `/nuestros-servicios`, `traninn-logistic` `/` y `/sobre-nosotros`, `tectuus` `/` | 2 | `gnu`, `traninn-logistic`, `tectuus` | `description`, `quote` y `quote_author` por logo son nullable: la instancia de `/sobre-nosotros` los llena, las demás los dejan vacíos |
 | `lead_capture_form` | ✅ | ✅ `gnu` `/`, `gnu-vehicular` 4 páginas, `traninn-logistic` `/` y `/contacto`, `tectuus` `/` y `/contacto` | 5 | los 4 | `fields[]` es `fijo` y se sembró bloqueado |
@@ -30,7 +33,7 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 
 ## Qué se deduce de esto
 
-- **14 de 14 tipos editables.** El catálogo entero tiene reglas en `SCHEMAS`; ya no hay tipos
+- **17 de 17 tipos editables.** El catálogo entero tiene reglas en `SCHEMAS`; ya no hay tipos
   cerrados por defecto. Un tipo nuevo sí nace cerrado hasta que se le escriban las suyas.
 - **Los 4 sitios están completos**: 17, 14, 11 y 4 páginas. `tectuus` es el más chico porque
   ninguna de sus 4 columnas tiene hijas — sus tres nodos de *Productos* son categorías, filas de
@@ -40,15 +43,15 @@ prioridad: el tipo que aparece en más páginas es el que más rinde implementar
 
 ## Qué está sembrado hoy
 
-`GnuBlueprintSeeder` siembra **las 17 páginas** de `gnu` con sus 47 secciones, más 4 secciones
+`GnuBlueprintSeeder` siembra **las 17 páginas** de `gnu` con sus 50 secciones, más 4 secciones
 globales, 4 artículos y 2 estaciones de ejemplo. `GnuVehicularBlueprintSeeder` siembra **las 14 páginas** de
-`gnu-vehicular`: `/` con sus 6 secciones, la columna de servicios con sus 6 páginas en 3 niveles,
+`gnu-vehicular`: `/` con sus 9 secciones, la columna de servicios con sus 6 páginas en 3 niveles,
 `/ubicaciones` y sus 4 hijas, `/contacto` con 4 y `/blog` con su hero; más 3 secciones globales,
 4 artículos y 2 estaciones (Morelia y Uruapan). `TraninnLogisticBlueprintSeeder` siembra **las 11 páginas**
-de `traninn-logistic`: `/` con sus 5 secciones, `/nuestros-servicios` y sus 3 hijas,
+de `traninn-logistic`: `/` con sus 8 secciones, `/nuestros-servicios` y sus 3 hijas,
 `/sobre-nosotros` y sus 3 hijas, `/contacto` con hero y formulario, y `/ubicaciones` con su mapa;
 más 3 secciones globales y 2 bases de ejemplo en `stations`. Sin blog, porque el sitio no declara ninguno.
-`TectuusBlueprintSeeder` siembra **las 4 páginas** de `tectuus`: `/` con sus 4 secciones,
+`TectuusBlueprintSeeder` siembra **las 4 páginas** de `tectuus`: `/` con sus 7 secciones,
 `/sobre-nosotros` con 3, `/productos` con su hero y `/contacto` con 2; más 3 secciones globales y las
 **3 categorías de producto** (`edrm`, `compresoras`, `valvuleria`). Sin blog, sin simulador y sin
 estaciones, porque el sitio no declara ninguno. **No siembra productos**: los carga el admin por

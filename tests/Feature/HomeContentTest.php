@@ -38,12 +38,103 @@ it('returns the home page with its sections in blueprint order', function () {
     $this->getJson('/api/public/gnu/pages/inicio')
         ->assertOk()
         ->assertJsonPath('data.title', 'Inicio')
-        ->assertJsonCount(5, 'data.sections')
+        ->assertJsonCount(8, 'data.sections')
         ->assertJsonPath('data.sections.0.type', 'banner_carousel')
-        ->assertJsonPath('data.sections.1.type', 'savings_simulator')
-        ->assertJsonPath('data.sections.2.type', 'rich_text')
-        ->assertJsonPath('data.sections.3.type', 'clients_showcase')
-        ->assertJsonPath('data.sections.4.type', 'lead_capture_form');
+        ->assertJsonPath('data.sections.1.type', 'trust_strip')
+        ->assertJsonPath('data.sections.1.content.items.0.icon', 'percent')
+        ->assertJsonPath('data.sections.2.type', 'savings_simulator')
+        ->assertJsonPath('data.sections.3.type', 'rich_text')
+        ->assertJsonPath('data.sections.4.type', 'clients_showcase')
+        ->assertJsonPath('data.sections.5.type', 'stats_band')
+        ->assertJsonPath('data.sections.5.content.stats.0.value', 40)
+        ->assertJsonPath('data.sections.6.type', 'image_text')
+        ->assertJsonPath('data.sections.6.content.enabled', false)
+        ->assertJsonPath('data.sections.7.type', 'lead_capture_form');
+});
+
+it('updates the trust strip through the admin API', function () {
+    $section = sectionOfType('trust_strip', 'inicio');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'title' => 'Beneficios',
+                'items' => [
+                    ['icon' => 'percent', 'title' => 'Ahorro', 'text' => 'Reduce tus costos.'],
+                    ['icon' => 'leaf', 'title' => 'Energía limpia', 'text' => 'Menos emisiones.'],
+                ],
+            ],
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.content.items.1.icon', 'leaf');
+
+    expect(sectionOfType('trust_strip', 'inicio')->content['title'])->toBe('Beneficios');
+});
+
+it('rejects an unknown trust strip icon', function () {
+    $section = sectionOfType('trust_strip', 'inicio');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'items' => [
+                    ['icon' => 'star', 'title' => 'Ahorro', 'text' => 'Reduce tus costos.'],
+                ],
+            ],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['content.items.0.icon']);
+});
+
+it('updates the stats band through the admin API', function () {
+    $section = sectionOfType('stats_band', 'inicio');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'stats' => [
+                    ['value' => 40, 'suffix' => '%', 'label' => 'de ahorro'],
+                    ['value' => 120, 'suffix' => '+', 'label' => 'estaciones'],
+                ],
+                'cta_label' => 'Servicios',
+                'cta_href' => '/nuestros-servicios',
+            ],
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.content.cta_href', '/nuestros-servicios');
+});
+
+it('updates the image text block through the admin API', function () {
+    $section = sectionOfType('image_text', 'inicio');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => [
+                'enabled' => true,
+                'image' => 'media/compromiso.jpg',
+                'eyebrow' => 'Conócenos',
+                'badge' => 'GNU',
+                'title' => 'Nuestro compromiso',
+                'description' => 'Trabajamos para nuestros clientes.',
+                'items' => ['Atención cercana', 'Soluciones eficientes'],
+                'cta_label' => 'Nuestros servicios',
+                'cta_href' => '/nuestros-servicios',
+            ],
+        ])
+        ->assertOk()
+        ->assertJsonPath('data.content.enabled', true)
+        ->assertJsonPath('data.content.items.1', 'Soluciones eficientes');
+});
+
+it('requires image text content when the block is enabled', function () {
+    $section = sectionOfType('image_text', 'inicio');
+
+    $this->withToken($this->token)
+        ->putJson("/api/admin/sections/{$section->id}", [
+            'content' => ['enabled' => true],
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['content.image', 'content.title', 'content.description']);
 });
 
 it('returns the site-wide sections keyed by type', function () {

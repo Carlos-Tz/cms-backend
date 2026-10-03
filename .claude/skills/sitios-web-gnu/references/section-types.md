@@ -121,6 +121,56 @@ Presente en los 4 sitios. Una instancia por página.
 
 Sin `autoplay_seconds`: el ritmo del carrusel es decisión del front-end, no contenido.
 
+### `trust_strip`
+
+Presente en las portadas de los 4 sitios. GNU usa el copy aprobado; las otras marcas empiezan con
+la colección vacía hasta que definan sus propios mensajes.
+
+| campo | tipo | editable | notas |
+|---|---|---|---|
+| `title` | string | sí | nullable |
+| `items[]` | colección | sí | 2–4 recomendados; puede estar vacía mientras se define el copy |
+| `items[].icon` | enum | sí | requerido; `percent`, `map-pin` o `leaf` |
+| `items[].title` | string | sí | |
+| `items[].text` | text | sí | |
+
+Los iconos son un catálogo cerrado: cada clave tiene un SVG correspondiente en el front.
+
+### `stats_band`
+
+Presente en las portadas de los 4 sitios. GNU usa el copy aprobado; las otras marcas empiezan con
+la colección vacía hasta que definan sus propias métricas.
+
+| campo | tipo | editable | notas |
+|---|---|---|---|
+| `stats[]` | colección | sí | 2–4 recomendadas; el front anima cada cifra |
+| `stats[].value` | number | sí | valor numérico sin formato; no se almacena como texto |
+| `stats[].suffix` | string | sí | nullable; se concatena sin espacio |
+| `stats[].label` | string | sí | |
+| `cta_label` | string | sí | nullable; se envía junto con `cta_href` |
+| `cta_href` | string | sí | nullable; acepta una ruta interna o URL |
+
+El conteo de clientes no es un campo: el front lo deriva de `clients_showcase.logos.length` donde
+existe esa sección. GNU Vehicular no tiene `clients_showcase`, por lo que omite ese conteo. La API
+no agrega una métrica duplicada.
+
+### `image_text`
+
+Presente una vez en la portada de cada sitio, después de `stats_band`. Está desactivado por defecto;
+el administrador edita los campos, pero no puede crear ni borrar la sección.
+
+| campo | tipo | editable | notas |
+|---|---|---|---|
+| `enabled` | bool | sí | inicia en `false`; al activarlo requiere imagen, título y descripción |
+| `image` | media | sí | nullable mientras `enabled` sea `false` |
+| `eyebrow` | string | sí | nullable; etiqueta superior |
+| `badge` | string | sí | nullable |
+| `title` | string | sí | nullable mientras `enabled` sea `false` |
+| `description` | text | sí | nullable mientras `enabled` sea `false` |
+| `items[]` | colección | sí | opcional; puntos destacados de texto |
+| `cta_label` | string | sí | nullable; se envía junto con `cta_href` |
+| `cta_href` | string | sí | nullable; acepta una ruta interna o URL |
+
 ### `savings_simulator`
 
 GNU, GNU Vehicular y Traninn Logistic. No Tectuus.

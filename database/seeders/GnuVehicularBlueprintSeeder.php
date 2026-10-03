@@ -65,9 +65,14 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
+        $this->section($site, $home, 'trust_strip', 2, [
+            'title' => null,
+            'items' => [],
+        ]);
+
         // Own reference prices: each simulator instance keeps its own, so this
         // site can quote a different price than the institutional one.
-        $this->section($site, $home, 'savings_simulator', 2, [
+        $this->section($site, $home, 'savings_simulator', 3, [
             'title' => 'Simulador de ahorro',
             'intro' => 'Compara lo que gastas hoy contra lo que gastarías con gas natural vehicular.',
             'fuel_prices' => [
@@ -97,7 +102,7 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
 
         // «Programa de recompensas» is a child of Inicio, so it is a section, and
         // it is a grid of cards — `feature_grid` covers it without a new type.
-        $this->section($site, $home, 'feature_grid', 3, [
+        $this->section($site, $home, 'feature_grid', 4, [
             'title' => 'Programa de recompensas',
             'items' => [
                 [
@@ -120,7 +125,7 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
 
         // Section of the home page here, site-wide in the institutional site.
         // The divergence follows each source file instead of harmonising them.
-        $this->section($site, $home, 'testimonials', 4, [
+        $this->section($site, $home, 'testimonials', 5, [
             'title' => 'Lo que dicen nuestros conductores',
             'items' => [
                 [
@@ -132,9 +137,27 @@ class GnuVehicularBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
-        $this->section($site, $home, 'stations_map', 5, $this->map('Mapa de estaciones'));
+        $this->section($site, $home, 'stats_band', 6, [
+            'stats' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
 
-        $this->section($site, $home, 'lead_capture_form', 6, $this->leadForm(
+        $this->section($site, $home, 'image_text', 7, [
+            'enabled' => false,
+            'image' => null,
+            'eyebrow' => null,
+            'badge' => null,
+            'title' => null,
+            'description' => null,
+            'items' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
+
+        $this->section($site, $home, 'stations_map', 8, $this->map('Mapa de estaciones'));
+
+        $this->section($site, $home, 'lead_capture_form', 9, $this->leadForm(
             'Contacto',
             'Déjanos tus datos y un asesor se comunicará contigo.',
         ));

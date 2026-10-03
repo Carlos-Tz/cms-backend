@@ -20,7 +20,7 @@ Contacto (4), Ubicaciones (5). El sitio **no tiene blog**.
 
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
-| 1 | `/` | Inicio | — | 1 | `banner_carousel`, `savings_simulator`, `rich_text`, `clients_showcase`, `lead_capture_form` |
+| 1 | `/` | Inicio | — | 1 | `banner_carousel`, `trust_strip`, `savings_simulator`, `rich_text`, `clients_showcase`, `stats_band`, `image_text`, `lead_capture_form` |
 | 2 | `/nuestros-servicios` | Nuestros servicios | — | 2 | `page_hero`, `rich_text` |
 | 3 | `/nuestros-servicios/transporte-de-gnc` | Transporte de GNC | `/nuestros-servicios` | 1 | `page_hero`, `rich_text`, `feature_grid` |
 | 4 | `/nuestros-servicios/logistica` | Logística | `/nuestros-servicios` | 2 | `page_hero`, `rich_text`, `feature_grid` |

@@ -37,14 +37,20 @@ it('returns the home page with its six sections in blueprint order', function ()
         ->assertOk()
         ->assertJsonPath('data.title', 'Inicio')
         ->assertJsonPath('data.path', '/')
-        ->assertJsonCount(6, 'data.sections')
+        ->assertJsonCount(9, 'data.sections')
         ->assertJsonPath('data.sections.0.type', 'banner_carousel')
-        ->assertJsonPath('data.sections.1.type', 'savings_simulator')
-        ->assertJsonPath('data.sections.2.type', 'feature_grid')
-        ->assertJsonPath('data.sections.2.content.title', 'Programa de recompensas')
-        ->assertJsonPath('data.sections.3.type', 'testimonials')
-        ->assertJsonPath('data.sections.4.type', 'stations_map')
-        ->assertJsonPath('data.sections.5.type', 'lead_capture_form');
+        ->assertJsonPath('data.sections.1.type', 'trust_strip')
+        ->assertJsonPath('data.sections.1.content.items', [])
+        ->assertJsonPath('data.sections.2.type', 'savings_simulator')
+        ->assertJsonPath('data.sections.3.type', 'feature_grid')
+        ->assertJsonPath('data.sections.3.content.title', 'Programa de recompensas')
+        ->assertJsonPath('data.sections.4.type', 'testimonials')
+        ->assertJsonPath('data.sections.5.type', 'stats_band')
+        ->assertJsonPath('data.sections.5.content.stats', [])
+        ->assertJsonPath('data.sections.6.type', 'image_text')
+        ->assertJsonPath('data.sections.6.content.enabled', false)
+        ->assertJsonPath('data.sections.7.type', 'stations_map')
+        ->assertJsonPath('data.sections.8.type', 'lead_capture_form');
 });
 
 it('keeps testimonials on the home page instead of the site-wide sections', function () {

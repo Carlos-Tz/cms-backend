@@ -54,17 +54,22 @@ class TectuusBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
+        $this->section($site, $home, 'trust_strip', 2, [
+            'title' => null,
+            'items' => [],
+        ]);
+
         // Carries the home page video: `video_url` is where the blueprint's
         // «soporte para videos» requirement lands, and `rich_text` is the only
         // type that has it. Same criterion as the other three sites.
-        $this->section($site, $home, 'rich_text', 2, [
+        $this->section($site, $home, 'rich_text', 3, [
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
             'image_video_url' => null,
         ]);
 
-        $this->section($site, $home, 'clients_showcase', 3, [
+        $this->section($site, $home, 'clients_showcase', 4, [
             'title' => 'Nuestros clientes',
             'logos' => [
                 [
@@ -75,7 +80,25 @@ class TectuusBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
-        $this->section($site, $home, 'lead_capture_form', 4, [
+        $this->section($site, $home, 'stats_band', 5, [
+            'stats' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
+
+        $this->section($site, $home, 'image_text', 6, [
+            'enabled' => false,
+            'image' => null,
+            'eyebrow' => null,
+            'badge' => null,
+            'title' => null,
+            'description' => null,
+            'items' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
+
+        $this->section($site, $home, 'lead_capture_form', 7, [
             'title' => 'Contacto',
             'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
             'submit_label' => 'Enviar',

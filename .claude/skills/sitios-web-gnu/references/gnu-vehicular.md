@@ -19,7 +19,7 @@ Blog (5) — una menos que el sitio institucional.
 
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
-| 1 | `/` | Inicio | — | 1 | `banner_carousel`, `savings_simulator`, `feature_grid`, `testimonials`, `stations_map`, `lead_capture_form` |
+| 1 | `/` | Inicio | — | 1 | `banner_carousel`, `trust_strip`, `savings_simulator`, `feature_grid`, `testimonials`, `stats_band`, `image_text`, `stations_map`, `lead_capture_form` |
 | 2 | `/nuestros-servicios` | Nuestros servicios | — | 2 | `page_hero`, `rich_text` |
 | 3 | `/nuestros-servicios/instala-tu-equipo-de-gnv` | Instala tu equipo de GNV | `/nuestros-servicios` | 1 | `page_hero`, `rich_text`, `feature_grid` |
 | 4 | `…/instala-tu-equipo-de-gnv/cotiza-tu-equipo` | Cotiza tu equipo | `…/instala-tu-equipo-de-gnv` | 1 | `page_hero`, `rich_text`, `lead_capture_form` |
@@ -44,9 +44,10 @@ Notas de lectura:
   la regla de clasificación de [`gnu.md`](gnu.md) es sección, no página; y es una rejilla de
   tarjetas (acumulas, canjeas, beneficios de flotilla), que es justo lo que ese tipo genérico cubre.
   No se promovió a tipo propio: el cliente no declaró campos que `feature_grid` no tenga.
-- **`testimonials` es sección de la portada aquí, y global en `gnu`.** El árbol de cada sitio se lee
-  tal como lo entregó el cliente en vez de armonizarlos en silencio. Ver `gnu.md`, «Secciones
-  globales».
+- **`testimonials` es sección de la portada aquí, y global en `gnu`.** El `stats_band` va después de
+  esta sección en GNU Vehicular, que no tiene `clients_showcase`; por eso el front omite el conteo
+  automático de clientes. El árbol de cada sitio se lee tal como lo entregó el cliente en vez de
+  armonizarlos en silencio. Ver `gnu.md`, «Secciones globales».
 - **«Facturación» es el `rich_text` de `/contacto`.** Instrucciones de facturación y liga al portal
   son contenido libre; el candidato `billing_info` no se promovió a tipo. Mismo criterio que con el
   programa de recompensas: un candidato sin auditar se queda fuera del catálogo mientras un tipo

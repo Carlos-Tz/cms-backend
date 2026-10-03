@@ -55,10 +55,15 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
+        $this->section($site, $home, 'trust_strip', 2, [
+            'title' => null,
+            'items' => [],
+        ]);
+
         // Own reference prices, quoted per m³ of transported gas: this site sells
         // freight, not vehicle conversions, so its numbers differ from the other
         // two. The admin keeps them current through the admin API.
-        $this->section($site, $home, 'savings_simulator', 2, [
+        $this->section($site, $home, 'savings_simulator', 3, [
             'title' => 'Simulador de ahorro',
             'intro' => 'Compara el costo de tu combustible actual contra el gas natural.',
             'fuel_prices' => [
@@ -89,14 +94,14 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
         // Carries the home page video: `video_url` is where the blueprint's
         // «soporte para videos» requirement lands, and `rich_text` is the only
         // type that has it. Same criterion as the institutional site.
-        $this->section($site, $home, 'rich_text', 3, [
+        $this->section($site, $home, 'rich_text', 4, [
             'title' => null,
             'body' => '<p>Contenido pendiente de redactar.</p>',
             'video_url' => null,
             'image_video_url' => null,
         ]);
 
-        $this->section($site, $home, 'clients_showcase', 4, [
+        $this->section($site, $home, 'clients_showcase', 5, [
             'title' => 'Nuestros clientes',
             'logos' => [
                 [
@@ -107,7 +112,25 @@ class TraninnLogisticBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
-        $this->section($site, $home, 'lead_capture_form', 5, [
+        $this->section($site, $home, 'stats_band', 6, [
+            'stats' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
+
+        $this->section($site, $home, 'image_text', 7, [
+            'enabled' => false,
+            'image' => null,
+            'eyebrow' => null,
+            'badge' => null,
+            'title' => null,
+            'description' => null,
+            'items' => [],
+            'cta_label' => null,
+            'cta_href' => null,
+        ]);
+
+        $this->section($site, $home, 'lead_capture_form', 8, [
             'title' => 'Contacto',
             'intro' => 'Déjanos tus datos y un asesor se comunicará contigo.',
             'submit_label' => 'Enviar',

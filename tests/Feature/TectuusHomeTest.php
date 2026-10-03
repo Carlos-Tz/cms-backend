@@ -31,17 +31,23 @@ function tectuusSection(string $type, ?string $pageSlug = null): Section
         ->firstOrFail();
 }
 
-it('returns the home page with its four sections in blueprint order', function () {
+it('returns the home page with its seven sections in blueprint order', function () {
     $this->getJson('/api/public/tectuus/pages/inicio')
         ->assertOk()
         ->assertJsonPath('data.title', 'Inicio')
         ->assertJsonPath('data.path', '/')
-        ->assertJsonCount(4, 'data.sections')
+        ->assertJsonCount(7, 'data.sections')
         ->assertJsonPath('data.sections.0.type', 'banner_carousel')
-        ->assertJsonPath('data.sections.1.type', 'rich_text')
-        ->assertJsonPath('data.sections.2.type', 'clients_showcase')
-        ->assertJsonPath('data.sections.2.content.title', 'Nuestros clientes')
-        ->assertJsonPath('data.sections.3.type', 'lead_capture_form');
+        ->assertJsonPath('data.sections.1.type', 'trust_strip')
+        ->assertJsonPath('data.sections.1.content.items', [])
+        ->assertJsonPath('data.sections.2.type', 'rich_text')
+        ->assertJsonPath('data.sections.3.type', 'clients_showcase')
+        ->assertJsonPath('data.sections.3.content.title', 'Nuestros clientes')
+        ->assertJsonPath('data.sections.4.type', 'stats_band')
+        ->assertJsonPath('data.sections.4.content.stats', [])
+        ->assertJsonPath('data.sections.5.type', 'image_text')
+        ->assertJsonPath('data.sections.5.content.enabled', false)
+        ->assertJsonPath('data.sections.6.type', 'lead_capture_form');
 });
 
 /**

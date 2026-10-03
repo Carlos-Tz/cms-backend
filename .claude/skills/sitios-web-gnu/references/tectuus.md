@@ -22,7 +22,7 @@ sitio **no tiene blog**.
 
 | # | ruta | título | padre | pos | secciones (en orden) |
 |---|---|---|---|---|---|
-| 1 | `/` | Inicio | — | 1 | `banner_carousel`, `rich_text`, `clients_showcase`, `lead_capture_form` |
+| 1 | `/` | Inicio | — | 1 | `banner_carousel`, `trust_strip`, `rich_text`, `clients_showcase`, `stats_band`, `image_text`, `lead_capture_form` |
 | 2 | `/sobre-nosotros` | Sobre nosotros | — | 2 | `page_hero`, `rich_text`, `image_gallery` |
 | 3 | `/productos` | Productos | — | 3 | `page_hero` |
 | 4 | `/contacto` | Contacto | — | 4 | `page_hero`, `lead_capture_form` |
