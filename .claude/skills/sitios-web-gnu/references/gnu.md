@@ -20,6 +20,9 @@ El enfoque prioritario a GNC aterriza en `/nuestros-servicios/gnc`, la única p�
 `savings_simulator` y `stations_map` juntos. La intención comercial del orden de navegación aterriza
 en `pos = 2` de `/nuestros-servicios`.
 
+El orden del submenú de «Nuestros servicios» es **GNV → GNC → GND** por petición expresa del cliente
+(posterior al macro archivo original). La prioridad de GNC vive en sus secciones, no en su posición.
+
 ## Mapa de páginas
 
 17 páginas. `padre` vacío = página raíz, y su `pos` ordena las columnas de la navegación
@@ -30,9 +33,9 @@ lista.
 |---|---|---|---|---|---|
 | 1 | `/` | Inicio | — | 1 | `banner_carousel`, `trust_strip`, `savings_simulator`, `rich_text`, `clients_showcase`, `stats_band`, `image_text`, `lead_capture_form` |
 | 2 | `/nuestros-servicios` | Nuestros servicios | — | 2 | `page_hero`, `rich_text`, `clients_showcase` |
-| 3 | `/nuestros-servicios/gnc` | GNC | `/nuestros-servicios` | 1 | `page_hero`, `rich_text`, `feature_grid`, `savings_simulator`, `stations_map`, `lead_capture_form` |
-| 4 | `/nuestros-servicios/gnd` | GND | `/nuestros-servicios` | 2 | `page_hero`, `rich_text`, `feature_grid`, `lead_capture_form` |
-| 5 | `/nuestros-servicios/gnv` | GNV | `/nuestros-servicios` | 3 | `page_hero`, `rich_text`, `feature_grid`, `lead_capture_form` |
+| 3 | `/nuestros-servicios/gnc` | GNC | `/nuestros-servicios` | 2 | `page_hero`, `rich_text`, `feature_grid`, `savings_simulator`, `stations_map`, `lead_capture_form` |
+| 4 | `/nuestros-servicios/gnd` | GND | `/nuestros-servicios` | 3 | `page_hero`, `rich_text`, `feature_grid`, `lead_capture_form` |
+| 5 | `/nuestros-servicios/gnv` | GNV | `/nuestros-servicios` | 1 | `page_hero`, `rich_text`, `feature_grid`, `lead_capture_form` |
 | 6 | `/sobre-nosotros` | Sobre nosotros | — | 3 | `page_hero`, `rich_text` |
 | 7 | `/sobre-nosotros/proposito-empresarial` | Propósito empresarial | `/sobre-nosotros` | 1 | `page_hero`, `rich_text`, `feature_grid` |
 | 8 | `/sobre-nosotros/valores` | Valores | `/sobre-nosotros` | 2 | `page_hero`, `feature_grid` |

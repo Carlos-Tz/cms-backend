@@ -176,6 +176,9 @@ class GnuBlueprintSeeder extends BlueprintSeeder
      * GNC is the commercial priority of the blueprint and the only page carrying
      * `savings_simulator` and `stations_map` together. Its simulator keeps its
      * own reference prices; the public endpoint selects it with `?page=gnc`.
+     *
+     * That priority lives in the sections, not in the nav: the client asked for
+     * the submenu to read GNV, GNC, GND, which is what `position` carries here.
      */
     private function services(Site $site): void
     {
@@ -201,7 +204,7 @@ class GnuBlueprintSeeder extends BlueprintSeeder
             ],
         ]);
 
-        $gnc = $this->page($site, 'gnc', '/nuestros-servicios/gnc', 'GNC', 1, $services);
+        $gnc = $this->page($site, 'gnc', '/nuestros-servicios/gnc', 'GNC', 2, $services);
 
         $this->section($site, $gnc, 'page_hero', 1, [
             'title' => 'GNC',
@@ -241,8 +244,8 @@ class GnuBlueprintSeeder extends BlueprintSeeder
         ]);
 
         $products = [
-            ['gnd', 'GND', 'Gas natural distribuido', 2],
-            ['gnv', 'GNV', 'Gas natural vehicular', 3],
+            ['gnv', 'GNV', 'Gas natural vehicular', 1],
+            ['gnd', 'GND', 'Gas natural distribuido', 3],
         ];
 
         foreach ($products as [$slug, $title, $subtitle, $position]) {

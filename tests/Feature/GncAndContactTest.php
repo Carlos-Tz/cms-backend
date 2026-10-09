@@ -35,11 +35,11 @@ it('completes the 17 pages of the gnu blueprint', function () {
     expect(Site::where('slug', 'gnu')->firstOrFail()->pages()->count())->toBe(17);
 });
 
-it('orders GNC first among the servicios children', function () {
+it('orders the servicios children GNV, GNC, GND', function () {
     $menu = collect($this->getJson('/api/public/gnu/menu')->assertOk()->json('data'))
         ->firstWhere('slug', 'nuestros-servicios');
 
-    expect(collect($menu['children'])->pluck('slug')->all())->toBe(['gnc', 'gnd', 'gnv']);
+    expect(collect($menu['children'])->pluck('slug')->all())->toBe(['gnv', 'gnc', 'gnd']);
 });
 
 it('picks the simulator of a given page', function () {
