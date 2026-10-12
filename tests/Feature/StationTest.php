@@ -29,9 +29,24 @@ it('lists the active stations of a site for the public map', function () {
     expect(collect($response->json('data'))->pluck('name'))
         ->not->toContain('Estación cerrada');
 
-    $response->assertJsonPath('data.0.name', 'Estación Guadalupe')
-        ->assertJsonPath('data.0.latitude', 25.6768)
-        ->assertJsonPath('data.0.longitude', -100.256);
+    $response->assertJsonFragment([
+        'name' => 'Estación Guadalupe',
+        'latitude' => 25.6768,
+        'longitude' => -100.256,
+    ]);
+});
+
+it('orders public stations by descending ID', function () {
+    $olderStation = Station::factory()->for($this->site)->create(['name' => 'Estación Alfa anterior']);
+    $newerStation = Station::factory()->for($this->site)->create(['name' => 'Estación Zeta reciente']);
+
+    $names = collect($this->getJson('/api/public/gnu/stations')->assertOk()->json('data'))
+        ->pluck('name')
+        ->take(2)
+        ->values()
+        ->all();
+
+    expect($names)->toBe([$newerStation->name, $olderStation->name]);
 });
 
 it('does not leak the stations of another site', function () {

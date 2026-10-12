@@ -155,7 +155,7 @@ genera el visitante. Orden ascendente y no `latest()` porque en una agenda impor
 | GET | `product-categories` | `ProductController@categories` | **real** — todas las del sitio por `position`, sin paginar. `{slug, name, description, image, products_count}`, contando **solo los activos**. Es lo que alimenta el submenú de *Productos*: las categorías no son páginas y no salen en `menu` |
 | GET | `products` | `ProductController@index` | **real** — solo `active()`, `paginate(12)`. Filtros `?category={slug}` y `?q={búsqueda}` (LIKE sobre `name` y `description`). **Sin `description` ni `images`**: solo la primera imagen, mismo criterio que el listado del blog |
 | GET | `products/{productSlug}` | `ProductController@show` | **real** — el producto activo con su `description`, sus `images` y su categoría. 404 si está inactivo |
-| GET | `stations` | `StationController@index` | **real** — solo `is_active`, sin paginar (un mapa dibuja todos los pines). `{name, address, latitude, longitude, phone, schedule}` |
+| GET | `stations` | `StationController@index` | **real** — solo `is_active`, sin paginar (un mapa dibuja todos los pines), ordenadas por `id DESC`. `{name, address, latitude, longitude, phone, schedule}` |
 | GET | `appointments/availability` | `AppointmentController@availability` | **real** — `?station={id}&date=Y-m-d`. Ver abajo |
 | POST | `appointments` | `AppointmentController@store` | **real** — `throttle:10,1`. 201 con `{date, slot, station}` confirmados. Segunda escritura pública |
 

@@ -17,7 +17,7 @@ class StationController extends Controller
      */
     public function index(Site $site): JsonResponse
     {
-        $stations = $site->stations()->active()->orderBy('name')->get();
+        $stations = $site->stations()->active()->orderByDesc('id')->get();
 
         return response()->json([
             'status' => 'success',
