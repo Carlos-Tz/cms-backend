@@ -18,7 +18,7 @@ class BlogController extends Controller
      */
     public function index(Site $site): JsonResponse
     {
-        $posts = $site->blogPosts()->published()->latest('published_at')->paginate(10);
+        $posts = $site->blogPosts()->published()->latest('published_at')->paginate(12);
 
         return response()->json([
             'status' => 'success',
